@@ -13,7 +13,8 @@ defineEmits(["toggle"]);
 const query = ref("");
 
 function hasMatch(node, q) {
-  if (node.file) return node.title.toLowerCase().includes(q);
+  if (node.file || node.component)
+    return node.title.toLowerCase().includes(q);
   if (node.children) return node.children.some((c) => hasMatch(c, q));
   return false;
 }
@@ -27,13 +28,8 @@ const visibleRoots = computed(() => {
 <template>
   <aside class="sidebar">
     <header class="sidebar__header">
-      <h1>Cyber Resources</h1>
-      <input
-        v-model="query"
-        type="search"
-        placeholder="Filter pages…"
-        autocomplete="off"
-      />
+      <h1>Cyber Security Resources</h1>
+      <input v-model="query" type="search" placeholder="Filter pages…" autocomplete="off" />
     </header>
     <nav class="nav" aria-label="Pages">
       <div v-if="error" class="nav__error">
@@ -42,20 +38,11 @@ const visibleRoots = computed(() => {
       <div v-else-if="query && visibleRoots.length === 0" class="nav__error">
         No pages match "{{ query }}"
       </div>
-      <TreeNode
-        v-for="(node, i) in visibleRoots"
-        :key="node.slug || node.title + i"
-        :node="node"
-        :current-slug="currentSlug"
-        :query="query"
-      />
+      <TreeNode v-for="(node, i) in visibleRoots" :key="node.slug || node.title + i" :node="node"
+        :current-slug="currentSlug" :query="query" />
     </nav>
     <footer class="sidebar__footer">
-      <button
-        type="button"
-        aria-label="Toggle sidebar"
-        @click="$emit('toggle')"
-      >
+      <button type="button" aria-label="Toggle sidebar" @click="$emit('toggle')">
         &#9776;
       </button>
     </footer>

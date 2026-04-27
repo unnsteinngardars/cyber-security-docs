@@ -1,0 +1,86 @@
+[
+  {
+    "layer": 1,
+    "name": "Physical",
+    "description": "Moves raw bits across a physical medium — voltages, light pulses, or radio waves. Defines cabling, connectors, pin layouts, modulation schemes, and signal timing. Knows nothing about meaning; its only job is to put a 1 or a 0 on the wire and recover it on the other end.",
+    "examples": [
+      "Twisted-pair copper (Cat5e/Cat6) and fibre optics",
+      "RJ45 connectors, BNC, ST/LC fibre connectors",
+      "IEEE 802.3 PHY (Ethernet), IEEE 802.11 PHY (Wi-Fi radio)",
+      "Hubs, repeaters, media converters, transceivers",
+      "DSL, ISDN, SONET/SDH, USB, Bluetooth radio"
+    ]
+  },
+  {
+    "layer": 2,
+    "name": "Data Link",
+    "description": "Frames raw bits into structured units, addresses them on the local segment, and detects (sometimes corrects) transmission errors. Split into LLC (logical link control) and MAC (media access control) sublayers. Operates only within a single broadcast domain — it has no concept of routing between networks.",
+    "examples": [
+      "Ethernet frames (IEEE 802.3), Wi-Fi frames (IEEE 802.11 MAC)",
+      "MAC addresses (48-bit hardware identifiers)",
+      "ARP — resolves IP addresses to MAC addresses",
+      "Switches, bridges, wireless access points",
+      "VLANs (802.1Q), STP, PPP, HDLC, Frame Relay"
+    ]
+  },
+  {
+    "layer": 3,
+    "name": "Network",
+    "description": "Delivers packets between hosts across multiple networks using logical addresses. Decides the path each packet takes (routing), fragments oversized packets, and handles inter-network reachability. Best-effort by design — no guarantees of delivery, ordering, or duplicate prevention; that's left to higher layers.",
+    "examples": [
+      "IPv4 and IPv6 addressing and packet headers",
+      "ICMP (ping, traceroute, unreachable messages)",
+      "Routing protocols — OSPF, BGP, RIP, EIGRP",
+      "IPsec (network-layer encryption and authentication)",
+      "Routers, layer-3 switches, firewalls operating on IP"
+    ]
+  },
+  {
+    "layer": 4,
+    "name": "Transport",
+    "description": "End-to-end delivery between processes on hosts, identified by port numbers. Adds reliability features: connection setup, segmentation and reassembly, flow control, congestion control, retransmission, and ordered delivery — or deliberately omits them for speed. The boundary between 'the network' and 'the application'.",
+    "examples": [
+      "TCP — connection-oriented, reliable, ordered, flow-controlled",
+      "UDP — connectionless, unreliable, low overhead",
+      "QUIC — UDP-based, multiplexed, encrypted (powers HTTP/3)",
+      "SCTP — multi-streaming, used in telecom signalling",
+      "Port numbers (0–65535), TCP three-way handshake, sequence/ack numbers"
+    ]
+  },
+  {
+    "layer": 5,
+    "name": "Session",
+    "description": "Establishes, manages, and tears down conversations between applications. Handles dialogue control (who speaks when), checkpointing for recovery, and session resumption after a network blip. Often thin or absent in the TCP/IP stack — many of its responsibilities have been absorbed into the application or transport layers.",
+    "examples": [
+      "NetBIOS session service",
+      "RPC (Remote Procedure Call) and SunRPC",
+      "PPTP, L2TP — tunnel session establishment",
+      "SOCKS proxy session negotiation",
+      "SQL session establishment, SMB session setup"
+    ]
+  },
+  {
+    "layer": 6,
+    "name": "Presentation",
+    "description": "Translates between the application's data formats and a canonical wire representation. Handles character encoding, serialisation, compression, and encryption — making sure the receiving application can interpret what the sender produced even if their internal formats differ.",
+    "examples": [
+      "TLS / SSL — encryption and integrity for application data",
+      "Character encodings — ASCII, UTF-8, UTF-16, EBCDIC",
+      "Media encodings — JPEG, PNG, GIF, MPEG, MP3",
+      "Serialisation formats — XML, JSON, ASN.1, Protocol Buffers",
+      "MIME types, gzip / deflate / Brotli compression"
+    ]
+  },
+  {
+    "layer": 7,
+    "name": "Application",
+    "description": "The layer the user (or user's software) directly interacts with. Defines the protocols and message formats that applications speak — HTTP requests, DNS queries, mail envelopes, file transfers. Where most real-world security incidents land: misconfigurations, broken auth, injection, business-logic abuse all live here.",
+    "examples": [
+      "HTTP / HTTPS — the web",
+      "DNS — name resolution",
+      "SMTP, IMAP, POP3 — email",
+      "SSH, FTP, SFTP, SCP — remote access and file transfer",
+      "SNMP, LDAP, Kerberos, RDP, SMB"
+    ]
+  }
+]

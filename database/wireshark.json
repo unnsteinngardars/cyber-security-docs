@@ -1,0 +1,83 @@
+{
+  "captureFilters": [
+    { "filter": "host 10.0.0.5", "description": "All traffic to or from a specific host" },
+    { "filter": "port 80", "description": "Anything touching port 80 (HTTP)" },
+    { "filter": "tcp port 443", "description": "TCP traffic on 443 (HTTPS)" },
+    { "filter": "not arp and not stp", "description": "Drop noisy L2 broadcasts" },
+    { "filter": "net 192.168.1.0/24", "description": "Subnet-scoped capture" },
+    { "filter": "src host 10.0.0.5 and dst port 53", "description": "DNS queries leaving one host" },
+    { "filter": "ether host 00:11:22:33:44:55", "description": "Match by MAC address" },
+    { "filter": "vlan 100", "description": "Only frames tagged with VLAN 100" }
+  ],
+  "displayFilters": [
+    { "filter": "http.request", "description": "All HTTP requests in the capture" },
+    { "filter": "http.response.code == 500", "description": "Server-error responses only" },
+    { "filter": "dns.qry.name contains \"evil\"", "description": "Suspicious DNS lookups" },
+    { "filter": "tcp.stream eq 4", "description": "Drill into one TCP conversation" },
+    { "filter": "ip.addr == 10.0.0.5", "description": "Any packet involving a host" },
+    { "filter": "tcp.flags.syn == 1 and tcp.flags.ack == 0", "description": "Lone SYNs — port-scan footprint" },
+    { "filter": "tls.handshake.type == 1", "description": "TLS Client Hello (start of TLS sessions)" },
+    { "filter": "ftp.request.command == \"USER\"", "description": "FTP login attempts" },
+    { "filter": "smb2", "description": "All SMBv2/3 traffic" },
+    { "filter": "frame contains \"password\"", "description": "Match a literal string anywhere in the frame" },
+    { "filter": "tcp.analysis.retransmission", "description": "Show retransmitted packets — congestion or loss" },
+    { "filter": "icmp.type == 8", "description": "ICMP Echo Requests (pings)" }
+  ],
+  "cliTools": [
+    { "name": "tshark", "description": "Wireshark's CLI counterpart — same dissectors, no GUI. The right choice for scripting, pipelines, and remote captures." },
+    { "name": "dumpcap", "description": "The minimal capture engine Wireshark itself uses. Lower memory footprint and safer for long-running unattended captures." },
+    { "name": "editcap", "description": "Edit, split, slice, deduplicate, or convert capture files (e.g. trim a 4-hour pcap down to one suspicious minute)." },
+    { "name": "mergecap", "description": "Merge multiple captures into one timeline — useful when several sensors recorded the same incident." },
+    { "name": "capinfos", "description": "Quick metadata dump for a capture: size, packet count, time range, average packet rate." },
+    { "name": "text2pcap", "description": "Convert hex-dump text (from logs or papers) into a .pcap so it can be opened in Wireshark." }
+  ],
+  "useCases": [
+    {
+      "title": "Hunting C2 beacons",
+      "details": "Beacons show as periodic, regular-interval connections to one or two remote hosts. Use Statistics → IO Graph at a 1s interval to spot the heartbeat, then tcp.stream eq N to drill into a single beacon flow and inspect its payload."
+    },
+    {
+      "title": "Detecting data exfiltration",
+      "details": "Statistics → Conversations, sorted by Bytes. Anomalously large outbound flows to non-business destinations are the prime candidates. Filter ip.dst != <internal-net> and look for steady upload patterns."
+    },
+    {
+      "title": "DNS tunnelling",
+      "details": "Filter dns. Long, high-entropy subdomains, excessive TXT/NULL records, or one client driving thousands of queries to a single resolver are tell-tale signs. Statistics → DNS gives quick aggregates."
+    },
+    {
+      "title": "Cleartext credential capture",
+      "details": "http.request.method == \"POST\" or ftp.request.command == \"PASS\" or telnet. Right-click → Follow → HTTP/TCP Stream to reconstruct the full exchange including form-encoded credentials."
+    },
+    {
+      "title": "Lateral movement over SMB",
+      "details": "smb2 with focus on tree-connect requests to admin shares (ADMIN$, C$, IPC$). Cross-reference Kerberos AS-REQ/TGS-REQ to map who authenticated where and when."
+    },
+    {
+      "title": "Reconstructing transferred files",
+      "details": "File → Export Objects → HTTP / SMB / FTP / TFTP / IMF reassembles complete payloads (executables, documents, attachments) for offline triage in your sandbox or static analysis tooling."
+    }
+  ],
+  "stats": [
+    { "menu": "Statistics → Conversations", "purpose": "Top talkers per protocol — sorted by bytes, packets, duration." },
+    { "menu": "Statistics → Endpoints", "purpose": "Per-host summary including GeoIP if MaxMind databases are configured." },
+    { "menu": "Statistics → Protocol Hierarchy", "purpose": "Traffic mix by protocol — instant view of what's flowing." },
+    { "menu": "Statistics → IO Graphs", "purpose": "Throughput over time. Layer multiple filters to compare flows visually." },
+    { "menu": "Statistics → Flow Graph", "purpose": "Sequence-diagram view of a conversation — great for handshake debugging." },
+    { "menu": "Analyze → Expert Info", "purpose": "Auto-collated warnings, retransmits, malformed packets, and protocol anomalies." }
+  ],
+  "tips": [
+    "Coloring rules (View → Coloring Rules) make protocol problems visible at a glance — black means TCP errors, red means a serious problem.",
+    "Right-click → \"Apply as Filter\" / \"Prepare a Filter\" beats memorising syntax — Wireshark generates the right expression for you.",
+    "Tools → Lua Console lets you script custom dissectors for proprietary protocols.",
+    "Use Edit → Preferences → Name Resolution sparingly — DNS lookups against capture data can leak the analyst's IP and slow Wireshark to a crawl.",
+    "Capture to ring-buffer files (-b filesize:100 -b files:10) for long captures so disk doesn't fill and you keep the most recent window.",
+    "On Linux, capture as an unprivileged user via setcap'd dumpcap — never run the GUI as root."
+  ],
+  "limitations": [
+    "TLS-encrypted payloads are opaque without the session keys (SSLKEYLOGFILE) or a server private key (RSA only, not DHE).",
+    "Capture is only as good as the tap point — switched networks need port mirroring (SPAN) or a TAP, not just plugging into a wall jack.",
+    "Wire-rate capture on 10G+ links needs specialised hardware (Napatech, Endace, AF_PACKET v3) — software-only Wireshark will drop packets.",
+    "Decoding is dissector-bound — proprietary or new protocols may show as raw bytes until a Lua dissector is written.",
+    "Encrypted protocols (QUIC, DoH, ECH) are increasingly the norm and erode visibility — plan for endpoint telemetry, not just packet capture."
+  ]
+}

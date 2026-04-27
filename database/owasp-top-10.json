@@ -1,0 +1,169 @@
+[
+  {
+    "number": "A01",
+    "name": "Broken Access Control",
+    "description": "Authorisation failure — users do things they shouldn't be allowed to. Access control decides what an authenticated user is allowed to reach; when the check is missing, weak, or only enforced in the UI, attackers can read or modify resources that don't belong to them. The single most common class of web-app vulnerability and the home of IDOR (Insecure Direct Object Reference) plus horizontal and vertical privilege escalation.",
+    "link": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+    "commonPatterns": [
+      "URL or ID tampering exposes another user's data (IDOR)",
+      "Hidden admin endpoints reachable directly without role checks",
+      "Client-side role checks trusted by the server",
+      "Force-browsing bypasses navigation menus",
+      "Missing ownership checks on resource access",
+      "Horizontal privilege escalation — one user reads or modifies another user's data",
+      "Vertical privilege escalation — regular user gains admin capabilities"
+    ],
+    "howToPrevent": [
+      "Enforce server-side ownership checks on every sensitive request",
+      "Use unguessable identifiers (UUIDs) instead of sequential database IDs",
+      "Apply deny-by-default access control with explicit allow rules",
+      "Centralise authorisation logic — never trust UI-only checks",
+      "Log access-control failures and alert on repeated denials",
+      "Test for IDOR and force-browsing in CI"
+    ]
+  },
+  {
+    "number": "A05",
+    "name": "Security Misconfigurations",
+    "description": "Defaults left on, unnecessary surface exposed, permissions too wide. The most boring risk and one of the most exploited. Every stack ships with defaults tuned for developer convenience — open dashboards, debug modes, permissive CORS, admin/admin logins. Every one of those left on in production becomes a pre-authenticated foothold.",
+    "link": "https://owasp.org/Top10/A05_2021-Security_Misconfiguration/",
+    "commonPatterns": [
+      "Default credentials or weak passwords left unchanged",
+      "Unnecessary services or endpoints exposed to the internet",
+      "Misconfigured cloud storage or permissions (S3, Azure Blob, GCP buckets)",
+      "Unrestricted API access or missing authentication / authorisation",
+      "Verbose error messages exposing stack traces or system details",
+      "Outdated software, frameworks, or containers with known vulnerabilities",
+      "Exposed AI / ML endpoints without proper access controls"
+    ],
+    "howToPrevent": [
+      "Harden default configurations, remove unused features and services",
+      "Enforce strong authentication and least privilege everywhere",
+      "Limit network exposure and segment sensitive resources",
+      "Patch software, frameworks, and container images regularly",
+      "Hide stack traces and system info from user-facing errors",
+      "Audit cloud configurations and IAM permissions on a schedule",
+      "Secure AI endpoints with auth, rate limits, and monitoring",
+      "Bake configuration review and automated scans into the deployment pipeline"
+    ]
+  },
+  {
+    "number": "A06",
+    "name": "Software Supply Chain Failures",
+    "description": "Trusting code, packages, and models you didn't write — and can't audit. Modern apps are mostly other people's code. One compromised dependency, build step, or model weight propagates to every downstream consumer. Attackers increasingly target the pipeline itself because a single successful injection hits thousands of targets at once.",
+    "link": "https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/",
+    "commonPatterns": [
+      "Pulling unverified or unmaintained libraries and dependencies",
+      "Auto-installing updates without signature or integrity checks",
+      "Over-reliance on third-party AI models with no monitoring or auditing",
+      "Insecure build pipelines or CI/CD processes that allow tampering",
+      "Poor license or provenance tracking for components",
+      "No monitoring for new vulnerabilities in dependencies after deployment"
+    ],
+    "howToPrevent": [
+      "Verify third-party components, libraries, and AI models before use",
+      "Monitor and patch dependencies regularly",
+      "Sign, verify, and audit software updates and packages",
+      "Lock down CI/CD pipelines and build processes against tampering",
+      "Track provenance and licensing for every dependency",
+      "Runtime-monitor dependencies and AI components for unusual behaviour",
+      "Integrate supply-chain threat modelling into the SDLC — testing, deployment, and update flows"
+    ]
+  },
+  {
+    "number": "A02",
+    "name": "Cryptographic Failures",
+    "description": "Weak algorithms, leaked keys, data exposed at rest or in transit. Crypto problems rarely look like broken math — they look like shipping MD5 for password hashing, committing a secret to git, or forgetting to rotate a key for three years. Most real failures are about how crypto is used, not the primitives themselves.",
+    "link": "https://owasp.org/Top10/A02_2021-Cryptographic_Failures/",
+    "commonPatterns": [
+      "Deprecated or weak algorithms — MD5, SHA-1, AES in ECB mode",
+      "Hard-coded secrets in source or configuration",
+      "Poor key rotation or key-management practices",
+      "Sensitive data unencrypted at rest or in transit",
+      "Self-signed, expired, or invalid TLS certificates",
+      "AI / ML systems mishandling secrets — model parameters or sensitive inputs exposed"
+    ],
+    "howToPrevent": [
+      "Modern primitives only — AES-GCM, ChaCha20-Poly1305, TLS 1.3 with valid certificates",
+      "Use managed KMS — Azure Key Vault, AWS KMS, HashiCorp Vault",
+      "Rotate secrets and keys on a defined crypto-period",
+      "Document and enforce key-lifecycle SOPs",
+      "Keep a full inventory of certificates, keys, and owners",
+      "Never let AI models or automation agents surface unencrypted secrets or sensitive data"
+    ]
+  },
+  {
+    "number": "A04",
+    "name": "Insecure Design",
+    "description": "Flaws baked into the architecture — no patch fixes a bad design. Insecure design isn't a bug, it's the absence of threat modelling. A perfectly coded feature can still be insecure if the flow itself is exploitable: weak password-reset, approval chains that can be skipped, AI agents with unchecked authority. You cannot patch your way out of a broken flow.",
+    "link": "https://owasp.org/Top10/A04_2021-Insecure_Design/",
+    "commonPatterns": [
+      "Weak business-logic controls — recovery and approval flows",
+      "Flawed assumptions about user or model behaviour",
+      "AI components with unchecked authority or access",
+      "Missing guardrails for LLMs and automation agents",
+      "Test or debug bypasses left in production",
+      "No consistent abuse-case review or AI threat modelling",
+      "Prompt injection — user input blended with system prompts",
+      "Blind trust in AI output without validation or human review",
+      "Poisoned models pulled from unverified sources or fine-tuned on unsafe data"
+    ],
+    "howToPrevent": [
+      "Treat every model as untrusted until proven otherwise",
+      "Validate and filter all model inputs and outputs",
+      "Separate system prompts from user content",
+      "Keep sensitive data out of prompts unless strictly needed, then protect it with strict controls",
+      "Require human review for high-risk AI actions",
+      "Log model provenance, monitor behaviour, apply differential privacy for sensitive data",
+      "Threat-model for prompt attacks, inference risks, agent misuse, and supply-chain compromise",
+      "Build threat modelling into every stage, not just the start",
+      "Define security requirements per feature, before implementation",
+      "Apply least privilege across users, APIs, and services"
+    ]
+  },
+  {
+    "number": "A07",
+    "name": "Identification & Authentication Failures",
+    "description": "Authentication failure — proving identity is broken, weak, or bypassable. Covers every weakness in how the app confirms who a user is: the login, registration, password-reset, and session layers. When any of these fail, attackers don't need to escalate privilege; they simply log in as someone else.",
+    "link": "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/",
+    "commonPatterns": [
+      "Username enumeration via different error messages or response timing",
+      "Weak or guessable passwords with no lockout or rate limits",
+      "Logic flaws in login / registration — skippable steps, tamperable parameters, predictable reset tokens",
+      "Insecure session or cookie handling — no Secure/HttpOnly/SameSite, no rotation after login",
+      "Session fixation — pre-login session ID kept after authentication",
+      "Credential stuffing succeeds unchecked because no breach-list or rate-limit is in place"
+    ],
+    "howToPrevent": [
+      "Use a uniform 'invalid credentials' message — never leak which field is wrong",
+      "Enforce strong password policies and check candidates against breach lists",
+      "Rate-limit login and password-reset endpoints; lock out after N failed attempts",
+      "Require MFA, especially for admin and sensitive accounts",
+      "Rotate session IDs on login and invalidate them on logout",
+      "Set Secure, HttpOnly, and SameSite on every session cookie",
+      "Use cryptographically random, time-limited, single-use password-reset tokens"
+    ]
+  },
+  {
+    "number": "A09",
+    "name": "Security Logging & Monitoring Failures",
+    "description": "Accountability failure — you can't see attacks, so you can't stop or investigate them. The defender's blind spot. An attacker who breaches an app with no logging can dwell for months; the average breach goes undetected for hundreds of days precisely because auth, access, and admin events weren't recorded — or no one was watching them. Covers what you capture, how reliably you store it, whether it's alerted on in near-real-time, and whether the org has a response plan when alerts fire.",
+    "link": "https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/",
+    "commonPatterns": [
+      "Auth events not logged — logins, failed logins, MFA prompts, password resets",
+      "High-value actions untracked — privilege changes, data exports, payment approvals, admin actions",
+      "No alerting or SIEM aggregation — nothing flags suspicious patterns",
+      "Logs stored locally on the compromised host, writable by the app user, rotated out in days",
+      "Logging sensitive data — passwords, tokens, session IDs, or PII written into logs",
+      "No incident-response plan, owner, or escalation path even when alerts do fire"
+    ],
+    "howToPrevent": [
+      "Log auth, access-control, and admin events with full context (who, from where, what changed)",
+      "Ship logs centrally to an append-only store (SIEM)",
+      "Alert on patterns, not just single events — spikes in 401s, new admin grants, impossible-travel logins",
+      "Retain logs long enough to catch slow-moving intrusions",
+      "Scrub secrets and PII before they enter the log pipeline",
+      "Define and rehearse the incident-response runbook — detection without action is noise"
+    ]
+  }
+]

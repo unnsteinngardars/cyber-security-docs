@@ -1,0 +1,99 @@
+[
+  {
+    "name": "OSPF",
+    "fullName": "Open Shortest Path First",
+    "type": "Link-state",
+    "scope": "IGP",
+    "transport": "IP protocol 89",
+    "metric": "Cost (reference bandwidth ÷ interface bandwidth)",
+    "adminDistance": "110",
+    "convergence": "Sub-second to a few seconds",
+    "ipv6": "OSPFv3",
+    "summary": "Open-standard link-state IGP. Every router in an area floods LSAs describing its directly connected links, builds an identical Link-State Database (LSDB), and runs Dijkstra's SPF algorithm to compute the shortest path tree from itself to every other destination.",
+    "howItWorks": "Routers form adjacencies via Hello packets, exchange Database Description packets to sync the LSDB, flood LSAs whenever a link state changes, and re-run SPF to recompute the tree. Areas (especially area 0, the backbone) limit flooding scope and SPF cost so the protocol scales beyond a flat topology.",
+    "strengths": [
+      "Open standard — runs on every vendor",
+      "Fast convergence after a topology change",
+      "Scales via areas (backbone + non-backbone)",
+      "Classless, supports VLSM, equal-cost multipath"
+    ],
+    "weaknesses": [
+      "CPU and memory intensive on large flat areas",
+      "Area design matters — bad design hurts convergence",
+      "More configuration overhead than RIP/EIGRP"
+    ]
+  },
+  {
+    "name": "EIGRP",
+    "fullName": "Enhanced Interior Gateway Routing Protocol",
+    "type": "Advanced distance-vector",
+    "scope": "IGP",
+    "transport": "IP protocol 88",
+    "metric": "Composite — bandwidth + delay (load, reliability, MTU available)",
+    "adminDistance": "90 (internal) · 170 (external)",
+    "convergence": "Often sub-second",
+    "ipv6": "Native EIGRP for IPv6",
+    "summary": "Cisco-developed (open since 2013) advanced distance-vector IGP that uses DUAL — the Diffusing Update Algorithm — to guarantee loop-free paths. Maintains a successor (best path) and a feasible successor (pre-computed backup) per destination for instant failover.",
+    "howItWorks": "Hello packets establish neighbour relationships; the full topology table is exchanged once; then only partial, triggered updates flow on change (carried over the reliable Reliable Transport Protocol). On a link failure, the router switches to its feasible successor instantly or, if none exists, queries neighbours for a new loop-free path.",
+    "strengths": [
+      "Very fast convergence",
+      "Low overhead in steady state (no periodic full updates)",
+      "Simple to configure compared to OSPF",
+      "Supports unequal-cost load balancing (variance)"
+    ],
+    "weaknesses": [
+      "Adoption is largely Cisco-only despite being open",
+      "No area concept — large topologies need careful summarisation",
+      "Composite metric is opaque; troubleshooting requires understanding the formula"
+    ]
+  },
+  {
+    "name": "BGP",
+    "fullName": "Border Gateway Protocol",
+    "type": "Path-vector",
+    "scope": "EGP (also iBGP within an AS)",
+    "transport": "TCP/179",
+    "metric": "No single metric — attribute-based path selection (LOCAL_PREF, AS-PATH, MED, …)",
+    "adminDistance": "20 (eBGP) · 200 (iBGP)",
+    "convergence": "Seconds to minutes",
+    "ipv6": "Native via MP-BGP address families",
+    "summary": "The routing protocol of the public internet. Path-vector protocol exchanging routes between Autonomous Systems — each route carries the complete AS-path it has traversed, making loop detection trivial. Path selection is rich and policy-driven, not metric-driven.",
+    "howItWorks": "Establishes a TCP session (port 179) to each configured peer, exchanges its full table once (the global IPv4 table is ~950K routes), then sends incremental updates on change. Best-path selection runs the BGP decision process: LOCAL_PREF wins → shortest AS-PATH → lowest origin code → lowest MED → eBGP over iBGP → lowest IGP cost → lowest router ID. The winner is installed and re-advertised with this AS prepended.",
+    "strengths": [
+      "Built for internet scale (millions of prefixes)",
+      "Policy-rich — route filtering, communities, AS-PATH manipulation",
+      "Stable in steady state, well understood",
+      "Same protocol works for global routing and datacenter fabrics"
+    ],
+    "weaknesses": [
+      "Slow convergence relative to IGPs",
+      "Complex policy interactions can produce surprising path choices",
+      "Hijacks and route leaks impact global reachability — RPKI helps but isn't ubiquitous",
+      "iBGP requires full mesh or route reflectors"
+    ]
+  },
+  {
+    "name": "RIP",
+    "fullName": "Routing Information Protocol",
+    "type": "Distance-vector (classic)",
+    "scope": "IGP",
+    "transport": "UDP/520 (RIPv1/v2) · UDP/521 (RIPng)",
+    "metric": "Hop count (max 15; 16 = infinity)",
+    "adminDistance": "120",
+    "convergence": "Slow — minutes (periodic timer + count-to-infinity)",
+    "ipv6": "RIPng",
+    "summary": "Original distance-vector IGP. Routers broadcast or multicast their full routing table to neighbours every 30 seconds; neighbours increment each metric by one and pick the lowest. Simple, well-understood, and mostly of historical interest.",
+    "howItWorks": "Periodic updates every 30 seconds — each neighbour receives a list of (network, metric) pairs, adds 1 to each metric, and selects the lowest as best. Triggered updates speed up change propagation; split horizon and route poisoning mitigate (but don't fully eliminate) count-to-infinity loops.",
+    "strengths": [
+      "Trivial to configure and understand",
+      "Implemented everywhere — works in any lab",
+      "Negligible CPU cost"
+    ],
+    "weaknesses": [
+      "15-hop diameter limit prevents anything but small networks",
+      "Slow convergence; vulnerable to count-to-infinity",
+      "Only metric is hop count — ignores bandwidth and delay",
+      "RIPv1 has no authentication and no VLSM support"
+    ]
+  }
+]

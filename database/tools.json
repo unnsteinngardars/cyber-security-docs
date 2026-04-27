@@ -1,0 +1,160 @@
+[
+  {
+    "name": "Procmon",
+    "categories": ["Endpoint Forensics"],
+    "shortDescription": "Real-time tracker of file system, registry, process, thread, and network activity on Windows.",
+    "longDescription": "Process Monitor (Procmon) captures real-time file system, registry, process, thread, and network activity in one unified timeline — the go-to choice for watching what a suspect binary actually touches when it runs. Filter by process name, operation (CreateFile, RegSetValue), path, or result to keep noise manageable. Supports boot logging to capture activity before logon-time persistence kicks in, and saves captures as PML for sharing or scripted parsing. Part of the Sysinternals Suite — runs portable, no install.",
+    "homepage": "https://learn.microsoft.com/en-us/sysinternals/downloads/procmon"
+  },
+  {
+    "name": "Process Explorer",
+    "categories": ["Endpoint Forensics"],
+    "shortDescription": "Task Manager on steroids — shows the parent-child tree of processes, DLLs, and handles.",
+    "longDescription": "Process Explorer's tree view makes it trivial to spot a suspicious process launched by winword.exe or explorer.exe. Toggle the lower pane to see every handle or loaded module per process, right-click to submit hashes to VirusTotal in-line, and let the Verified Signers column highlight unsigned/unknown binaries at a glance. Combine with Procmon: identify the suspect PID here, then filter Procmon to it.",
+    "homepage": "https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer"
+  },
+  {
+    "name": "HxD",
+    "categories": ["Static Analysis", "Memory Forensics"],
+    "shortDescription": "Fast Windows hex editor for examining and patching files, disk sectors, and live process memory.",
+    "longDescription": "HxD is a fast Windows hex editor supporting large files, disk sectors, and live memory of running processes. Verify the true file type via magic bytes (4D 5A for PE, 50 4B 03 04 for ZIP/OOXML), patch bytes to neutralize a known-bad JMP or clear an AV-triggering string when defanging a sample, and use the data inspector to interpret bytes instantly as int / float / GUID / timestamp.",
+    "homepage": "https://mh-nexus.de/en/hxd/"
+  },
+  {
+    "name": "Wireshark",
+    "categories": ["Network Analysis"],
+    "shortDescription": "Reference-grade packet capture and protocol dissector for network traffic analysis.",
+    "longDescription": "Wireshark is essential for spotting C2 beacons, data exfiltration, DNS tunneling, and unauthorised lateral movement. Powerful display filters (http.request, dns, tcp.stream eq 4, ip.addr == 10.0.0.5) drill into traffic; Follow TCP/TLS Stream reconstructs the full conversation; Export Objects pulls payloads and binaries out of HTTP, SMB, and FTP captures. Pair with tcpdump on the wire, then analyse the .pcap here offline.",
+    "homepage": "https://www.wireshark.org/",
+    "detailSlug": "wireshark"
+  },
+  {
+    "name": "tcpdump",
+    "categories": ["Network Analysis"],
+    "shortDescription": "Lightweight CLI packet capture tool — the standard for grabbing traffic on Unix boxes.",
+    "longDescription": "tcpdump is the command-line packet capture utility built on libpcap, ubiquitous on Linux, BSD, and macOS. Capture to a rotating ring of pcap files (-w cap.pcap -C 100 -W 10), filter at the kernel using BPF syntax (host 10.0.0.5 and not port 22), and tail-print live decodes when SSH'd into a remote box where Wireshark isn't an option. The default first responder for any \"is that traffic actually reaching the host?\" question, and the natural pairing with Wireshark — capture with tcpdump on the production server, copy the .pcap, dissect at leisure in Wireshark.",
+    "homepage": "https://www.tcpdump.org/",
+    "detailSlug": "tcpdump"
+  },
+  {
+    "name": "CFF Explorer",
+    "categories": ["Static Analysis"],
+    "shortDescription": "PE editor for inspecting and modifying every header, section, import, and resource in a Windows binary.",
+    "longDescription": "CFF Explorer (NTCore) gives a structured view of every PE field and lets you modify them. Built-in MD5/SHA-1/SHA-256 hash calculator for IOC sharing and VirusTotal lookups, imports/exports view to spot suspicious API usage like VirtualAllocEx or CreateRemoteThread, signature checks to verify the signing chain, and PE rebuilder to fix headers after unpacking a dumped process.",
+    "homepage": "https://ntcore.com/?page_id=388"
+  },
+  {
+    "name": "PEStudio",
+    "categories": ["Static Analysis"],
+    "shortDescription": "Static analysis tool that surfaces suspicious indicators in a Windows binary without running it.",
+    "longDescription": "PEStudio loads a Windows binary without executing it and surfaces colour-coded risk indicators — blacklisted strings and APIs (anti-debug, injection, keylogging, crypto routines), automatic VirusTotal hash submission (no file upload), and an Indicators tab summarising everything suspicious in one ranked view. A great first-pass triage tool before opening a sample in a disassembler.",
+    "homepage": "https://www.winitor.com/"
+  },
+  {
+    "name": "FLOSS",
+    "categories": ["Static Analysis"],
+    "shortDescription": "FLARE Obfuscated String Solver — recovers strings malware builds at runtime or hides with simple ciphers.",
+    "longDescription": "Mandiant's FLOSS goes beyond strings.exe by recovering content malware builds on the stack at runtime or decodes with simple obfuscation. Extracts traditional ASCII + UTF-16 static strings, recovers stack strings constructed character-by-character, and uses emulator-assisted decoding for XOR/ROT/RC4 obfuscated content. Run it early — recovered URLs, mutexes, and registry keys often reveal the malware family instantly.",
+    "homepage": "https://github.com/mandiant/flare-floss"
+  },
+  {
+    "name": "Ghidra",
+    "categories": ["Reverse Engineering", "Static Analysis"],
+    "shortDescription": "Open-source software reverse engineering suite developed by the NSA.",
+    "longDescription": "Ghidra is a full-featured reverse engineering platform with a powerful disassembler, decompiler producing C-like pseudocode, and scripting via Java/Python. Supports a wide range of architectures and binary formats, has collaborative project workflows, and is free — making it the default choice for analysts who can't justify an IDA Pro licence.",
+    "homepage": "https://ghidra-sre.org/"
+  },
+  {
+    "name": "x64dbg",
+    "categories": ["Reverse Engineering"],
+    "shortDescription": "Open-source x64/x32 debugger for Windows for dynamic malware analysis and reverse engineering.",
+    "longDescription": "x64dbg is an actively-maintained open-source debugger with a familiar OllyDbg-style interface, full plugin ecosystem, scriptable conditional breakpoints, and built-in pattern scanning. Step through packed binaries, attach to live processes, and dump memory regions for further static analysis.",
+    "homepage": "https://x64dbg.com/"
+  },
+  {
+    "name": "Volatility",
+    "categories": ["Memory Forensics"],
+    "shortDescription": "Open-source memory forensics framework for incident response and malware analysis.",
+    "longDescription": "Volatility extracts digital artefacts from RAM dumps — running processes, network connections, loaded DLLs, registry hives, command history, encryption keys, and injected code. Supports Windows, Linux, and macOS images and ships with hundreds of plugins (pslist, malfind, netscan, cmdline, dlllist) that turn a raw memory image into investigative leads.",
+    "homepage": "https://www.volatilityfoundation.org/"
+  },
+  {
+    "name": "Autoruns",
+    "categories": ["Endpoint Forensics"],
+    "shortDescription": "Sysinternals tool that lists every program configured to run at boot or login on Windows.",
+    "longDescription": "Autoruns enumerates the full breadth of Windows persistence locations — Run keys, scheduled tasks, services, drivers, browser helper objects, codecs, image hijacks — far beyond the built-in MSConfig. Verifies digital signatures, hides Microsoft-signed entries, and integrates with VirusTotal to highlight suspicious autostart entries during malware triage.",
+    "homepage": "https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns"
+  },
+  {
+    "name": "Nmap",
+    "categories": ["Network Analysis", "OSINT"],
+    "shortDescription": "Network scanner for host discovery, port scanning, service detection, and OS fingerprinting.",
+    "longDescription": "Nmap is the de facto standard for network reconnaissance and security auditing. Beyond TCP/UDP port scans, the Nmap Scripting Engine (NSE) runs hundreds of scripts for vulnerability detection, banner grabbing, brute-forcing, and protocol-specific enumeration (smb-enum-shares, http-title, ssl-cert). Output formats (XML, grepable, normal) plug cleanly into automation pipelines.",
+    "homepage": "https://nmap.org/",
+    "detailSlug": "nmap"
+  },
+  {
+    "name": "Detect It Easy (DIE)",
+    "categories": ["Static Analysis"],
+    "shortDescription": "Cross-platform packer / compiler / protector identifier for executable files.",
+    "longDescription": "DIE detects compilers, packers (UPX, ASPack, Themida), protectors, and installers used to build a binary, with a scriptable signature engine and clean GUI. Useful first step before reverse engineering — knowing the packer tells you what to unpack and which tools to reach for next.",
+    "homepage": "https://github.com/horsicq/Detect-It-Easy"
+  },
+  {
+    "name": "Shodan",
+    "categories": ["OSINT"],
+    "shortDescription": "Search engine for internet-connected devices — banners, services, and exposed infrastructure.",
+    "longDescription": "Shodan continuously scans the public IPv4/IPv6 space and indexes service banners, TLS certificates, HTTP responses, and device metadata. Search by product, version, port, country, organisation, or CVE to find exposed RDP, unauthenticated databases, ICS/SCADA endpoints, or every host running a vulnerable nginx build. Supports filters (org:, port:, vuln:, ssl.cert.subject.cn:), historical data, and an API for automation. Indispensable for attack-surface discovery, threat hunting, and validating that something internal didn't accidentally end up on the internet.",
+    "homepage": "https://www.shodan.io/"
+  },
+  {
+    "name": "Censys",
+    "categories": ["OSINT"],
+    "shortDescription": "Internet-wide asset intelligence platform — hosts, certificates, and services with deep query syntax.",
+    "longDescription": "Censys runs daily scans of the IPv4 space and the Certificate Transparency logs, exposing rich structured data on every host, service, and X.509 certificate it sees. The query language is SQL-like and lets you pivot from a certificate's SAN to every host using it, hunt for typo-squatted domains via cert issuance, or enumerate an organisation's entire externally-reachable footprint. Stronger than Shodan for certificate-driven investigations and infrastructure pivoting.",
+    "homepage": "https://search.censys.io/"
+  },
+  {
+    "name": "VirusTotal",
+    "categories": ["Threat Intel", "Static Analysis"],
+    "shortDescription": "Aggregates 70+ AV engines, sandboxes, and threat-intel feeds for files, URLs, domains, and IPs.",
+    "longDescription": "VirusTotal scans submitted samples against 70+ antivirus engines and sandboxes, then exposes structured behavioural data — dropped files, network calls, registry writes, mutexes, MITRE ATT&CK mapping. Beyond the verdict, it's a pivot graph: from a file hash to every URL serving it, every domain it contacts, every IP it resolves to, and every related sample. VT Intelligence (paid) adds YARA-based retrohunts across the corpus. Default first stop for any IOC.",
+    "homepage": "https://www.virustotal.com/"
+  },
+  {
+    "name": "Have I Been Pwned",
+    "categories": ["OSINT"],
+    "shortDescription": "Searchable index of email addresses, usernames, and passwords exposed in known data breaches.",
+    "longDescription": "Troy Hunt's HIBP aggregates billions of credentials from public breaches, dumps, and combolists. Look up an email to see which breaches it appears in, or check a password (k-anonymity API — only the SHA-1 prefix is sent) against the Pwned Passwords corpus. Used by password managers (1Password, Bitwarden) and many sign-up flows to block known-compromised credentials. The free domain search lets defenders enumerate breach exposure across an entire org's mail domain.",
+    "homepage": "https://haveibeenpwned.com/"
+  },
+  {
+    "name": "CVE",
+    "categories": ["Vulnerability Intel"],
+    "shortDescription": "The canonical public catalogue of known software vulnerabilities, each with a unique CVE-YYYY-NNNN identifier.",
+    "longDescription": "The CVE Program (run by MITRE, sponsored by CISA) assigns a stable, globally-unique identifier to every publicly disclosed vulnerability so vendors, researchers, and defenders all reference the same flaw. Each record links to the affected products, references, and downstream enrichment in NVD (CVSS scores, CWE category, CPE list). The starting point for patch triage, threat-intel correlation, and writing detections — every other vuln tool keys off the CVE ID.",
+    "homepage": "https://www.cve.org/"
+  },
+  {
+    "name": "Exploit Database",
+    "categories": ["Vulnerability Intel"],
+    "shortDescription": "Public archive of exploits, proof-of-concepts, and shellcode mapped to CVEs.",
+    "longDescription": "Maintained by OffSec (the Kali Linux team), Exploit-DB is the largest curated archive of working exploits, PoCs, and shellcode — searchable by CVE, software, platform, or author. Each entry includes the original advisory, vulnerable version, and downloadable code. The bundled `searchsploit` CLI ships with Kali and lets you grep the entire database offline, then drop straight into a payload for validation in a lab. Use it to assess real-world exploitability of a CVE, not just its CVSS score.",
+    "homepage": "https://www.exploit-db.com/"
+  },
+  {
+    "name": "John the Ripper",
+    "categories": ["Password Cracking"],
+    "shortDescription": "Veteran offline password cracker — recovers passwords from hashes via dictionary, rule, and brute-force attacks.",
+    "longDescription": "John the Ripper (the actively-maintained community fork is `john-jumbo`) is the classic offline password cracker. Feed it a file of hashes — UNIX shadow, Windows NTLM, ZIP/RAR/PDF/Office archives, KeePass, SSH keys, and dozens more via the `*2john` extractors — and it tries to recover the plaintext using wordlists, mangling rules, mask attacks, or pure brute force. Auto-detects most hash formats, runs incremental Markov-model attacks, and resumes interrupted sessions. Pair it with hashcat for GPU-heavy work; reach for John when the format is exotic, when you only have CPU, or when you want its rule engine.",
+    "homepage": "https://www.openwall.com/john/",
+    "detailSlug": "john-the-ripper"
+  },
+  {
+    "name": "Netvaktin",
+    "categories": ["Network Analysis"],
+    "shortDescription": "Live dashboard of Iceland's internet traffic — domestic and international link utilisation in near real time.",
+    "longDescription": "Netvaktin (run by RHnet / Síminn) visualises aggregate internet usage across Iceland's main backbone links, including the submarine cables that connect the country to the rest of the world. Useful for spotting macro-level anomalies such as outages on FARICE / DANICE / IRIS, sudden traffic dips that correlate with a national incident, or unusual surges that may indicate large-scale events (DDoS, popular streaming launches, software update storms). A handy situational-awareness reference for Icelandic SOC teams, NOCs, and journalists tracking connectivity health.",
+    "homepage": "https://netvaktin.is/"
+  }
+]

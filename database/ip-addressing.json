@@ -1,0 +1,69 @@
+{
+  "privateRanges": [
+    {
+      "range": "10.0.0.0/8",
+      "addresses": "10.0.0.0 – 10.255.255.255",
+      "count": "16,777,216",
+      "use": "Single Class A block — large enterprise networks"
+    },
+    {
+      "range": "172.16.0.0/12",
+      "addresses": "172.16.0.0 – 172.31.255.255",
+      "count": "1,048,576",
+      "use": "16 contiguous Class B blocks — mid-size networks"
+    },
+    {
+      "range": "192.168.0.0/16",
+      "addresses": "192.168.0.0 – 192.168.255.255",
+      "count": "65,536",
+      "use": "256 Class C blocks — home and small office (RFC 1918)"
+    }
+  ],
+  "specialRanges": [
+    {
+      "range": "0.0.0.0/8",
+      "name": "This network",
+      "purpose": "Refers to the local network; 0.0.0.0 also means 'any address' when binding sockets or as a default route."
+    },
+    {
+      "range": "127.0.0.0/8",
+      "name": "Loopback",
+      "purpose": "Local host — 127.0.0.1 always points back at this machine. Packets never leave the kernel."
+    },
+    {
+      "range": "169.254.0.0/16",
+      "name": "Link-local (APIPA)",
+      "purpose": "Auto-assigned when DHCP fails. Seeing this on a host usually means DHCP is broken."
+    },
+    {
+      "range": "224.0.0.0/4",
+      "name": "Multicast",
+      "purpose": "Class D — one-to-many delivery (OSPF 224.0.0.5, mDNS 224.0.0.251, IPTV streams)."
+    },
+    {
+      "range": "240.0.0.0/4",
+      "name": "Reserved",
+      "purpose": "Class E — reserved for future / experimental use; not routable on the public internet."
+    },
+    {
+      "range": "255.255.255.255",
+      "name": "Broadcast",
+      "purpose": "Limited broadcast — sent to every host on the local segment, never forwarded by routers."
+    }
+  ],
+  "cidrTable": [
+    { "prefix": "/8",  "mask": "255.0.0.0",       "wildcard": "0.255.255.255", "totalHosts": "16,777,216", "usableHosts": "16,777,214" },
+    { "prefix": "/16", "mask": "255.255.0.0",     "wildcard": "0.0.255.255",   "totalHosts": "65,536",     "usableHosts": "65,534" },
+    { "prefix": "/20", "mask": "255.255.240.0",   "wildcard": "0.0.15.255",    "totalHosts": "4,096",      "usableHosts": "4,094" },
+    { "prefix": "/22", "mask": "255.255.252.0",   "wildcard": "0.0.3.255",     "totalHosts": "1,024",      "usableHosts": "1,022" },
+    { "prefix": "/24", "mask": "255.255.255.0",   "wildcard": "0.0.0.255",     "totalHosts": "256",        "usableHosts": "254" },
+    { "prefix": "/25", "mask": "255.255.255.128", "wildcard": "0.0.0.127",     "totalHosts": "128",        "usableHosts": "126" },
+    { "prefix": "/26", "mask": "255.255.255.192", "wildcard": "0.0.0.63",      "totalHosts": "64",         "usableHosts": "62" },
+    { "prefix": "/27", "mask": "255.255.255.224", "wildcard": "0.0.0.31",      "totalHosts": "32",         "usableHosts": "30" },
+    { "prefix": "/28", "mask": "255.255.255.240", "wildcard": "0.0.0.15",      "totalHosts": "16",         "usableHosts": "14" },
+    { "prefix": "/29", "mask": "255.255.255.248", "wildcard": "0.0.0.7",       "totalHosts": "8",          "usableHosts": "6" },
+    { "prefix": "/30", "mask": "255.255.255.252", "wildcard": "0.0.0.3",       "totalHosts": "4",          "usableHosts": "2" },
+    { "prefix": "/31", "mask": "255.255.255.254", "wildcard": "0.0.0.1",       "totalHosts": "2",          "usableHosts": "2 (RFC 3021 P2P)" },
+    { "prefix": "/32", "mask": "255.255.255.255", "wildcard": "0.0.0.0",       "totalHosts": "1",          "usableHosts": "1 (host route)" }
+  ]
+}

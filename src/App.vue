@@ -1,8 +1,31 @@
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, defineAsyncComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Sidebar from "./components/Sidebar.vue";
 import PageViewer from "./components/PageViewer.vue";
+
+const componentRegistry = {
+  Tools: defineAsyncComponent(() => import("./pages/Tools.vue")),
+  OwaspTop10: defineAsyncComponent(() => import("./pages/OwaspTop10.vue")),
+  OsiModel: defineAsyncComponent(() => import("./pages/OsiModel.vue")),
+  TcpIpModel: defineAsyncComponent(() => import("./pages/TcpIpModel.vue")),
+  IpAddressesAndSubnets: defineAsyncComponent(() =>
+    import("./pages/IpAddressesAndSubnets.vue")
+  ),
+  NetworkProtocols: defineAsyncComponent(() =>
+    import("./pages/NetworkProtocols.vue")
+  ),
+  Routing: defineAsyncComponent(() => import("./pages/Routing.vue")),
+  Nat: defineAsyncComponent(() => import("./pages/Nat.vue")),
+  Wireshark: defineAsyncComponent(() => import("./pages/Wireshark.vue")),
+  Tcpdump: defineAsyncComponent(() => import("./pages/Tcpdump.vue")),
+  Nmap: defineAsyncComponent(() => import("./pages/Nmap.vue")),
+  JohnTheRipper: defineAsyncComponent(() =>
+    import("./pages/JohnTheRipper.vue")
+  ),
+  Cryptography: defineAsyncComponent(() => import("./pages/Cryptography.vue")),
+  Hashing: defineAsyncComponent(() => import("./pages/Hashing.vue")),
+};
 
 const route = useRoute();
 const router = useRouter();
@@ -14,20 +37,24 @@ const sidebarCollapsed = ref(false);
 function slugify(s) {
   return s
     .toLowerCase()
-    .replace(/\.html?$/i, "")
+    .replace(/\.(html?|md|markdown)$/i, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
 function annotate(nodes, flat) {
   return nodes.map((n) => {
-    if (Array.isArray(n.children)) {
-      return { ...n, children: annotate(n.children, flat) };
+    const hasRoute = !!(n.component || n.file);
+    const hasChildren = Array.isArray(n.children);
+    const annotated = { ...n };
+    if (hasRoute) {
+      annotated.slug = n.slug || slugify(n.title || n.file);
     }
-    const slug = n.slug || slugify(n.title || n.file);
-    const leaf = { ...n, slug };
-    flat.push(leaf);
-    return leaf;
+    if (hasChildren) {
+      annotated.children = annotate(n.children, flat);
+    }
+    if (hasRoute) flat.push(annotated);
+    return annotated;
   });
 }
 
@@ -38,6 +65,10 @@ onMounted(async () => {
     const data = await res.json();
     const flat = [];
     tree.value = annotate(data.tree || [], flat);
+    for (const h of data.hidden || []) {
+      const slug = h.slug || slugify(h.title || h.file);
+      flat.push({ ...h, slug });
+    }
     pages.value = flat;
     if (!route.params.slug && pages.value.length) {
       router.replace({ name: "page", params: { slug: pages.value[0].slug } });
@@ -50,6 +81,11 @@ onMounted(async () => {
 const currentPage = computed(() => {
   const slug = route.params.slug;
   return pages.value.find((p) => p.slug === slug) || null;
+});
+
+const currentComponent = computed(() => {
+  const name = currentPage.value?.component;
+  return name ? componentRegistry[name] || null : null;
 });
 
 watch(
@@ -72,7 +108,11 @@ watch(
       @toggle="sidebarCollapsed = !sidebarCollapsed"
     />
     <main class="content">
-      <PageViewer v-if="currentPage" :file="currentPage.file" />
+      <component v-if="currentComponent" :is="currentComponent" />
+      <PageViewer
+        v-else-if="currentPage && currentPage.file"
+        :file="currentPage.file"
+      />
       <div v-else class="empty-state">
         <p>Select a page from the sidebar.</p>
       </div>
