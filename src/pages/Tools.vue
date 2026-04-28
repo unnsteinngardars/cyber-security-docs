@@ -5,6 +5,7 @@ import toolsData from "../../database/tools.json";
 const tools = ref(toolsData);
 const query = ref("");
 const selectedCategory = ref(null);
+const detailOnly = ref(false);
 
 const categories = computed(() => {
   const counts = new Map();
@@ -18,12 +19,17 @@ const categories = computed(() => {
     .map(([name, count]) => ({ name, count }));
 });
 
+const detailCount = computed(
+  () => tools.value.filter((t) => t.detailSlug).length
+);
+
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase();
   const cat = selectedCategory.value;
   return tools.value.filter((t) => {
     const cats = t.categories || [];
     if (cat && !cats.includes(cat)) return false;
+    if (detailOnly.value && !t.detailSlug) return false;
     if (!q) return true;
     return (
       t.name.toLowerCase().includes(q) ||

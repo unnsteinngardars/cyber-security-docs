@@ -25,6 +25,9 @@ const componentRegistry = {
   ),
   Metasploit: defineAsyncComponent(() => import("./pages/Metasploit.vue")),
   BurpSuite: defineAsyncComponent(() => import("./pages/BurpSuite.vue")),
+  Hydra: defineAsyncComponent(() => import("./pages/Hydra.vue")),
+  Gobuster: defineAsyncComponent(() => import("./pages/Gobuster.vue")),
+  Sqlmap: defineAsyncComponent(() => import("./pages/Sqlmap.vue")),
   Cryptography: defineAsyncComponent(() => import("./pages/Cryptography.vue")),
   Hashing: defineAsyncComponent(() => import("./pages/Hashing.vue")),
 };
@@ -42,6 +45,17 @@ function slugify(s) {
     .replace(/\.(html?|md|markdown)$/i, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function filterForEnv(nodes) {
+  if (!import.meta.env.PROD) return nodes;
+  return nodes
+    .filter((n) => !n.hideInProd)
+    .map((n) =>
+      Array.isArray(n.children)
+        ? { ...n, children: filterForEnv(n.children) }
+        : n
+    );
 }
 
 function annotate(nodes, flat) {
@@ -66,7 +80,8 @@ onMounted(async () => {
     if (!res.ok) throw new Error(`manifest.json: ${res.status}`);
     const data = await res.json();
     const flat = [];
-    tree.value = annotate(data.tree || [], flat);
+    const filtered = filterForEnv(data.tree || []);
+    tree.value = annotate(filtered, flat);
     for (const h of data.hidden || []) {
       const slug = h.slug || slugify(h.title || h.file);
       flat.push({ ...h, slug });

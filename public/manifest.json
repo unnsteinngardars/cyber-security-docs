@@ -9,7 +9,10 @@
         { "title": "Nmap", "component": "Nmap" },
         { "title": "John the Ripper", "component": "JohnTheRipper" },
         { "title": "Metasploit", "component": "Metasploit" },
-        { "title": "Burp Suite", "component": "BurpSuite" }
+        { "title": "Burp Suite", "component": "BurpSuite" },
+        { "title": "Hydra", "component": "Hydra" },
+        { "title": "Gobuster", "component": "Gobuster" },
+        { "title": "SQLMap", "component": "Sqlmap" }
       ]
     },
     {
@@ -39,6 +42,7 @@
     },
     {
       "title": "Deprecated",
+      "hideInProd": true,
       "children": [
         {
           "title": "Intro",

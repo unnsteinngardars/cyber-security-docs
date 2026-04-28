@@ -159,6 +159,30 @@
     "detailSlug": "metasploit"
   },
   {
+    "name": "Hydra",
+    "categories": ["Password Cracking"],
+    "shortDescription": "Fast online (network) login brute-forcer supporting 50+ protocols.",
+    "longDescription": "Hydra (THC-Hydra) is the go-to tool for online credential brute-forcing — testing username/password combinations against a live service rather than offline hashes. Supports SSH, FTP, RDP, SMB, HTTP basic / form / digest, MySQL, PostgreSQL, LDAP, VNC, IMAP, POP3, and dozens more. Multi-threaded for speed (`-t`), with built-in support for credential lists (`-L` / `-P`), credential pairs (`-C`), and stop-on-first-success (`-f`). Treat with care: most production services lock accounts or trip alerts after a handful of failures, and online brute force is loud by definition. Pair with reconnaissance — once you know the auth surface from Nmap, Hydra is what you point at it.",
+    "homepage": "https://github.com/vanhauser-thc/thc-hydra",
+    "detailSlug": "hydra"
+  },
+  {
+    "name": "Gobuster",
+    "categories": ["Web Application Security", "OSINT"],
+    "shortDescription": "Fast Go-based brute-forcer for directories, vhosts, DNS subdomains, and S3 buckets.",
+    "longDescription": "Gobuster is a directory / DNS / vhost brute-forcing tool written in Go — single static binary, very fast, and the de facto choice for content discovery during web pentests and CTFs. Modes: `dir` (HTTP path enumeration with extensions, status filtering, and wildcard handling), `dns` (subdomain enumeration via wordlist), `vhost` (Host-header brute force on a single IP), `fuzz` (generic placeholder substitution), and `s3` / `gcs` (cloud bucket discovery). Extensive flags for status-code filtering, response-size matching, wildcard detection, and concurrency tuning. Pair with `seclists` wordlists (`raft-*-directories.txt`, `subdomains-top1million-*.txt`) for sensible defaults.",
+    "homepage": "https://github.com/OJ/gobuster",
+    "detailSlug": "gobuster"
+  },
+  {
+    "name": "SQLMap",
+    "categories": ["Web Application Security", "Exploitation"],
+    "shortDescription": "Automated SQL injection detection and database takeover tool.",
+    "longDescription": "SQLMap automates the entire SQL-injection lifecycle — detection, exploitation, and post-exploitation — across MySQL, PostgreSQL, MSSQL, Oracle, SQLite, and a dozen more backends. Detects boolean-based, error-based, time-based, UNION, and stacked-query injection patterns; once a vector lands, it can enumerate databases, dump tables, read/write the filesystem (`--file-read`, `--file-write`), and on supported configurations pop a SQL shell, an OS shell, or a Meterpreter session. Accepts raw HTTP requests via `-r request.txt` (export from Burp) so authenticated/CSRF-bound endpoints are easy to test. Tamper scripts work around naive WAFs. Powerful and noisy — only point it at apps you have written authorisation to test.",
+    "homepage": "https://sqlmap.org/",
+    "detailSlug": "sqlmap"
+  },
+  {
     "name": "Burp Suite",
     "categories": ["Web Application Security"],
     "shortDescription": "Intercepting HTTP/S proxy and web-app testing platform — the de facto tool for manual web pentesting.",
