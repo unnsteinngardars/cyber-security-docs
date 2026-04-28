@@ -215,6 +215,131 @@ const limitations = data.limitations;
         </p>
       </section>
 
+      <!-- Mock walkthrough -->
+      <section class="section">
+        <h2>Mock walkthrough — cracking a captured shadow file</h2>
+        <p class="prose">
+          A CTF-style run against <code>linux.shadow</code> — five
+          accounts, mixed sha512crypt and yescrypt. The goal is to walk
+          the cheap-to-expensive ladder so the easy wins land before any
+          long brute-force burns CPU.
+        </p>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">1</span>
+            <h3>Stage the hashes &amp; sanity-check the format</h3>
+          </header>
+          <p class="walk__desc">
+            <code>unshadow</code> joins <code>passwd</code> and
+            <code>shadow</code> so John has the username next to each hash
+            (which Single mode needs). <code>--list=formats</code>
+            confirms the build supports every algorithm in the file.
+          </p>
+          <pre class="walk__cmd"><code>unshadow ctf/passwd ctf/shadow > hashes.txt
+head -1 hashes.txt
+# alice:$y$j9T$E2…:1000:1000::/home/alice:/bin/bash
+
+john --list=formats | grep -E 'crypt|yescrypt'
+# Confirms sha512crypt and yescrypt available</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>unshadow</code>, MCF prefix recognition, format auto-detect.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">2</span>
+            <h3>Single mode — the cheapest first pass</h3>
+          </header>
+          <p class="walk__desc">
+            Single uses GECOS / username fields as candidates with light
+            rules. Often catches passwords like <code>alice123</code>,
+            <code>Password1</code>, the company name — for free. Always
+            run it first.
+          </p>
+          <pre class="walk__cmd"><code>john --single hashes.txt
+# Loaded 5 password hashes with 5 different salts
+# alice123    (alice)
+# Welcome1!   (helpdesk)
+
+john --show hashes.txt
+# 2 password hashes cracked, 3 left</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>--single</code>, <code>--show</code>, the <code>~/.john/john.pot</code> file.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">3</span>
+            <h3>Wordlist + default rules</h3>
+          </header>
+          <p class="walk__desc">
+            The bread-and-butter mode. <code>rockyou.txt</code> + default
+            mangling rules covers most consumer-grade passwords in
+            minutes. <code>--session</code> names the run so it can pause
+            and resume.
+          </p>
+          <pre class="walk__cmd"><code>john --session=ctf-rocky \
+     --wordlist=/usr/share/wordlists/rockyou.txt \
+     --rules \
+     hashes.txt
+# Press space for live progress; Ctrl-C to pause.
+
+john --restore=ctf-rocky      # later, picks up exactly where it stopped</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>--wordlist</code>, <code>--rules</code>, <code>--session</code> / <code>--restore</code>.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">4</span>
+            <h3>Bigger gun — Jumbo rules + parallel cores</h3>
+          </header>
+          <p class="walk__desc">
+            On the jumbo build, <code>--rules=Jumbo</code> applies
+            thousands of mangling rules instead of the small default set.
+            <code>--fork=4</code> spreads the work across CPU cores —
+            near-linear speedup on multi-core boxes.
+          </p>
+          <pre class="walk__cmd"><code>john --session=ctf-jumbo \
+     --wordlist=rockyou.txt \
+     --rules=Jumbo \
+     --fork=4 \
+     hashes.txt</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> jumbo rule sets, <code>--fork</code> CPU parallelism.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">5</span>
+            <h3>Mask attack with a known policy</h3>
+          </header>
+          <p class="walk__desc">
+            One hash is still uncracked but a leaked policy doc says
+            passwords are <em>one upper, five lower, two digits</em>. A
+            mask attack enumerates exactly that shape — far cheaper than
+            incremental brute force.
+          </p>
+          <pre class="walk__cmd"><code>john --mask='?u?l?l?l?l?l?d?d' --format=yescrypt hashes.txt
+# Charsets: ?l lower  ?u upper  ?d digit  ?s symbol  ?a all printable</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>--mask</code>, charsets, <code>--format=</code> override.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">6</span>
+            <h3>Hand the stragglers to hashcat</h3>
+          </header>
+          <p class="walk__desc">
+            The last hash needs raw GPU horsepower. Filter the file to
+            unrecovered hashes (<code>--show=left</code>) and feed them
+            into hashcat with the matching mode number.
+          </p>
+          <pre class="walk__cmd"><code>john --show=left hashes.txt > unrecovered.txt
+# Then on a GPU box:
+hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
+# -m 1800 = sha512crypt; --identify can recommend the right mode.</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>--show=left</code>, John ↔ hashcat handoff, mode numbers.</p>
+        </article>
+      </section>
+
       <!-- Tips -->
       <section class="section">
         <h2>Tips &amp; gotchas</h2>
@@ -549,6 +674,104 @@ const limitations = data.limitations;
   font-size: 11.5px;
   line-height: 1.6;
   color: var(--tx);
+}
+
+/* Walkthrough */
+.walk {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-left: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.walk__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+.walk__num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.walk__head h3 {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.walk__desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--tx);
+}
+.walk__desc code {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  color: #9cdcfe;
+}
+.walk__desc strong {
+  color: #fff;
+}
+.walk__desc em {
+  color: var(--accent);
+  font-style: normal;
+}
+.walk__cmd {
+  margin: 0;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.55;
+}
+.walk__feat {
+  margin: 0;
+  font-size: 11px;
+  color: var(--dm);
+  line-height: 1.5;
+}
+.walk__feat strong {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+.walk__feat code {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10.5px;
+  color: var(--accent);
+  margin: 0 1px;
 }
 
 /* Bullet lists */

@@ -5,4 +5,5 @@ export default defineConfig({
   plugins: [vue()],
   server: { port: 7000 },
   preview: { port: 7000 },
+  base: process.env.NODE_ENV === "production" ? '/cyber-security-docs/' : "/"
 });

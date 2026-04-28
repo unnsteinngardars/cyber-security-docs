@@ -23,6 +23,8 @@ const componentRegistry = {
   JohnTheRipper: defineAsyncComponent(() =>
     import("./pages/JohnTheRipper.vue")
   ),
+  Metasploit: defineAsyncComponent(() => import("./pages/Metasploit.vue")),
+  BurpSuite: defineAsyncComponent(() => import("./pages/BurpSuite.vue")),
   Cryptography: defineAsyncComponent(() => import("./pages/Cryptography.vue")),
   Hashing: defineAsyncComponent(() => import("./pages/Hashing.vue")),
 };

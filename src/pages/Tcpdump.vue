@@ -160,6 +160,125 @@ const limitations = data.limitations;
         </p>
       </section>
 
+      <!-- Mock walkthrough -->
+      <section class="section">
+        <h2>Mock walkthrough — investigating intermittent app→DB failures</h2>
+        <p class="prose">
+          The app team reports occasional 5xx errors talking to the
+          PostgreSQL host at <code>10.0.5.20:5432</code>. We're SSH'd
+          into the app server with no GUI, just a terminal — exactly the
+          situation tcpdump exists for.
+        </p>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">1</span>
+            <h3>Pick the right interface</h3>
+          </header>
+          <p class="walk__desc">
+            <code>-D</code> lists every interface tcpdump can capture
+            from. Pick the one with the route to the DB — usually the
+            primary NIC, but not always (overlay networks, bonds).
+          </p>
+          <pre class="walk__cmd"><code>sudo tcpdump -D
+# 1.eth0 [Up, Running]
+# 2.lo   [Up, Running, Loopback]
+# 3.any  [Up, Running, Pseudo-device]
+
+ip route get 10.0.5.20    # confirms eth0 is the egress</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-D</code> list interfaces, choosing the right NIC.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">2</span>
+            <h3>Tight initial filter, ring buffer to disk</h3>
+          </header>
+          <p class="walk__desc">
+            Filter at the kernel with BPF so we only spend cycles on
+            traffic we care about. Rotate to a ring of small pcap files
+            so a long capture doesn't fill the disk.
+          </p>
+          <pre class="walk__cmd"><code>sudo tcpdump -i eth0 -nn \
+  -w /tmp/db.pcap -C 100 -W 10 \
+  'host 10.0.5.20 and tcp port 5432'
+# -C 100  rotate at 100 MB
+# -W 10   keep 10 files (ring; oldest dropped)</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> kernel-side BPF, <code>-w</code>, <code>-C</code>/<code>-W</code> ring buffer.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">3</span>
+            <h3>Live tail with verbosity to confirm direction</h3>
+          </header>
+          <p class="walk__desc">
+            In a second window, watch the live decode. Stack
+            <code>-v</code> for more detail; <code>-tttt</code> prints
+            human-readable absolute timestamps that line up with the
+            app's log lines.
+          </p>
+          <pre class="walk__cmd"><code>sudo tcpdump -i eth0 -nn -v -tttt \
+  'host 10.0.5.20 and tcp port 5432' | head -50
+# 2026-04-28 10:14:22.341  IP 10.0.4.11.51234 > 10.0.5.20.5432: Flags [S], ...</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-v</code> verbosity stacking, <code>-tttt</code> timestamps, live decoding.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">4</span>
+            <h3>Hunt for retransmissions &amp; resets</h3>
+          </header>
+          <p class="walk__desc">
+            5xx errors with intermittent timing usually mean
+            retransmissions or RSTs. <code>tcp[tcpflags]</code> byte
+            offsets pull out specific flag combinations from the captured
+            file without re-capturing.
+          </p>
+          <pre class="walk__cmd"><code># RSTs (connection forcibly closed):
+sudo tcpdump -nn -r /tmp/db.pcap 'tcp[tcpflags] & tcp-rst != 0'
+
+# SYN retransmits — duplicate SYNs to the same 4-tuple within seconds:
+sudo tcpdump -nn -tttt -r /tmp/db.pcap 'tcp[tcpflags] == tcp-syn'</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> reading pcaps with <code>-r</code>, BPF byte-offset flag matching.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">5</span>
+            <h3>Slice the relevant minute for handoff</h3>
+          </header>
+          <p class="walk__desc">
+            Found a 30-second window where errors clustered. Use
+            <code>editcap</code> (ships with Wireshark) to carve a small
+            pcap for analysts to open offline — much faster to share than
+            the full ring.
+          </p>
+          <pre class="walk__cmd"><code>editcap -A "2026-04-28 10:14:00" -B "2026-04-28 10:15:00" \
+        /tmp/db.pcap /tmp/incident-window.pcap
+
+ls -lh /tmp/incident-window.pcap   # KBs, not GBs</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> pcap interchangeability, <code>editcap</code>, evidence handoff.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">6</span>
+            <h3>Pipe live to Wireshark over SSH</h3>
+          </header>
+          <p class="walk__desc">
+            For real-time analysis from a workstation, capture remotely
+            and pipe to Wireshark locally. <code>-U</code> flushes per
+            packet (no buffering) and <code>not port 22</code> excludes
+            the SSH tunnel so the stream doesn't loop.
+          </p>
+          <pre class="walk__cmd"><code>ssh appserver "sudo tcpdump -i eth0 -U -w - \
+  'host 10.0.5.20 and tcp port 5432 and not port 22'" \
+  | wireshark -k -i -</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-U</code> unbuffered, <code>-w -</code> stdout, Wireshark stdin pipe.</p>
+        </article>
+      </section>
+
       <!-- Tips -->
       <section class="section">
         <h2>Tips &amp; gotchas</h2>
@@ -413,6 +532,104 @@ const limitations = data.limitations;
   color: var(--accent);
   overflow-x: auto;
   white-space: pre;
+}
+
+/* Walkthrough */
+.walk {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-left: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.walk__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+.walk__num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.walk__head h3 {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.walk__desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--tx);
+}
+.walk__desc code {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  color: #9cdcfe;
+}
+.walk__desc strong {
+  color: #fff;
+}
+.walk__desc em {
+  color: var(--accent);
+  font-style: normal;
+}
+.walk__cmd {
+  margin: 0;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.55;
+}
+.walk__feat {
+  margin: 0;
+  font-size: 11px;
+  color: var(--dm);
+  line-height: 1.5;
+}
+.walk__feat strong {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+.walk__feat code {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10.5px;
+  color: var(--accent);
+  margin: 0 1px;
 }
 
 /* Bullet lists */

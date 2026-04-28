@@ -151,6 +151,29 @@
     "detailSlug": "john-the-ripper"
   },
   {
+    "name": "Metasploit",
+    "categories": ["Exploitation", "Vulnerability Intel"],
+    "shortDescription": "Modular exploitation framework — discover, exploit, and post-exploit known vulnerabilities from a single console.",
+    "longDescription": "Metasploit Framework (msfconsole) bundles thousands of exploits, payloads, encoders, auxiliary scanners, and post-exploitation modules behind a uniform interface. Pick a module (`use exploit/windows/smb/ms17_010_eternalblue`), set options (RHOSTS, LHOST, payload), and run — the framework handles delivery, payload generation, and session management. Meterpreter sessions provide an in-memory C2 with file transfer, pivoting, screenshot, keylogging, and token impersonation built in. `msfvenom` generates standalone payloads in any common format. Maintained by Rapid7, ships with Kali, and is the de facto teaching framework for offensive security — the same modules that drop in CTFs are what defenders should be detecting in production.",
+    "homepage": "https://www.metasploit.com/",
+    "detailSlug": "metasploit"
+  },
+  {
+    "name": "Burp Suite",
+    "categories": ["Web Application Security"],
+    "shortDescription": "Intercepting HTTP/S proxy and web-app testing platform — the de facto tool for manual web pentesting.",
+    "longDescription": "Burp Suite (PortSwigger) sits as a man-in-the-middle proxy between your browser and the target web app, letting you intercept, inspect, and modify every request and response. The Proxy is the entry point; from there you push traffic into Repeater (replay and tweak single requests), Intruder (parameterised fuzzing — sniper, pitchfork, cluster bomb), Sequencer (token randomness analysis), Decoder, and Comparer. The Community Edition is free and covers manual testing; Professional adds the active scanner, full-featured Intruder, the BApp Store of community extensions, and project save. The default workbench for OWASP Top 10 hunting, authentication-flow analysis, and API testing.",
+    "homepage": "https://portswigger.net/burp",
+    "detailSlug": "burp-suite"
+  },
+  {
+    "name": "Ransomware.live",
+    "categories": ["Threat Intel", "OSINT"],
+    "shortDescription": "Live tracker of ransomware gangs, their leak sites, claimed victims, and negotiation chats.",
+    "longDescription": "Ransomware.live aggregates and monitors the dark-web leak sites of active ransomware groups in near real time, surfacing newly claimed victims, group profiles, posted samples, and negotiation transcripts in a clean searchable UI. Useful for threat analysts tracking which gangs are active, defenders watching for their own org / sector / country in the feeds, and journalists covering incidents. Provides RSS feeds, a JSON API, and historical data going back years — a faster pivot than scraping each leak site by hand. Pair with VirusTotal and ID Ransomware to go from a victim post to the family and IOCs.",
+    "homepage": "https://www.ransomware.live/"
+  },
+  {
     "name": "Netvaktin",
     "categories": ["Network Analysis"],
     "shortDescription": "Live dashboard of Iceland's internet traffic — domestic and international link utilisation in near real time.",

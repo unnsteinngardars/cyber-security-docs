@@ -1,0 +1,163 @@
+{
+  "editions": [
+    {
+      "name": "Community",
+      "summary": "Free. Full Proxy, Repeater, Decoder, Comparer, Sequencer, and a throttled Intruder. No active scanner, no project save, no BApp Store.",
+      "useWhen": "Learning, CTFs, manual testing on a budget. Covers most of what you need for hands-on web pentest practice."
+    },
+    {
+      "name": "Professional",
+      "summary": "Paid. Adds the active vulnerability scanner, full-speed Intruder, BApp Store extensions, project save/load, and Collaborator.",
+      "useWhen": "Real engagements where time pressure makes the active scanner and BApp Store worth the licence cost."
+    },
+    {
+      "name": "Enterprise",
+      "summary": "Server-side automated scanner with CI/CD integration, scheduling, and centralised reporting. Not an interactive tool.",
+      "useWhen": "Continuous DAST across many apps from a build pipeline, not for individual researcher workflows."
+    }
+  ],
+  "tools": [
+    {
+      "name": "Proxy",
+      "summary": "The man-in-the-middle entry point. Browser traffic flows through Burp, where you can intercept, inspect, and modify every request and response.",
+      "keyFeatures": [
+        "Intercept toggle — pause traffic and edit live",
+        "HTTP history — every request seen, searchable and filterable",
+        "WebSocket history — full WS frame inspection",
+        "Match-and-replace rules — auto-rewrite headers / params / bodies"
+      ]
+    },
+    {
+      "name": "Target",
+      "summary": "The site map of every URL Burp has observed, plus the scope definition that filters which hosts other tools act on.",
+      "keyFeatures": [
+        "Site map tree — discovered structure, status codes, content types",
+        "Scope — include / exclude rules with regex on hosts and paths",
+        "Issue definitions — built-in catalogue of what Pro's scanner looks for"
+      ]
+    },
+    {
+      "name": "Repeater",
+      "summary": "Send a single request manually as many times as you want, with arbitrary edits each time. The workhorse for manual vuln verification.",
+      "keyFeatures": [
+        "Multiple tabs — one per request under investigation",
+        "Send and inspect raw, params, headers, hex views",
+        "Diff side-by-side against a previous response",
+        "Render tab — preview the HTML response in-place"
+      ]
+    },
+    {
+      "name": "Intruder",
+      "summary": "Parameterised fuzzer. Mark insertion points in a request, attach payloads, and run thousands of variants automatically.",
+      "keyFeatures": [
+        "Four attack types: Sniper, Battering ram, Pitchfork, Cluster bomb",
+        "Payload sets — wordlists, numbers, dates, brute force, generated",
+        "Payload processing — base64, URL-encode, hash, prefix, custom",
+        "Grep-match / grep-extract — flag interesting responses by content"
+      ]
+    },
+    {
+      "name": "Sequencer",
+      "summary": "Statistical randomness analysis on tokens (session IDs, CSRF tokens, password reset values).",
+      "keyFeatures": [
+        "Live capture from a request",
+        "FIPS-style randomness tests — bit-level, byte-level, character-level",
+        "Effective entropy estimate — is this token actually unpredictable?"
+      ]
+    },
+    {
+      "name": "Decoder",
+      "summary": "Stack of encode/decode operations: URL, HTML, base64, ASCII hex, gzip, plus common hashes.",
+      "keyFeatures": [
+        "Smart decode — guesses the encoding chain",
+        "Apply multiple operations in sequence",
+        "Two-way — same panel for encoding and decoding"
+      ]
+    },
+    {
+      "name": "Comparer",
+      "summary": "Word-level or byte-level diff between any two items. Essential for spotting subtle response differences in blind attacks.",
+      "keyFeatures": [
+        "Compare requests, responses, or arbitrary text",
+        "Word-by-word diff highlighting",
+        "Byte-by-byte diff for binary payloads"
+      ]
+    },
+    {
+      "name": "Logger",
+      "summary": "Cross-tool view of every HTTP request issued by any Burp tool — Proxy, Repeater, Intruder, Scanner — in one searchable timeline.",
+      "keyFeatures": [
+        "Filter by tool, status, MIME type, search string",
+        "Replay any logged request straight into Repeater",
+        "Export to file for evidence / report appendices"
+      ]
+    },
+    {
+      "name": "Scanner (Pro)",
+      "summary": "Automated active and passive vulnerability scanner. Crawls in-scope content and runs PortSwigger's audit checks.",
+      "keyFeatures": [
+        "Passive analysis on every request seen",
+        "Active audit checks — XSS, SQLi, SSTI, SSRF, XXE, more",
+        "Out-of-band detection via Burp Collaborator",
+        "Issue activity panel with reproduction steps"
+      ]
+    },
+    {
+      "name": "Extender / BApp Store",
+      "summary": "Plugin system. The BApp Store ships hundreds of community extensions for auth flows, JWTs, GraphQL, parameter mining, and more.",
+      "keyFeatures": [
+        "Java, Python (Jython), and Ruby (JRuby) extension APIs",
+        "BApp Store — one-click install of vetted community plugins",
+        "Reload extensions without restarting Burp"
+      ]
+    }
+  ],
+  "intruderAttacks": [
+    {
+      "name": "Sniper",
+      "useCase": "Test one parameter at a time across a list of payloads.",
+      "details": "Single payload set; iterates payloads through each marked position one position at a time. The default — use it for finding XSS / SQLi in many params with a single wordlist."
+    },
+    {
+      "name": "Battering ram",
+      "useCase": "Same payload everywhere, simultaneously.",
+      "details": "Single payload set; the same payload value is placed in every marked position at once. Useful when the same value must appear in multiple fields (e.g. confirm-password forms)."
+    },
+    {
+      "name": "Pitchfork",
+      "useCase": "Parallel iteration of multiple correlated lists.",
+      "details": "One payload set per position; Burp walks them in lockstep. Use for username:password pairs from a leak — pos 1 takes the email, pos 2 takes the matching password from the same line."
+    },
+    {
+      "name": "Cluster bomb",
+      "useCase": "Cartesian product across multiple payload sets.",
+      "details": "One payload set per position; tries every combination. Standard credential brute force (every user × every password). Request count balloons fast — use payload processing and grep-match to cut noise."
+    }
+  ],
+  "extensions": [
+    { "name": "Logger++", "purpose": "Power user replacement for the Logger tab — better filtering, columns, and Bambdas (filter expressions)." },
+    { "name": "Autorize", "purpose": "Replays every request as a second user to find broken access control / IDOR automatically." },
+    { "name": "JWT Editor", "purpose": "Decode, edit, and re-sign JSON Web Tokens; tests for alg=none, weak HMAC keys, and key confusion." },
+    { "name": "Param Miner", "purpose": "Hunts for hidden / unlinked parameters and headers via guess-and-diff — finds cache-poisoning vectors." },
+    { "name": "Active Scan++", "purpose": "Adds extra active checks (host header injection, smuggling, prototype pollution) on top of the built-in scanner." },
+    { "name": "Turbo Intruder", "purpose": "Scriptable, async high-speed Intruder — millions of requests per minute and race-condition primitives." },
+    { "name": "Collaborator Everywhere", "purpose": "Auto-injects a Collaborator payload into every outbound request to surface blind / out-of-band issues." },
+    { "name": "InQL", "purpose": "GraphQL-aware tooling — schema introspection, query generation, and a request builder." }
+  ],
+  "tips": [
+    "Set scope first. Out-of-scope items clutter the site map and risk hitting third parties — Target → Scope, then 'show only in-scope' everywhere.",
+    "Install Burp's CA cert in your browser (http://burp once proxied) so HTTPS pages don't throw warnings and Burp can decrypt traffic.",
+    "Use a dedicated browser profile (or the bundled Burp browser) that only ever talks to Burp — avoids leaking personal traffic into engagement projects.",
+    "Right-click → 'Send to Repeater' is the most-used shortcut. Bind Ctrl+R if you don't already have it.",
+    "Match-and-replace rules can pin a session cookie, strip CSP headers in a lab, or rewrite a Host — set them up once per engagement.",
+    "Save projects (Pro) per engagement so the site map, history, and issues persist across days. Community can't save state — script your setup with extensions instead.",
+    "Combine Logger++ filters with Bambdas for advanced queries (e.g. response contains /admin and status==200) — replaces several manual checks."
+  ],
+  "limitations": [
+    "The active scanner is Professional-only. The Community Edition relies entirely on manual testing and Repeater / Intruder workflows.",
+    "Intruder in the Community Edition is heavily throttled — minutes-per-request range; turn to Turbo Intruder or curl loops for serious fuzzing.",
+    "Burp is HTTP-centric. Non-HTTP protocols (raw TCP, custom binary) need a different tool or a custom proxy extension.",
+    "Java-based GUI is heavy on RAM — large projects (hundreds of MB of HTTP history) noticeably slow down the UI.",
+    "Testing applications you do not have written authorisation to test is illegal in most jurisdictions."
+  ]
+}

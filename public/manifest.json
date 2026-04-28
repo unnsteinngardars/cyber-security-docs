@@ -7,7 +7,9 @@
         { "title": "Wireshark", "component": "Wireshark" },
         { "title": "tcpdump", "component": "Tcpdump" },
         { "title": "Nmap", "component": "Nmap" },
-        { "title": "John the Ripper", "component": "JohnTheRipper" }
+        { "title": "John the Ripper", "component": "JohnTheRipper" },
+        { "title": "Metasploit", "component": "Metasploit" },
+        { "title": "Burp Suite", "component": "BurpSuite" }
       ]
     },
     {

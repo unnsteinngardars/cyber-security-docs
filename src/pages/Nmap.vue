@@ -206,6 +206,121 @@ const limitations = data.limitations;
         </div>
       </section>
 
+      <!-- Mock walkthrough -->
+      <section class="section">
+        <h2>Mock walkthrough — mapping an unknown subnet</h2>
+        <p class="prose">
+          A staged sweep of <code>10.10.10.0/24</code>, the kind of
+          subnet you'd be handed at the start of an internal pentest.
+          Goal: go from "no information" to "service inventory + likely
+          attack paths" without firing destructive probes blindly.
+        </p>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">1</span>
+            <h3>Host discovery only — find what's alive</h3>
+          </header>
+          <p class="walk__desc">
+            Skip the port scan with <code>-sn</code>. ICMP, TCP SYN to
+            443, TCP ACK to 80, and ICMP timestamp requests probe each
+            host. Cheap, fast, and avoids spraying packets at empty IPs.
+          </p>
+          <pre class="walk__cmd"><code>sudo nmap -sn -PE -PS443 -PA80 10.10.10.0/24 -oA discovery
+# Reads in 3-5s. Pull live hosts with grep:
+grep "^Host:" discovery.gnmap | awk '{print $2}' > live.txt</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-sn</code> ping sweep, <code>-PE/-PS/-PA</code> probes, grepable output.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">2</span>
+            <h3>Quick top-1000 SYN scan against live hosts</h3>
+          </header>
+          <p class="walk__desc">
+            Use the <code>live.txt</code> from the previous step with
+            <code>-iL</code> so we don't waste time on empty IPs.
+            <code>-sS</code> is the default SYN scan; <code>-T4</code> is
+            aggressive but safe on a real LAN.
+          </p>
+          <pre class="walk__cmd"><code>sudo nmap -sS --top-ports 1000 -T4 -iL live.txt -oA top1k
+# Eyeball top1k.nmap — what's listening per host?</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-iL</code> input list, <code>--top-ports</code>, timing template.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">3</span>
+            <h3>Service / version detection + default scripts</h3>
+          </header>
+          <p class="walk__desc">
+            Aim deeper at hosts with interesting ports.
+            <code>-sV</code> probes banners and matches them against
+            Nmap's signature database; <code>-sC</code> fires the
+            <em>default</em> NSE category — safe checks like
+            <code>http-title</code>, <code>ssh-hostkey</code>,
+            <code>smb-os-discovery</code>.
+          </p>
+          <pre class="walk__cmd"><code>sudo nmap -sS -sV -sC -p 22,80,139,443,445,3306,3389 \
+          -iL live.txt -oA services
+# services.nmap now has versions + script output</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-sV</code> version detection, <code>-sC</code> default NSE, port lists.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">4</span>
+            <h3>Full TCP + UDP follow-up on a target</h3>
+          </header>
+          <p class="walk__desc">
+            One host (<code>10.10.10.42</code>) looks juicy. Hit every
+            TCP port and the top UDP services to catch DNS / SNMP / NTP /
+            NetBIOS that the top-1000 missed.
+          </p>
+          <pre class="walk__cmd"><code>sudo nmap -sS -p- -T4 10.10.10.42 -oA full-tcp-42
+sudo nmap -sU --top-ports 50 -T4 10.10.10.42 -oA full-udp-42
+# -p- is shorthand for -p 1-65535</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-p-</code> all ports, <code>-sU</code> UDP scan, targeted follow-up.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">5</span>
+            <h3>NSE — vuln scripts on services that matter</h3>
+          </header>
+          <p class="walk__desc">
+            Now that we know what's running, target NSE script categories
+            at it. <code>vuln</code> runs known-CVE checks;
+            <code>http-enum</code> walks common web paths; SMB scripts
+            poke for null sessions and MS17-010.
+          </p>
+          <pre class="walk__cmd"><code>sudo nmap -sV --script vuln -p 80,443,445 10.10.10.42 -oA vuln-42
+sudo nmap --script "smb-* and not brute" -p 445 10.10.10.42
+sudo nmap --script http-enum -p 80,443 10.10.10.42</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> NSE categories, script wildcards, boolean script selectors.</p>
+        </article>
+
+        <article class="walk">
+          <header class="walk__head">
+            <span class="walk__num">6</span>
+            <h3>Pipe results into the next tool</h3>
+          </header>
+          <p class="walk__desc">
+            <code>-oA</code> already wrote XML, grepable, and normal
+            outputs. The XML imports cleanly into Metasploit's database;
+            grepable lines feed shell pipelines.
+          </p>
+          <pre class="walk__cmd"><code># In msfconsole:
+db_import services.xml
+hosts
+services -p 445
+
+# Or grep right out of the .gnmap:
+grep "open" services.gnmap | grep "ssh"</code></pre>
+          <p class="walk__feat"><strong>Touches:</strong> <code>-oA</code>, XML → Metasploit <code>db_import</code>, grepable shell pipelines.</p>
+        </article>
+      </section>
+
       <!-- Tips -->
       <section class="section">
         <h2>Tips &amp; gotchas</h2>
@@ -514,6 +629,104 @@ const limitations = data.limitations;
   font-size: 11.5px;
   line-height: 1.6;
   color: var(--tx);
+}
+
+/* Walkthrough */
+.walk {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-left: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.walk__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+.walk__num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.walk__head h3 {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.walk__desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--tx);
+}
+.walk__desc code {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  color: #9cdcfe;
+}
+.walk__desc strong {
+  color: #fff;
+}
+.walk__desc em {
+  color: var(--accent);
+  font-style: normal;
+}
+.walk__cmd {
+  margin: 0;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.55;
+}
+.walk__feat {
+  margin: 0;
+  font-size: 11px;
+  color: var(--dm);
+  line-height: 1.5;
+}
+.walk__feat strong {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+.walk__feat code {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10.5px;
+  color: var(--accent);
+  margin: 0 1px;
 }
 
 /* Bullet lists */
