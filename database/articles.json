@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Smashing The Stack For Fun And Profit",
+    "categories": ["Exploit Development", "Reverse Engineering"],
+    "author": "Aleph One (Elias Levy)",
+    "publisher": "Phrack Magazine #49",
+    "year": 1996,
+    "shortDescription": "Foundational tutorial on stack-based buffer overflow exploitation — still the canonical introduction to memory corruption.",
+    "longDescription": "Walks through the x86 stack layout, how saved return addresses get clobbered, and how to craft shellcode and a NOP sled to gain code execution. Predates ASLR, DEP/NX, and stack canaries — the techniques described are blocked by modern mitigations, but reading this paper is how most exploit developers built their first mental model of memory corruption. Required reading before tackling more recent material on ROP, heap exploitation, or kernel exploitation.",
+    "url": "http://phrack.org/issues/49/14.html"
+  }
+]

@@ -6,6 +6,9 @@ import PageViewer from "./components/PageViewer.vue";
 
 const componentRegistry = {
   Tools: defineAsyncComponent(() => import("./pages/Tools.vue")),
+  Documents: defineAsyncComponent(() => import("./pages/Documents.vue")),
+  Articles: defineAsyncComponent(() => import("./pages/Articles.vue")),
+  Websites: defineAsyncComponent(() => import("./pages/Websites.vue")),
   OwaspTop10: defineAsyncComponent(() => import("./pages/OwaspTop10.vue")),
   OsiModel: defineAsyncComponent(() => import("./pages/OsiModel.vue")),
   TcpIpModel: defineAsyncComponent(() => import("./pages/TcpIpModel.vue")),

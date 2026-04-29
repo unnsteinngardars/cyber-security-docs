@@ -196,12 +196,5 @@
     "shortDescription": "Live tracker of ransomware gangs, their leak sites, claimed victims, and negotiation chats.",
     "longDescription": "Ransomware.live aggregates and monitors the dark-web leak sites of active ransomware groups in near real time, surfacing newly claimed victims, group profiles, posted samples, and negotiation transcripts in a clean searchable UI. Useful for threat analysts tracking which gangs are active, defenders watching for their own org / sector / country in the feeds, and journalists covering incidents. Provides RSS feeds, a JSON API, and historical data going back years — a faster pivot than scraping each leak site by hand. Pair with VirusTotal and ID Ransomware to go from a victim post to the family and IOCs.",
     "homepage": "https://www.ransomware.live/"
-  },
-  {
-    "name": "Netvaktin",
-    "categories": ["Network Analysis"],
-    "shortDescription": "Live dashboard of Iceland's internet traffic — domestic and international link utilisation in near real time.",
-    "longDescription": "Netvaktin (run by RHnet / Síminn) visualises aggregate internet usage across Iceland's main backbone links, including the submarine cables that connect the country to the rest of the world. Useful for spotting macro-level anomalies such as outages on FARICE / DANICE / IRIS, sudden traffic dips that correlate with a national incident, or unusual surges that may indicate large-scale events (DDoS, popular streaming launches, software update storms). A handy situational-awareness reference for Icelandic SOC teams, NOCs, and journalists tracking connectivity health.",
-    "homepage": "https://netvaktin.is/"
   }
 ]

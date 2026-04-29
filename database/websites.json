@@ -1,0 +1,16 @@
+[
+  {
+    "name": "rix.is",
+    "url": "https://rix.is/",
+    "categories": [],
+    "shortDescription": "Reykjavik Internet Exchange",
+    "longDescription": ""
+  },
+  {
+    "name": "Netvaktin",
+    "url": "https://netvaktin.is/",
+    "categories": ["Network Analysis"],
+    "shortDescription": "Live dashboard of Iceland's internet traffic — domestic and international link utilisation in near real time.",
+    "longDescription": "Netvaktin (run by RHnet / Síminn) visualises aggregate internet usage across Iceland's main backbone links, including the submarine cables that connect the country to the rest of the world. Useful for spotting macro-level anomalies such as outages on FARICE / DANICE / IRIS, sudden traffic dips that correlate with a national incident, or unusual surges that may indicate large-scale events (DDoS, popular streaming launches, software update storms). A handy situational-awareness reference for Icelandic SOC teams, NOCs, and journalists tracking connectivity health."
+  }
+]

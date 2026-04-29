@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Malware Reverse Engineering Handbook",
+    "categories": ["Reverse Engineering", "Malware Analysis"],
+    "type": "pdf",
+    "publisher": "NATO CCDCOE",
+    "year": 2020,
+    "shortDescription": "NATO CCDCOE handbook covering static and dynamic malware analysis — tooling, sandboxing, unpacking, code analysis, reporting.",
+    "longDescription": "Practical reverse-engineering handbook from the NATO Cooperative Cyber Defence Centre of Excellence. Covers lab setup, basic and advanced static analysis (PE structure, strings, imports, disassembly with IDA/Ghidra), basic and advanced dynamic analysis (sandboxing, debugging with x64dbg, monitoring with Procmon and Wireshark), unpacking, anti-analysis techniques, and writing the analyst report. A solid free starting point before moving on to Practical Malware Analysis or specialised commercial training.",
+    "url": "https://ccdcoe.org/uploads/2020/07/Malware_Reverse_Engineering_Handbook.pdf"
+  }
+]
