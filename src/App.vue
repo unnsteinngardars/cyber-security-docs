@@ -122,7 +122,7 @@ watch(
 </script>
 
 <template>
-  <div :class="['layout', { 'sidebar-collapsed': sidebarCollapsed }]">
+  <div class="layout">
     <Sidebar
       :tree="tree"
       :current-slug="String(route.params.slug || '')"

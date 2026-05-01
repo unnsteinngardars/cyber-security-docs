@@ -1,12 +1,15 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 const props = defineProps({
   node: { type: Object, required: true },
   currentSlug: { type: String, default: "" },
   query: { type: String, default: "" },
   depth: { type: Number, default: 0 },
+  isOpen: { type: Boolean, default: false },
 });
+
+const emit = defineEmits(["toggle"]);
 
 const hasChildren = computed(
   () => Array.isArray(props.node.children) && props.node.children.length > 0
@@ -16,16 +19,25 @@ const isHybrid = computed(() => hasChildren.value && hasRoute.value);
 const isFolder = computed(() => hasChildren.value && !hasRoute.value);
 const isLeaf = computed(() => !hasChildren.value && hasRoute.value);
 
-const expanded = ref(true);
-
 function matches(node, q) {
   if (!q) return true;
-  if (node.file || node.component) {
-    if (node.title.toLowerCase().includes(q)) return true;
-  }
+  if ((node.file || node.component) && node.title.toLowerCase().includes(q))
+    return true;
   if (Array.isArray(node.children))
     return node.children.some((c) => matches(c, q));
   return false;
+}
+
+function containsSlug(node, slug) {
+  if (!slug) return false;
+  if (node.slug === slug) return true;
+  if (Array.isArray(node.children))
+    return node.children.some((c) => containsSlug(c, slug));
+  return false;
+}
+
+function keyOf(node) {
+  return node.slug || node.title;
 }
 
 const visibleChildren = computed(() => {
@@ -36,9 +48,10 @@ const visibleChildren = computed(() => {
     : props.node.children;
 });
 
-const effectivelyExpanded = computed(() =>
-  props.query ? visibleChildren.value.length > 0 : expanded.value
-);
+const expanded = computed(() => {
+  if (props.query) return visibleChildren.value.length > 0;
+  return props.isOpen;
+});
 
 const titleMatchesQuery = computed(() => {
   const q = props.query.trim().toLowerCase();
@@ -50,82 +63,84 @@ const shouldRender = computed(() => {
   if (titleMatchesQuery.value && hasRoute.value) return true;
   return visibleChildren.value.length > 0;
 });
+
+const openChildKey = ref("");
+
+watch(
+  () => props.currentSlug,
+  (slug) => {
+    if (!hasChildren.value || !slug) return;
+    const child = props.node.children.find((c) => containsSlug(c, slug));
+    if (child) openChildKey.value = keyOf(child);
+  },
+  { immediate: true }
+);
+
+function toggle() {
+  emit("toggle");
+}
+
+function toggleChild(node) {
+  const k = keyOf(node);
+  openChildKey.value = openChildKey.value === k ? "" : k;
+}
+
+const indentPx = computed(() => props.depth * 14 + 8);
 </script>
 
 <template>
-  <!-- Pure folder: only children, not directly navigable -->
-  <div
-    v-if="isFolder && shouldRender"
-    class="tree__folder"
-    :data-depth="depth"
-  >
-    <button
-      type="button"
-      class="tree__toggle"
-      :style="{ paddingLeft: `${8 + depth * 12}px` }"
-      @click="expanded = !expanded"
-    >
-      <span class="tree__caret" :class="{ open: effectivelyExpanded }">▶</span>
-      <span class="tree__label">{{ node.title }}</span>
-    </button>
-    <div v-show="effectivelyExpanded" class="tree__children">
-      <TreeNode
-        v-for="(child, i) in visibleChildren"
-        :key="child.slug || child.title + i"
-        :node="child"
-        :current-slug="currentSlug"
-        :query="query"
-        :depth="depth + 1"
-      />
-    </div>
-  </div>
-
-  <!-- Hybrid: clickable AND expandable -->
-  <div
-    v-else-if="isHybrid && shouldRender"
-    class="tree__folder"
-    :data-depth="depth"
-  >
-    <div
-      class="tree__hybrid"
-      :style="{ paddingLeft: `${8 + depth * 12}px` }"
-    >
+  <li v-if="(isFolder || isHybrid) && shouldRender" class="tree-item">
+    <div class="tree-row" :style="{ paddingLeft: indentPx + 'px' }">
       <button
         type="button"
-        class="tree__caret-btn"
-        :aria-label="effectivelyExpanded ? 'Collapse' : 'Expand'"
-        @click="expanded = !expanded"
+        class="tree-caret-btn"
+        :aria-expanded="expanded"
+        :aria-label="expanded ? 'Collapse' : 'Expand'"
+        @click="toggle"
       >
-        <span class="tree__caret" :class="{ open: effectivelyExpanded }">▶</span>
+        <span class="tree-caret" :class="{ 'is-open': expanded }">▶</span>
+      </button>
+      <button
+        v-if="isFolder"
+        type="button"
+        class="tree-folder"
+        @click="toggle"
+      >
+        {{ node.title }}
       </button>
       <router-link
-        class="tree__leaf tree__leaf--inline"
-        :class="{ active: node.slug === currentSlug }"
+        v-else
+        class="tree-link"
         :to="{ name: 'page', params: { slug: node.slug } }"
       >
         {{ node.title }}
       </router-link>
     </div>
-    <div v-show="effectivelyExpanded" class="tree__children">
-      <TreeNode
-        v-for="(child, i) in visibleChildren"
-        :key="child.slug || child.title + i"
-        :node="child"
-        :current-slug="currentSlug"
-        :query="query"
-        :depth="depth + 1"
-      />
+    <div class="tree-children-wrap" :class="{ 'is-open': expanded }">
+      <div class="tree-children-inner">
+        <ul class="tree-children">
+          <TreeNode
+            v-for="child in visibleChildren"
+            :key="keyOf(child)"
+            :node="child"
+            :current-slug="currentSlug"
+            :query="query"
+            :depth="depth + 1"
+            :is-open="openChildKey === keyOf(child)"
+            @toggle="toggleChild(child)"
+          />
+        </ul>
+      </div>
     </div>
-  </div>
+  </li>
 
-  <!-- Pure leaf -->
-  <router-link
-    v-else-if="isLeaf"
-    class="tree__leaf"
-    :class="{ active: node.slug === currentSlug }"
-    :to="{ name: 'page', params: { slug: node.slug } }"
-    :style="{ paddingLeft: `${22 + depth * 12}px` }"
-  >
-    {{ node.title }}
-  </router-link>
+  <li v-else-if="isLeaf" class="tree-item">
+    <router-link
+      class="tree-link tree-leaf"
+      :to="{ name: 'page', params: { slug: node.slug } }"
+      :style="{ paddingLeft: indentPx + 22 + 'px' }"
+    >
+      {{ node.title }}
+    </router-link>
+  </li>
 </template>
