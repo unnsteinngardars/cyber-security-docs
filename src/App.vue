@@ -20,6 +20,7 @@ const componentRegistry = {
   ),
   Routing: defineAsyncComponent(() => import("./pages/Routing.vue")),
   Nat: defineAsyncComponent(() => import("./pages/Nat.vue")),
+  Firewalls: defineAsyncComponent(() => import("./pages/Firewalls.vue")),
   Wireshark: defineAsyncComponent(() => import("./pages/Wireshark.vue")),
   Tcpdump: defineAsyncComponent(() => import("./pages/Tcpdump.vue")),
   Nmap: defineAsyncComponent(() => import("./pages/Nmap.vue")),
@@ -35,6 +36,10 @@ const componentRegistry = {
   Hashing: defineAsyncComponent(() => import("./pages/Hashing.vue")),
   Shells: defineAsyncComponent(() => import("./pages/Shells.vue")),
   SOC: defineAsyncComponent(() => import("./pages/SOC.vue")),
+  Technologies: defineAsyncComponent(() => import("./pages/Technologies.vue")),
+  DigitalForensics: defineAsyncComponent(() =>
+    import("./pages/DigitalForensics.vue")
+  ),
 };
 
 const route = useRoute();

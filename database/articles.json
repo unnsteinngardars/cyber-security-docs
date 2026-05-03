@@ -8,5 +8,21 @@
     "shortDescription": "Foundational tutorial on stack-based buffer overflow exploitation — still the canonical introduction to memory corruption.",
     "longDescription": "Walks through the x86 stack layout, how saved return addresses get clobbered, and how to craft shellcode and a NOP sled to gain code execution. Predates ASLR, DEP/NX, and stack canaries — the techniques described are blocked by modern mitigations, but reading this paper is how most exploit developers built their first mental model of memory corruption. Required reading before tackling more recent material on ROP, heap exploitation, or kernel exploitation.",
     "url": "http://phrack.org/issues/49/14.html"
+  },
+  {
+    "name": "SANS Incident Response Glossary",
+    "categories": ["Incident Response"],
+    "publisher": "SANS Institute",
+    "shortDescription": "SANS's curated glossary of incident-response terminology — the standard vocabulary for IR plans, playbooks, and reports.",
+    "longDescription": "A reference glossary maintained by SANS that defines the terms used across incident-response programmes — incident vs event vs alert, indicator of compromise, kill chain, containment, eradication, dwell time, MTTD/MTTR, and dozens more — alongside related concepts from forensics, threat intel, and risk management. Useful when standardising language inside an IR runbook, onboarding new analysts, or aligning vocabulary with auditors and external counsel. A solid cross-check against NIST SP 800-61 and ISO 27035 terminology when those differ in nuance.",
+    "url": "https://www.sans.org/security-resources/glossary-of-terms/incident-response"
+  },
+  {
+    "name": "NIST SP 800-61 — Computer Security Incident Handling Guide",
+    "categories": ["Incident Response"],
+    "publisher": "NIST",
+    "shortDescription": "The canonical incident-response framework — a four-phase lifecycle (Preparation, Detection & Analysis, Containment / Eradication / Recovery, Post-Incident Activity) that every modern IR programme is shaped around.",
+    "longDescription": "NIST Special Publication 800-61 is the de facto reference for building and running an incident-response capability. It defines incidents and events, lays out a four-phase lifecycle (Preparation; Detection & Analysis; Containment, Eradication & Recovery; Post-Incident Activity), and prescribes the roles, communications, evidence handling, and documentation practices needed to support each phase. Vendor-neutral and freely available, it's the document auditors, regulators, and most enterprise IR runbooks ultimately point back to — and the natural companion to NIST SP 800-86 (forensic techniques) and the NIST Cybersecurity Framework's Respond function.",
+    "url": "https://csrc.nist.gov/pubs/sp/800/61/r2/final"
   }
 ]
