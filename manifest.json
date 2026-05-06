@@ -12,7 +12,8 @@
         { "title": "Burp Suite", "component": "BurpSuite" },
         { "title": "Hydra", "component": "Hydra" },
         { "title": "Gobuster", "component": "Gobuster" },
-        { "title": "SQLMap", "component": "Sqlmap" }
+        { "title": "SQLMap", "component": "Sqlmap" },
+        { "title": "PEStudio", "component": "PeStudio" }
       ]
     },
     {
@@ -22,6 +23,10 @@
     {
       "title": "Articles",
       "component": "Articles"
+    },
+    {
+      "title": "Terminologies",
+      "component": "Terminologies"
     },
     {
       "title": "Websites",
