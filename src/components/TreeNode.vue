@@ -66,10 +66,15 @@ const shouldRender = computed(() => {
 
 const openChildKey = ref("");
 
+let initialised = false;
 watch(
   () => props.currentSlug,
   (slug) => {
     if (!hasChildren.value || !slug) return;
+    if (!initialised) {
+      initialised = true;
+      return;
+    }
     const child = props.node.children.find((c) => containsSlug(c, slug));
     if (child) openChildKey.value = keyOf(child);
   },

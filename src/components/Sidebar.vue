@@ -38,10 +38,19 @@ const visibleRoots = computed(() => {
   return q ? props.tree.filter((n) => hasMatch(n, q)) : props.tree;
 });
 
+// Suppress the first invocation so the sidebar starts fully collapsed —
+// otherwise App.vue's initial redirect to the landing page would expand
+// the root that contains it. After the first real value, normal
+// auto-expand on navigation resumes.
+let initialised = false;
 watch(
   [() => props.currentSlug, () => props.tree],
   ([slug, tree]) => {
     if (!slug || !tree.length) return;
+    if (!initialised) {
+      initialised = true;
+      return;
+    }
     const node = tree.find((n) => containsSlug(n, slug));
     if (node) openKey.value = keyOf(node);
   },

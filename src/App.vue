@@ -32,6 +32,7 @@ const componentRegistry = {
   Hydra: defineAsyncComponent(() => import("./pages/Hydra.vue")),
   Gobuster: defineAsyncComponent(() => import("./pages/Gobuster.vue")),
   Sqlmap: defineAsyncComponent(() => import("./pages/Sqlmap.vue")),
+  PeStudio: defineAsyncComponent(() => import("./pages/PeStudio.vue")),
   Cryptography: defineAsyncComponent(() => import("./pages/Cryptography.vue")),
   Hashing: defineAsyncComponent(() => import("./pages/Hashing.vue")),
   Shells: defineAsyncComponent(() => import("./pages/Shells.vue")),
@@ -39,6 +40,9 @@ const componentRegistry = {
   Technologies: defineAsyncComponent(() => import("./pages/Technologies.vue")),
   DigitalForensics: defineAsyncComponent(() =>
     import("./pages/DigitalForensics.vue")
+  ),
+  Terminologies: defineAsyncComponent(() =>
+    import("./pages/Terminologies.vue")
   ),
 };
 

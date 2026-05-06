@@ -1,0 +1,9 @@
+[
+  {
+    "acronym": "F.L.I.R.T.",
+    "expansion": "Fast Library Identification and Recognition Technology",
+    "categories": ["Reverse Engineering"],
+    "shortDescription": "IDA Pro's signature-based engine for auto-identifying standard library functions inside a compiled binary.",
+    "longDescription": "FLIRT is the technology Hex-Rays' IDA Pro uses to recognise functions that come from known libraries — the C runtime (CRT), Microsoft's MFC/ATL, OpenSSL, Boost, common compilers' helpers, and so on — based on byte-pattern signatures stored in `.sig` files. When a sample is loaded, IDA matches each function's prologue and body against the active signature set; matches are renamed to the real library symbol (`_strcpy`, `__security_check_cookie`, `_OPENSSL_init_ssl`) and marked as library code. The payoff is huge: an analyst doesn't have to reverse-engineer a thousand boilerplate runtime helpers to find the few hundred bytes of actual malware logic. Hex-Rays ships a large set of stock signatures with IDA; analysts can also generate their own from `.lib` / `.a` archives using the SDK's `sigmake` and `pcf` tools, or pull community sets (e.g. the `IDA-Pro-Signatures` repos). Functionally similar tools exist elsewhere — Ghidra's Function ID, Binary Ninja's Signature Library, radare2's zignatures — all built on the same core idea FLIRT pioneered."
+  }
+]

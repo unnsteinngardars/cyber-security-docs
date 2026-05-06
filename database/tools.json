@@ -1,6 +1,6 @@
 [
   {
-    "name": "Procmon",
+    "name": "Process Monitor",
     "categories": ["Endpoint Forensics"],
     "shortDescription": "Real-time tracker of file system, registry, process, thread, and network activity on Windows.",
     "longDescription": "Process Monitor (Procmon) captures real-time file system, registry, process, thread, and network activity in one unified timeline — the go-to choice for watching what a suspect binary actually touches when it runs. Filter by process name, operation (CreateFile, RegSetValue), path, or result to keep noise manageable. Supports boot logging to capture activity before logon-time persistence kicks in, and saves captures as PML for sharing or scripted parsing. Part of the Sysinternals Suite — runs portable, no install.",
@@ -48,7 +48,8 @@
     "categories": ["Static Analysis"],
     "shortDescription": "Static analysis tool that surfaces suspicious indicators in a Windows binary without running it.",
     "longDescription": "PEStudio loads a Windows binary without executing it and surfaces colour-coded risk indicators — blacklisted strings and APIs (anti-debug, injection, keylogging, crypto routines), automatic VirusTotal hash submission (no file upload), and an Indicators tab summarising everything suspicious in one ranked view. A great first-pass triage tool before opening a sample in a disassembler.",
-    "homepage": "https://www.winitor.com/"
+    "homepage": "https://www.winitor.com/",
+    "detailSlug": "pestudio"
   },
   {
     "name": "FLOSS",
@@ -301,6 +302,27 @@
     "shortDescription": "Windows-based VM distribution for malware analysis and reverse engineering, curated by Mandiant FLARE.",
     "longDescription": "FlareVM is a collection of Chocolatey-based install scripts that turn a clean Windows VM into a fully-equipped malware-analysis workstation. Maintained by the Mandiant FLARE team, it pulls in the same tools real reverse engineers use day-to-day: Ghidra, IDA Free, x64dbg / x32dbg, dnSpy, CFF Explorer, PEStudio, Detect It Easy, FLOSS, CAPA, HxD, Process Hacker, Sysinternals, Wireshark, Burp Suite, scripting interpreters, and dozens more — grouped into curated package bundles. Run the bootstrap script on a snapshotted Windows 10/11 VM and you have a Windows analysis environment that matches the mental model of malware: same OS as the victim, same APIs, same calling conventions. Pairs with REMnux as the Linux-side analysis box and an isolated host-only network for safe detonation.",
     "homepage": "https://github.com/mandiant/flare-vm"
+  },
+  {
+    "name": "Resource Hacker",
+    "categories": ["Static Analysis", "Reverse Engineering"],
+    "shortDescription": "Windows tool for viewing, extracting, and modifying resources embedded in PE files (icons, dialogs, strings, manifests).",
+    "longDescription": "Resource Hacker (by Angus Johnson) opens any Windows executable or DLL and presents its resource section as a navigable tree — icons, cursors, bitmaps, dialogs, menus, version info, manifests, string tables, and arbitrary RCDATA blobs. View resources in place, extract them to disk, replace them with patched versions, or delete entries entirely. Includes a built-in script compiler/decompiler so you can edit dialogs and menus in `.rc` source form and recompile them straight back into the binary. In malware analysis it's the go-to for pulling out embedded payloads stashed as RCDATA, inspecting suspiciously generic version-info blocks, and recovering icons / strings that authors forgot to strip. Free, portable single executable.",
+    "homepage": "http://www.angusj.com/resourcehacker/"
+  },
+  {
+    "name": "Regshot",
+    "categories": ["Endpoint Forensics"],
+    "shortDescription": "Open-source registry and file-system snapshot/diff tool — the standard way to see what changed after running a sample.",
+    "longDescription": "Regshot is a small open-source utility that takes a baseline snapshot of the Windows Registry (and optionally the file system) before a sample is detonated, a second snapshot afterwards, and produces a clean diff of every key, value, and file that was added, deleted, or modified. The output (TXT or HTML) groups changes by type and is small enough to skim manually — perfect for spotting persistence (Run keys, scheduled-task entries, service registrations), config writes (mutex names, install paths, C2 URLs), and dropped files. Runs portable, no install. Pair it with Procmon: Procmon shows the live API-level activity, Regshot shows the *net* state change after the dust settles. A staple of beginner malware-analysis labs and SANS FOR610.",
+    "homepage": "https://sourceforge.net/projects/regshot/"
+  },
+  {
+    "name": "INetSim",
+    "categories": ["Network Analysis", "Reverse Engineering"],
+    "shortDescription": "Linux daemon that simulates common internet services so malware in a lab can \"reach the internet\" without ever leaving the sandbox.",
+    "longDescription": "INetSim (Internet Services Simulation Suite) is a Perl-based daemon that fakes a wide set of network services on a single host: HTTP/HTTPS, DNS, SMTP/POP3, IMAP, FTP, TFTP, IRC, NTP, finger, ident, Quotd, Daytime, Discard, and a generic TCP/UDP dummy. Pointed at it, malware running in an isolated VM happily resolves any domain to the lab IP, downloads canned default responses (a fixed PNG/EXE/HTML), and posts stolen data to a logged endpoint — letting the analyst observe HTTP requests, DNS queries, mail delivery attempts, and TLS SNI without giving the sample real internet access. Configuration is one INI file: enable/disable services, set fake-file responses per URL, and tune SSL certs (it auto-generates a CA and per-host certs). Ships preinstalled and pre-configured on REMnux as the default fake-internet for FOR610-style labs. Pair with FakeDNS-style routing (point the analysis VM's DNS + default route at the INetSim host) and capture the resulting traffic with Wireshark for full visibility.",
+    "homepage": "https://www.inetsim.org/"
   },
   {
     "name": "Ransomware.live",
