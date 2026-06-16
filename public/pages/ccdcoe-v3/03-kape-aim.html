@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — KAPE &amp; AIM · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--amber);--accent-dim:var(--amber-dim);--accent-deep:var(--amber-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,255,225,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-persist{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">⚡</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">03 — KAPE &amp; AIM</span></div>
+      <div class="t1">Triage Collection — the Artefact Catalogue</div>
+      <div class="t2">16 artefact families, one collection sweep — what each one answers, what it cannot</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-a">Triage</span>
+    <span class="b b-p">Targets</span>
+    <span class="b b-b">Locked-file copy</span>
+    <span class="b b-t">VSS</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">$MFT</span><span class="tag">$LogFile</span><span class="tag">$UsnJrnl</span><span class="tag">Registry hives</span><span class="tag">EventLogs</span><span class="tag">Prefetch</span><span class="tag">AmCache</span><span class="tag">ScheduledTasks</span><span class="tag">StartupInfo</span><span class="tag">LNK</span><span class="tag">JumpLists</span><span class="tag">ShellBags</span><span class="tag">ChromeHistory</span><span class="tag">FirefoxHistory</span><span class="tag">hiberfil</span><span class="tag">pagefile</span></div>
+  <div class="row"><span class="sl">Collected with</span><span class="tag">KAPE (CLI)</span><span class="tag">gKAPE (GUI)</span><span class="tag">Arsenal Image Mounter</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Read Only mount</span><span class="tag">Write Temporary overlay</span><span class="tag">Target = collect</span><span class="tag">Module = parse</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Why this section is artefact-driven, not tool-driven</span></div>
+    <div class="prose">
+      <p>KAPE is not the evidence — it is a <em>copier</em>. Its value is the curated set of paths in <code>KapeTriage</code>, which encodes the community's best answer to "what should I look at first on a Windows host". This page treats those targets as the unit of analysis: <strong>each artefact family, what forensic question it answers, what it can't</strong>.</p>
+      <p>Arsenal Image Mounter sits underneath — it exposes the E01 as a real volume so KAPE's <code>RawCopy</code> can read locked system files. The <em>Read Only</em> vs <em>Write Temporarily</em> distinction matters because a dirty NTFS journal will refuse to mount cleanly without a place to replay; the temporary overlay gives the kernel that place without ever touching the master image.</p>
+    </div>
+    <div class="al b"><span class="ali">ℹ️</span><span><strong>Two-phase rule:</strong> a Target produces files; a Module parses them. Keep the unparsed Target output forever — re-parsing is cheap, re-collecting from a now-overwritten host is impossible.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🗃</span><span class="ct">$MFT — the filesystem index</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Timeline</span>
+      <span class="fvc k-recover">Deleted files</span>
+      <span class="fvc k-pivot">Anchor</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>\$MFT</code> at the root of every NTFS volume.</p>
+      <p><strong>Answers:</strong> every file (and deleted file) that ever existed on the volume, with two sets of MACB timestamps (§04). The single most valuable filesystem artefact.</p>
+      <p><strong>Cannot tell you:</strong> file <em>contents</em> for non-resident files whose clusters have been reused; only the metadata.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📜</span><span class="ct">$LogFile + $UsnJrnl — recent operations</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Recent ops</span>
+      <span class="fvc k-recover">Names of wiped files</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>\$LogFile</code>, <code>\$Extend\$UsnJrnl:$J</code>.</p>
+      <p><strong>Answers:</strong> a rolling transaction log of metadata changes (creates, renames, deletes, attribute writes). The USN journal records <em>filename</em> changes by reason code — <em>often the only place the name of a wiped file survives</em>.</p>
+      <p><strong>Cannot tell you:</strong> events older than the journal's rotation horizon (minutes-to-days on a busy host).</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🗝</span><span class="ct">Registry hives — system &amp; per-user state</span></div>
+    <div class="fv">
+      <span class="fvc k-user">User attribution</span>
+      <span class="fvc k-persist">Persistence</span>
+      <span class="fvc k-pivot">OS profile</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Windows\System32\config\</code> (SAM, SYSTEM, SOFTWARE, SECURITY) + <code>C:\Users\&lt;u&gt;\NTUSER.DAT</code> + <code>…\AppData\Local\Microsoft\Windows\UsrClass.dat</code>.</p>
+      <p><strong>Answers:</strong> accounts (§07), services + devices + timezone (§08-SYSTEM), installed apps + network history (§08-SOFTWARE), per-user MRUs + execution traces + ShellBags (§09 / §13).</p>
+      <p><strong>Cannot tell you:</strong> in-memory writes that never flushed — combine with hive transaction logs (<code>.LOG1</code>, <code>.LOG2</code>) for the freshest state.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📜</span><span class="ct">EventLogs (.evtx) — the auditor's diary</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Timeline</span>
+      <span class="fvc k-user">Logons</span>
+      <span class="fvc k-execution">Process audit</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Windows\System32\winevt\Logs\*.evtx</code>.</p>
+      <p><strong>Answers:</strong> logon / logoff, RDP, account changes, service installs, scheduled-task runs, PowerShell script blocks, Sysmon events. The narrative spine of a Windows investigation.</p>
+      <p><strong>Cannot tell you:</strong> what the auditor wasn't configured to capture. Default auditing on a workstation is sparse; absence of an event is rarely proof of absence of activity.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🏃</span><span class="ct">Prefetch (.pf) — execution proof</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Execution</span>
+      <span class="fvc k-time">Last 8 runs</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Windows\Prefetch\APPNAME-&lt;hash&gt;.pf</code>.</p>
+      <p><strong>Answers:</strong> that <em>this executable ran</em>, how many times, when (last eight run times in modern Win10/11), what DLLs / files it loaded during startup, and a hash of its full path.</p>
+      <p><strong>Cannot tell you:</strong> who ran it (no SID), command-line arguments, child processes. Disabled on Server SKUs and on some SSD-tuned systems.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🗂</span><span class="ct">AmCache — the executable inventory</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Inventory</span>
+      <span class="fvc k-integrity">SHA-1</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Windows\AppCompat\Programs\Amcache.hve</code> (a registry hive).</p>
+      <p><strong>Answers:</strong> every PE the Application Experience service saw — with <em>SHA-1 hash</em>, file size, signing info, first-seen time. Catches executables that <em>never ran</em> (Prefetch missed them).</p>
+      <p><strong>Cannot tell you:</strong> count of executions or per-run timing. Pair with Prefetch for "did it run", AmCache for "did it exist".</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">⏰</span><span class="ct">Scheduled Tasks — persistence #1</span></div>
+    <div class="fv">
+      <span class="fvc k-persist">Persistence</span>
+      <span class="fvc k-execution">Re-execution</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Windows\System32\Tasks\</code> (XML) + <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache</code>.</p>
+      <p><strong>Answers:</strong> tasks defined on the host — name, principal SID, trigger, action (binary + arguments), author. XML and registry corroborate each other — divergence is a red flag.</p>
+      <p><strong>Cannot tell you:</strong> whether the task actually fired — pair with <code>Microsoft-Windows-TaskScheduler/Operational.evtx</code>.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🚀</span><span class="ct">StartupInfo — boot-time process snapshot</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Boot processes</span>
+      <span class="fvc k-persist">Persistence</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Windows\System32\WDI\LogFiles\StartupInfo\&lt;SID&gt;_StartupInfo*.xml</code>.</p>
+      <p><strong>Answers:</strong> per-boot, per-user snapshot of every process started shortly after logon, with full command lines and parent PIDs. ~5 boots retained.</p>
+      <p><strong>Cannot tell you:</strong> processes started after the snapshot window (~30 s) or on systems where WDI is disabled.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🔗</span><span class="ct">LNK files — what the user opened</span></div>
+    <div class="fv">
+      <span class="fvc k-user">User action</span>
+      <span class="fvc k-pivot">External media</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Users\&lt;u&gt;\AppData\Roaming\Microsoft\Windows\Recent\*.lnk</code>.</p>
+      <p><strong>Answers:</strong> files the user double-clicked, including from <em>now-disconnected</em> USB / network shares — preserves target path, target size, volume serial, MAC address of the host that wrote the link (TrackerDataBlock).</p>
+      <p><strong>Cannot tell you:</strong> programmatic opens that bypassed Explorer.</p>
+    </div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">📋</span><span class="ct">JumpLists — per-app MRU</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-app history</span>
+      <span class="fvc k-time">DestList timestamps</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>…\Recent\AutomaticDestinations\*.automaticDestinations-ms</code> + <code>…\CustomDestinations\</code>.</p>
+      <p><strong>Answers:</strong> per-application recent/pinned items keyed by AppID — embedded LNK streams + <code>DestList</code> with timestamps. Reveals which app opened which file, in order.</p>
+      <p><strong>Cannot tell you:</strong> activity in apps that opt out of jump-list reporting.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📁</span><span class="ct">ShellBags — every folder ever browsed</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Folder browsing</span>
+      <span class="fvc k-recover">Deleted paths</span>
+      <span class="fvc k-pivot">External media</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> inside <code>NTUSER.DAT</code> and <code>UsrClass.dat</code> — <code>Software\Microsoft\Windows\Shell\BagMRU + Bags</code>.</p>
+      <p><strong>Answers:</strong> every folder that user ever <em>browsed</em> in Explorer — including on removable media, network shares, and folders later deleted. View settings, last-visited timestamps, and shell-item metadata are preserved per folder.</p>
+      <p><strong>Cannot tell you:</strong> what was inside those folders — only that the user navigated there.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🌐</span><span class="ct">Chrome history</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Browsing</span>
+      <span class="fvc k-time">Visit times</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>C:\Users\&lt;u&gt;\AppData\Local\Google\Chrome\User Data\Default\History</code> (SQLite).</p>
+      <p><strong>Answers:</strong> URLs, page titles, visit counts, visit timestamps, transition types, downloads (file path + URL + bytes + state) — all per-profile.</p>
+      <p><strong>Cannot tell you:</strong> InPrivate / Incognito sessions (no rows written). Sync-disabled accounts only — synced data lives server-side.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🦊</span><span class="ct">Firefox history</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Browsing</span>
+      <span class="fvc k-time">Visit times</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>…\AppData\Roaming\Mozilla\Firefox\Profiles\&lt;prof&gt;\places.sqlite</code>.</p>
+      <p><strong>Answers:</strong> same questions as Chrome — different schema (<code>moz_places</code> + <code>moz_historyvisits</code>) + bookmarks + downloads.</p>
+      <p><strong>Cannot tell you:</strong> Private Browsing sessions. Profile <em>folder name</em> randomised — enumerate all profiles.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">💤</span><span class="ct">hiberfil.sys + pagefile.sys (collected by KAPE for §02)</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Past process tree</span>
+      <span class="fvc k-recover">Strings</span>
+    </div>
+    <div class="prose">
+      <p>KAPE includes these in the triage set so memory analysis can begin without a live capture. See §02 for forensic value — here we just note they are part of the same collection sweep so the dump folder is self-sufficient.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — forensic question pivot</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Question</th><th>Primary artefact</th><th>Corroborating artefact</th></tr></thead>
+      <tbody>
+        <tr><td>Did this executable run, and when?</td><td>Prefetch (last 8 run times)</td><td>AmCache (existence + SHA-1), Security 4688</td></tr>
+        <tr><td>Did this executable ever exist on the host?</td><td>AmCache</td><td>$MFT entry (even if file is deleted)</td></tr>
+        <tr><td>What did the user open / browse?</td><td>LNK + JumpLists</td><td>ShellBags, RecentDocs (NTUSER)</td></tr>
+        <tr><td>Did the user attach a USB device?</td><td>SYSTEM hive (USBSTOR)</td><td>LNK volume serial, ShellBags drive letter (§14)</td></tr>
+        <tr><td>How does the attacker persist across reboots?</td><td>Scheduled Tasks XML</td><td>Run keys, Services, StartupInfo</td></tr>
+        <tr><td>What account was active when X happened?</td><td>Security.evtx (4624 / 4634)</td><td>StartupInfo SID, Prefetch run time</td></tr>
+        <tr><td>What was wiped recently?</td><td>$UsnJrnl (filename + reason code)</td><td>$MFT unallocated entries, $LogFile</td></tr>
+        <tr><td>What did the user search for / browse to?</td><td>Chrome / Firefox history</td><td>TypedPaths, WordWheelQuery (NTUSER, §09)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong><code>--vss</code> multiplies output:</strong> walking every Volume Shadow Copy uncovers deleted artefacts but ×N's runtime &amp; disk. Plan capacity before launching on a long-lived workstation.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🚧</span><span class="ct">AIM mount modes — protecting the artefact source</span></div>
+    <div class="prose">
+      <p>KAPE's collection is only as defensible as the volume it reads from. AIM controls that volume:</p>
+      <ul>
+        <li><strong>Read Only</strong> — the kernel sees a read-only disk. Hash of the E01 is preserved. Works on a clean NTFS volume; <em>fails on a dirty journal</em> because the kernel can't replay it.</li>
+        <li><strong>Write Temporary</strong> — Windows believes it can write; AIM redirects every write to a sparse overlay file on your analysis disk. Journal replay happens against the overlay, the source E01 stays untouched, the volume mounts cleanly.</li>
+        <li><strong>Target / Module</strong> — KAPE's two-phase model. Target = collect (paths + RawCopy). Module = parse (Eric Zimmerman / Plaso / your own).</li>
+      </ul>
+    </div>
+    <div class="al r"><span class="ali">🛑</span><span><strong>Never <code>--tdest</code> back onto the system drive you're collecting from.</strong> KAPE's own writes pollute the very artefacts it is reading. Use an external / network volume.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>Single-artefact findings are weak; KAPE's value is having every nearby corroborator in one folder:</p>
+    <ul>
+      <li><strong>Prefetch ⋈ AmCache ⋈ Security 4688</strong> — three independent witnesses to a single execution.</li>
+      <li><strong>LNK volume-serial ⋈ SYSTEM USBSTOR ⋈ Event 1006 (Partition/Diagnostic)</strong> — anchors a file-open event to a specific physical USB device (§14).</li>
+      <li><strong>ShellBags ⋈ JumpLists ⋈ MFT</strong> — folder browsed, file opened, file metadata — three angles on the same user action.</li>
+      <li><strong>Scheduled Task XML ⋈ TaskScheduler.evtx ⋈ Prefetch</strong> — definition, firing, execution.</li>
+      <li><strong>$UsnJrnl ⋈ Recycle Bin <code>$I/$R</code> (§18) ⋈ VSS snapshots</strong> — name-of-deleted-file, deletion-time, recovered-content.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §03 KAPE &amp; AIM</span>
+  <span>Next → §04 Windows Filesystem / NTFS</span>
+</div>
+
+</div></body></html>

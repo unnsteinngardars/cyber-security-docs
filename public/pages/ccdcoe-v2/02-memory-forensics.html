@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 — Memory Forensics · CCDCOE IDFC V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--teal);--accent-dim:var(--teal-dim);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.6;padding:16px 16px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.crumb{font-size:9.5px;color:var(--dm2);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:4px}
+.crumb .acc{color:var(--accent)}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:3px}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:11px;line-height:1.55}
+.tor .sl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:6px}
+.tor .tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;margin:0 3px 3px 0;font-size:10px;color:#9CDCFE}
+.tor .row{margin-bottom:2px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:14px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;line-height:1.15}
+
+.prose{font-size:11.5px;color:var(--tx);line-height:1.65}
+.prose p{margin-bottom:6px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10.5px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:11px;line-height:1.55}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:9px;top:3px}
+
+.cmds{display:flex;flex-direction:column;gap:5px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10.5px;color:#C8E6FF;word-break:break-all;line-height:1.45}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.path{font-family:var(--mono);font-size:10px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.45;margin:3px 0}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:7px 10px;border-radius:5px;font-size:11px;line-height:1.5;margin-top:4px}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:13px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10.5px;min-width:260px}
+.et th{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:5px 7px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.45}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:8px;padding:10px 13px;margin-top:12px}
+.xref .sl{color:var(--accent);margin-bottom:5px}
+.xref .prose{font-size:11px}
+
+.ft{margin-top:18px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🧠</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V2 / <span class="acc">02 — Memory Forensics</span></div>
+      <div class="t1">Memory Forensics</div>
+      <div class="t2">Volatile evidence — capture before reboot, parse before disk</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-t">Volatile</span>
+    <span class="b b-r">Order of Volatility</span>
+    <span class="b b-b">RAM</span>
+    <span class="b b-a">Pagefile</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">Magnet RAM Capture</span><span class="tag">DumpIt</span><span class="tag">WinPmem</span><span class="tag">Volatility 3</span><span class="tag">MemProcFS</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">RAM dump</span><span class="tag">hiberfil.sys</span><span class="tag">pagefile.sys</span><span class="tag">swapfile.sys</span><span class="tag">.vmem / .vmsn</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Order of volatility</span><span class="tag">RAW image</span><span class="tag">AFF4 container</span><span class="tag">Xpress-Huffman</span><span class="tag">Hybrid sleep</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">⚡</span><span class="ct">Why memory matters — order of volatility</span></div>
+    <div class="prose">
+      <p><strong>RAM</strong> evaporates the moment the box loses power. Disk survives. So the rule from RFC 3227 is simple: <em>capture the most volatile thing first</em>. RAM → hiberfil / pagefile → disk → backups.</p>
+      <p>A lot of what an examiner actually wants <em>only ever exists in memory</em> on a running host:</p>
+      <ul>
+        <li><strong>Process tree</strong> with parent/child links — who spawned <code>powershell.exe</code> from <code>winword.exe</code>?</li>
+        <li><strong>Command lines</strong> — including ones obfuscated, base64-blob'd, or wiped after launch.</li>
+        <li><strong>Network sockets</strong> — live TCP/UDP endpoints, owning PID, remote IP.</li>
+        <li><strong>Loaded DLLs &amp; injected code</strong> — reflective loaders, process hollowing, unbacked executable pages.</li>
+        <li><strong>Registry hives mapped in memory</strong> — values not yet flushed to disk.</li>
+        <li><strong>LSASS credentials</strong> — NTLM hashes, Kerberos tickets, plaintext passwords (mimikatz territory).</li>
+        <li><strong>Clipboard, console history, encryption keys</strong> — BitLocker FVEK, TrueCrypt/VeraCrypt, SSH agent keys.</li>
+      </ul>
+      <p>If you pull the plug before dumping, you lose all of that. Forever.</p>
+    </div>
+    <div class="al r"><span class="ali">⛔</span><span><strong>Live host found running?</strong> Memory image <em>before</em> anything else. Even before the disk image — the second you hit Tableau the source hash includes a now-stale RAM you can't recover.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">RAW vs AFF4 — the output formats</span></div>
+    <div class="prose">
+      <p><strong>RAW</strong> (a.k.a. <code>.raw</code>, <code>.bin</code>, <code>.dmp</code>, <code>.mem</code>) is a flat byte-for-byte copy of physical memory. No headers, no compression, no metadata — just <em>RAM as it was, padded over reserved regions</em>. Size on disk ≈ installed RAM.</p>
+      <ul>
+        <li>Universally readable — every parser eats raw without fuss.</li>
+        <li>Volatility 3 / MemProcFS expect raw by default.</li>
+        <li>No self-verification — you must hash and store hashes separately.</li>
+      </ul>
+      <p><strong>AFF4</strong> (Advanced Forensic Format v4, used natively by WinPmem) is a modern container. Think ZIP-like archive holding <em>multiple streams</em> with embedded metadata and per-chunk hashes.</p>
+      <ul>
+        <li>Single file can carry <em>memory + pagefile + hiberfil + drivers + system info</em>.</li>
+        <li>Snappy / deflate compression — typical 2–4× shrink on RAM.</li>
+        <li>Self-describing: acquisition time, host name, tool version, page table base.</li>
+        <li>Self-verifying: SHA-256 per chunk catches bit rot on storage.</li>
+        <li>Convert to raw for Volatility with <code>winpmem.exe --export PhysicalMemory -o mem.raw input.aff4</code>.</li>
+      </ul>
+      <p>Rule of thumb: <em>capture in AFF4 if the tool supports it (full evidence bundle), then export a raw copy for analysis.</em></p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🧲</span><span class="ct">Magnet RAM Capture — GUI, minimal footprint</span></div>
+    <div class="prose">
+      <p><strong>Magnet RAM Capture</strong> (Magnet Forensics, free) is the easy-button tool: tiny GUI, one button, dumps to <code>.raw</code> / <code>.dmp</code>. Designed to leave the smallest possible memory footprint so it overwrites as little of the target RAM as possible.</p>
+      <ul>
+        <li>Single-screen UI — pick output path, click <em>Start</em>.</li>
+        <li>Output: raw only. No AFF4, no pagefile bundling.</li>
+        <li>Run as Administrator from external media (USB / network share).</li>
+        <li>Pick when: <em>responder needs a click-and-go capture and doesn't trust their own typing under pressure</em>.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Launch (must be elevated)</div><div class="cc"><span class="cmt"># From responder USB, right-click → Run as administrator</span> E:\MagnetRAMCapture.exe</div></div>
+      <div class="cmd"><div class="lbl">Hash immediately after</div><div class="cc">certutil <span class="kw">-hashfile</span> <span class="val">HOST01-mem.raw SHA256</span></div></div>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">💉</span><span class="ct">DumpIt — single-EXE quiet capture</span></div>
+    <div class="prose">
+      <p><strong>DumpIt</strong> (originally MoonSols, now Comae / Magnet) is a single self-contained executable. No installer, no GUI by default — just drop and run. Output is a raw Microsoft crash dump-style image saved next to the binary, named after the host.</p>
+      <ul>
+        <li>Zero install, ~1 MB binary — fits on any IR thumb-drive.</li>
+        <li>Modern builds also emit <code>.dmp</code> (Windows crash-dump format), which WinDbg and Volatility both read.</li>
+        <li>Flags for unattended capture: <code>/Q</code> (quiet), <code>/O</code> (output path), <code>/T</code> (output type).</li>
+        <li>Pick when: <em>scripted IR, locked-down kiosk, or you need to drop a single file via PsExec / WinRM.</em></li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Interactive (confirm + dump next to EXE)</div><div class="cc">DumpIt.exe</div></div>
+      <div class="cmd"><div class="lbl">Quiet, scripted, to external share</div><div class="cc">DumpIt.exe <span class="kw">/Q</span> <span class="kw">/T</span> <span class="val">RAW</span> <span class="kw">/O</span> <span class="val">\\IR-SHARE\dumps\HOST01.raw</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">🔧</span><span class="ct">WinPmem — signed driver, AFF4, the kitchen sink</span></div>
+    <div class="prose">
+      <p><strong>WinPmem</strong> (Rekall / Velocidex) is the open-source heavyweight. Ships an embedded <em>signed kernel driver</em> (works on Secure Boot / driver-signing-enforced hosts) and writes natively to <em>AFF4</em>, which lets you bundle physical memory <em>plus</em> the pagefile, hiberfil, loaded driver list and a copy of the binary itself into one self-verifying container.</p>
+      <ul>
+        <li>CLI only — built for IR scripting. Same binary for Win7 → Win11 / Server 2022.</li>
+        <li>Can write raw <em>or</em> AFF4. AFF4 mode is the differentiator.</li>
+        <li><code>--volume_format aff4</code> + <code>-p pagefile.sys</code> bundles paging into the same evidence archive.</li>
+        <li>Loads its driver, dumps, unloads cleanly — leaves a minimal disk &amp; registry footprint.</li>
+        <li>Pick when: <em>you want the full evidence bundle in one file, or the host has Secure Boot and the other two tools' drivers won't load.</em></li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Plain raw dump</div><div class="cc">winpmem_mini.exe <span class="val">HOST01.raw</span></div></div>
+      <div class="cmd"><div class="lbl">Full AFF4 bundle: RAM + pagefile + drivers</div><div class="cc">winpmem.exe <span class="kw">--format</span> <span class="val">map</span> <span class="kw">--volume_format</span> <span class="val">aff4</span> <span class="kw">-p</span> <span class="val">C:\pagefile.sys</span> <span class="kw">-o</span> <span class="val">HOST01.aff4</span></div></div>
+      <div class="cmd"><div class="lbl">Export raw memory stream from AFF4 for Volatility</div><div class="cc">winpmem.exe <span class="kw">--export</span> <span class="val">PhysicalMemory</span> <span class="kw">-o</span> <span class="val">HOST01.raw</span> <span class="val">HOST01.aff4</span></div></div>
+    </div>
+    <div class="al b"><span class="ali">ℹ️</span><span>AFF4 streams are addressable like files inside the container — <code>--list</code> shows every embedded artefact (memory, pagefile, drivers, sysinfo) before you export.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🛏️</span><span class="ct">hiberfil.sys — RAM frozen to disk</span></div>
+    <div class="prose">
+      <p><code>C:\hiberfil.sys</code> is Windows' hibernation file. When the user hibernates, the kernel <em>compresses physical memory with Xpress-Huffman</em> and writes it here, then the box powers off. On resume, the kernel decompresses it back into RAM. Forensically: <em>a free historical RAM snapshot, sitting on disk</em>.</p>
+      <ul>
+        <li>Magic bytes: <code>HIBR</code> (or <code>RSTR</code> after resume — partially overwritten).</li>
+        <li>Size ≈ 40–75% of installed RAM (configurable via <code>powercfg /h size N</code>).</li>
+        <li>Convert to a flat raw image with <code>hibr2bin</code> (Comae) or Volatility 3's hibernation layer.</li>
+        <li><strong>Hybrid Sleep</strong> and <strong>Fast Startup</strong> (default on Win10/11 laptops) write a partial hiberfil <em>even when the user thinks they never hibernate</em> — always check.</li>
+        <li>Lives on the disk image — extract from the E01 you collected in §01 before parsing.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Convert hiberfil to raw (Comae hibr2bin)</div><div class="cc">hibr2bin.exe <span class="kw">/PLATFORM</span> <span class="val">X64</span> <span class="kw">/MAJOR</span> <span class="val">10</span> <span class="kw">/MINOR</span> <span class="val">0</span> <span class="kw">/INPUT</span> <span class="val">hiberfil.sys</span> <span class="kw">/OUTPUT</span> <span class="val">hiber.raw</span></div></div>
+      <div class="cmd"><div class="lbl">Volatility 3 — parse hiberfil directly</div><div class="cc">vol <span class="kw">-f</span> <span class="val">hiberfil.sys</span> windows.pslist</div></div>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">📄</span><span class="ct">pagefile.sys — paged-out fragments</span></div>
+    <div class="prose">
+      <p><code>C:\pagefile.sys</code> is Windows' on-disk swap. When physical RAM is tight, the kernel pages out cold memory regions here. <em>Not a memory image on its own</em> — there's no structure, no headers, just a soup of 4 KB pages — but it commonly holds fragments of process memory that have since been overwritten in live RAM.</p>
+      <ul>
+        <li>Locked by the kernel while running — grab it via FTK Imager <em>Obtain Protected Files</em> or from the §01 disk image.</li>
+        <li>Carve it: strings, URLs, command-line fragments, plaintext credentials, base64 blobs.</li>
+        <li>Pair with the live RAM dump in Volatility 3 (<code>--swap-locations</code>) to resolve paged-out process memory.</li>
+        <li><code>swapfile.sys</code> is the modern Windows app (UWP) swap — smaller, but check it too.</li>
+        <li>Wiped on shutdown only if <code>ClearPageFileAtShutdown=1</code> is set (rare).</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Quick triage — strings of length 6+</div><div class="cc">strings <span class="kw">-n</span> <span class="val">6</span> pagefile.sys <span class="kw">&gt;</span> pf-strings.txt</div></div>
+      <div class="cmd"><div class="lbl">Volatility 3 with pagefile attached</div><div class="cc">vol <span class="kw">-f</span> <span class="val">HOST01.raw</span> <span class="kw">--swap-locations</span> <span class="val">file:///cases/pagefile.sys</span> windows.cmdline</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">🗺️</span><span class="ct">What survives where — quick reference</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Artefact</th><th>Live RAM</th><th>hiberfil.sys</th><th>pagefile.sys</th><th>Disk only</th></tr></thead>
+      <tbody>
+        <tr><td>Process list + PPID</td><td>Yes (current)</td><td>Yes (at hibernate)</td><td>Fragments</td><td>No</td></tr>
+        <tr><td>Full command line</td><td>Yes</td><td>Yes</td><td>Common</td><td>Prefetch (truncated, §10)</td></tr>
+        <tr><td>Open TCP / UDP sockets</td><td>Yes</td><td>Yes</td><td>Rare</td><td>No</td></tr>
+        <tr><td>Loaded DLLs / injected code</td><td>Yes</td><td>Yes</td><td>Pages of</td><td>No</td></tr>
+        <tr><td>LSASS credential material</td><td>Yes</td><td>Yes</td><td>Sometimes</td><td>SAM/SECURITY hashes only (§07)</td></tr>
+        <tr><td>Clipboard / console history</td><td>Yes</td><td>Yes</td><td>Fragments</td><td>No</td></tr>
+        <tr><td>Encryption keys (BitLocker FVEK, etc.)</td><td>Yes</td><td>Yes</td><td>Possible</td><td>No</td></tr>
+        <tr><td>Registry values not flushed</td><td>Yes</td><td>Yes</td><td>Pages of</td><td>No (hives lag, §08)</td></tr>
+        <tr><td>Browser history / DNS cache</td><td>Yes (cached)</td><td>Yes</td><td>Fragments</td><td>SQLite on disk (§09)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al g"><span class="ali">✅</span><span>The hiberfil column is why <em>even a powered-off laptop is worth memory-forensicating</em> — Fast Startup almost always leaves a partial RAM snapshot behind.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">⚙️</span><span class="ct">Acquisition gotchas &amp; the analysis hand-off</span></div>
+    <div class="prose">
+      <p>Same workflow regardless of tool — only the flags change:</p>
+      <ul>
+        <li><strong>Run as Administrator.</strong> No exceptions — every capture tool loads a kernel driver.</li>
+        <li><strong>Write to external media</strong> (USB / network share). Writing the dump to <code>C:</code> overwrites the very RAM regions you're trying to capture (page cache thrash, dirty writes).</li>
+        <li><strong>Expected size = installed physical RAM</strong> + small overhead. A 16 GB host produces a ~16 GB raw dump. AFF4 will compress it to 4–8 GB.</li>
+        <li><strong>Hash immediately.</strong> SHA-256 the dump on the responder USB <em>before</em> moving it. Repeat at the lab — values must match.</li>
+        <li><strong>VMs are easier.</strong> A guest's <code>.vmem</code> file (plus the <code>.vmsn</code> snapshot for register state) is functionally equivalent to a live memory dump — and the host doesn't need a driver. Suspend the VM and copy.</li>
+        <li><strong>BitLocker / full-disk encryption:</strong> if the box is running, the FVEK is in RAM. Capture <em>now</em> or lose the keys.</li>
+        <li><strong>Anti-forensics aware.</strong> Some malware detects the WinPmem / DumpIt drivers loading. Mitigation: be quick, capture early, don't run interactive recon on the box first.</li>
+      </ul>
+      <p><em>The hand-off:</em> acquisition is half the job. Parsing is the other half — covered next:</p>
+      <ul>
+        <li><strong>Volatility 3</strong> — symbol-driven plugin framework. The textbook parser. <code>windows.pslist</code>, <code>windows.netscan</code>, <code>windows.malfind</code>, <code>windows.cmdline</code>.</li>
+        <li><strong>MemProcFS</strong> — mounts the dump as a virtual filesystem. <code>F:\proc\by-name\lsass.exe\modules\</code> — browse memory like files. Brilliant for triage.</li>
+        <li><strong>strings + grep</strong> — never underestimated. URLs, IPs, PowerShell blocks, credentials all surface this way.</li>
+      </ul>
+    </div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong>Document the tool version.</strong> Volatility symbol tables are kernel-build-specific. Note the target's exact Windows build (<code>winver</code>) on the chain-of-custody form so the analyst can pick the right profile / ISF.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>Memory findings are most powerful when they line up with on-disk artefacts. The whole point of a multi-artefact methodology is that a clever attacker has to lie consistently in too many places at once.</p>
+    <ul>
+      <li><strong>Process list ↔ Application Execution (§10)</strong> — every PID in <code>windows.pslist</code> should have a matching entry in <em>Prefetch</em>, <em>AmCache</em>, or <em>ShimCache</em>. A process in RAM with no on-disk execution artefact = injected or process-hollowed.</li>
+      <li><strong>Network sockets ↔ Browser history &amp; DNS cache (§09)</strong> — remote IPs from <code>windows.netscan</code> should resolve to domains seen in browser history, <code>%SystemRoot%\System32\drivers\etc\hosts</code>, or the DNS resolver cache. Lone IPs with no DNS context are suspicious.</li>
+      <li><strong>LSASS credentials ↔ SAM &amp; SECURITY hives (§07)</strong> — NTLM hashes lifted from RAM must match the hashes recoverable from the offline SAM. Mismatch = injected creds or a different user context cached.</li>
+      <li><strong>hiberfil &amp; pagefile timestamps ↔ SYSTEM hive shutdown timestamp (§08)</strong> — file MFT timestamps on <code>hiberfil.sys</code> / <code>pagefile.sys</code> should line up with the last clean shutdown recorded in the SYSTEM hive (<code>ShutdownTime</code>). Drift implies tampering or a crash between sleep and shutdown.</li>
+      <li><strong>Loaded modules ↔ Disk image (§01 E01)</strong> — every DLL path resolved in memory should exist on disk with a matching SHA-256. Memory-only or hash-mismatched modules = reflective loading.</li>
+      <li><strong>Remember:</strong> <code>hiberfil.sys</code> and <code>pagefile.sys</code> live on the system volume — they are <em>already inside</em> the §01 E01. Extract them from the disk image before analysis; you do not need a second acquisition.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V2 · §02 Memory Forensics</span>
+  <span>Next → §03 KAPE &amp; AIM</span>
+</div>
+
+</div></body></html>

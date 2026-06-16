@@ -75,6 +75,52 @@
       "component": "DigitalForensics"
     },
     {
+      "title": "Cheat Sheets",
+      "children": [
+        {
+          "title": "Windows AD Incident Response",
+          "file": "pages/incident-response-cheatsheet.html"
+        },
+        {
+          "title": "Digital Forensics",
+          "file": "pages/digital-forensics-cheatsheet.html"
+        },
+        {
+          "title": "CCDCOE IDFC",
+          "file": "pages/windows-forensics-course-cheatsheet.html"
+        },
+        {
+          "title": "CCDCOE IDFC V2",
+          "file": "pages/windows-forensics-course-cheatsheet-v2.html",
+          "children": [
+            { "title": "01 — Evidence Collection", "file": "pages/ccdcoe-v2/01-evidence-collection.html" },
+            { "title": "02 — Memory Forensics", "file": "pages/ccdcoe-v2/02-memory-forensics.html" },
+            { "title": "03 — KAPE & AIM", "file": "pages/ccdcoe-v2/03-kape-aim.html" },
+            { "title": "04 — Windows Filesystem / NTFS", "file": "pages/ccdcoe-v2/04-ntfs.html" },
+            { "title": "05 — File Carving", "file": "pages/ccdcoe-v2/05-file-carving.html" },
+            { "title": "06 — Registries Overview", "file": "pages/ccdcoe-v2/06-registries-overview.html" },
+            { "title": "07 — SAM Hive", "file": "pages/ccdcoe-v2/07-sam.html" },
+            { "title": "08 — SYSTEM & SOFTWARE Hives", "file": "pages/ccdcoe-v2/08-system-software.html" },
+            { "title": "09 — NTUSER.dat", "file": "pages/ccdcoe-v2/09-ntuser-dat.html" },
+            { "title": "10 — Application Execution", "file": "pages/ccdcoe-v2/10-application-execution.html" },
+            { "title": "11 — Cloud Storage", "file": "pages/ccdcoe-v2/11-cloud-storage.html" },
+            { "title": "12 — Shell Items & LNK", "file": "pages/ccdcoe-v2/12-shell-items-lnk.html" },
+            { "title": "13 — Jump Lists & Shellbags", "file": "pages/ccdcoe-v2/13-jumplists-shellbags.html" }
+          ]
+        },
+        {
+          "title": "CCDCOE IDFC V3",
+          "file": "pages/windows-forensics-course-cheatsheet-v3.html",
+          "children": [
+            { "title": "01 — Evidence Collection", "slug": "v3-01-evidence-collection", "file": "pages/ccdcoe-v3/01-evidence-collection.html" },
+            { "title": "02 — Memory Forensics", "slug": "v3-02-memory-forensics", "file": "pages/ccdcoe-v3/02-memory-forensics.html" },
+            { "title": "03 — KAPE & AIM", "slug": "v3-03-kape-aim", "file": "pages/ccdcoe-v3/03-kape-aim.html" },
+            { "title": "04 — Windows Filesystem / NTFS", "slug": "v3-04-ntfs", "file": "pages/ccdcoe-v3/04-ntfs.html" }
+          ]
+        }
+      ]
+    },
+    {
       "title": "Deprecated",
       "hideInProd": true,
       "children": [
@@ -88,19 +134,6 @@
           "title": "Demos",
           "children": [
             { "title": "Example Visualization", "file": "pages/example.html" }
-          ]
-        },
-        {
-          "title": "Cheat Sheets",
-          "children": [
-            {
-              "title": "Windows AD Incident Response",
-              "file": "pages/incident-response-cheatsheet.html"
-            },
-            {
-              "title": "Digital Forensics",
-              "file": "pages/digital-forensics-cheatsheet.html"
-            }
           ]
         },
         {

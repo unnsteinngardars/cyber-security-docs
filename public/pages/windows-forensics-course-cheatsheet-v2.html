@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCDCOE IDFC V2 — Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.55;padding:18px 18px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--blue-dim);border:1px solid var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.8vw,24px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:4px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.intro{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:var(--tx);font-size:12px;line-height:1.65}
+.intro p{margin-bottom:6px}
+.intro p:last-child{margin-bottom:0}
+.intro strong{color:#fff}
+.intro em{color:var(--blue);font-style:normal;font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.tile{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px 13px;border-left:3px solid var(--accent,var(--blue));display:flex;flex-direction:column;gap:6px}
+.tile.t-1{--accent:var(--red)}
+.tile.t-2{--accent:var(--teal)}
+.tile.t-3{--accent:var(--amber)}
+.tile.t-4{--accent:var(--purple)}
+.tile.t-5{--accent:var(--green)}
+.tile.t-6{--accent:var(--blue)}
+.tile.t-7{--accent:var(--red)}
+.tile.t-8{--accent:var(--teal)}
+.tile.t-9{--accent:var(--amber)}
+.tile.t-10{--accent:var(--purple)}
+.tile.t-11{--accent:var(--green)}
+.tile.t-12{--accent:var(--blue)}
+.tile.t-13{--accent:var(--red)}
+.tile .n{font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--accent,var(--blue))}
+.tile .t{font-family:var(--sans);font-size:13.5px;font-weight:800;color:#fff;line-height:1.2}
+.tile .d{font-size:11px;color:var(--dm);line-height:1.5}
+.tile .tools{font-size:10px;color:var(--dm2);margin-top:2px}
+.tile .tools strong{color:var(--tx);font-weight:600}
+
+.ft{margin-top:22px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🔬</div>
+    <div>
+      <div class="t1">CCDCOE IDFC — V2</div>
+      <div class="t2">Introduction to Digital Forensics — Windows-centric, with network &amp; browser side-tracks</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">Acquisition</span>
+    <span class="b b-t">Memory</span>
+    <span class="b b-a">KAPE</span>
+    <span class="b b-p">NTFS</span>
+    <span class="b b-g">Carving</span>
+    <span class="b b-b">Registry</span>
+  </div>
+</div>
+
+<div class="intro">
+  <p>This is the V2 split of the CCDCOE IDFC cheat sheet — one sub-page per topic so each section can grow without the scroll getting ridiculous. The series follows the order the course actually taught the material in: acquire the evidence first, then peel back layers from RAM down to filesystem metadata, then per-hive registry work, then user-activity artefacts.</p>
+  <p>Every section follows the same shape: <em>what artefact, where it lives, how to extract it with the listed tools, how to parse it, why it matters forensically, and what to cross-reference it against</em>. No single artefact is convincing on its own — corroboration across two or three independent artefacts is what turns a finding into a defensible conclusion.</p>
+  <p>Open any tile below to jump straight into that section.</p>
+</div>
+
+<div class="grid">
+  <a class="tile t-1" href="#/01-evidence-collection">
+    <div class="n">01</div>
+    <div class="t">Evidence Collection</div>
+    <div class="d">Image first, analyse later. E01 vs raw, write-blockers, hashing, chain of custody.</div>
+    <div class="tools"><strong>Tools:</strong> FTK Imager, Tableau</div>
+  </a>
+  <a class="tile t-2" href="#/02-memory-forensics">
+    <div class="n">02</div>
+    <div class="t">Memory Forensics</div>
+    <div class="d">RAM, hiberfil, pagefile. RAW vs AFF4. Order of volatility.</div>
+    <div class="tools"><strong>Tools:</strong> Magnet RAM Capture, DumpIt, WinPmem</div>
+  </a>
+  <a class="tile t-3" href="#/03-kape-aim">
+    <div class="n">03</div>
+    <div class="t">KAPE &amp; AIM</div>
+    <div class="d">Triage collection at scale. Targets, modules, mount workflows.</div>
+    <div class="tools"><strong>Tools:</strong> KAPE, gKape, Arsenal Image Mounter</div>
+  </a>
+  <a class="tile t-4" href="#/04-ntfs">
+    <div class="n">04</div>
+    <div class="t">Windows Filesystem / NTFS</div>
+    <div class="d">$MFT, $LogFile, MACB, ADS, VSS. Resident vs non-resident.</div>
+    <div class="tools"><strong>Tools:</strong> MFTECmd</div>
+  </a>
+  <a class="tile t-5" href="#/05-file-carving">
+    <div class="n">05</div>
+    <div class="t">File Carving</div>
+    <div class="d">What survives deletion, and how to claw it back. Magic bytes &amp; limits.</div>
+    <div class="tools"><strong>Tools:</strong> PhotoRec, Autopsy, MFTECmd, AIM + KAPE --vss</div>
+  </a>
+  <a class="tile t-6" href="#/06-registries-overview">
+    <div class="n">06</div>
+    <div class="t">Registries Overview</div>
+    <div class="d">Hive layout, keys, values, LastWriteTime, MRU, deleted keys, dirty hives.</div>
+    <div class="tools"><strong>Tools:</strong> Registry Explorer, RECmd, RegRipper</div>
+  </a>
+  <a class="tile t-7" href="#/07-sam">
+    <div class="n">07</div>
+    <div class="t">SAM Hive</div>
+    <div class="d">Local accounts, RIDs, logons, group membership, password change.</div>
+    <div class="tools"><strong>Hives:</strong> SAM, SOFTWARE (IdentityStore), NTUSER (OneDrive)</div>
+  </a>
+  <a class="tile t-8" href="#/08-system-software">
+    <div class="n">08</div>
+    <div class="t">SYSTEM &amp; SOFTWARE</div>
+    <div class="d">OS profile, ControlSets, services, networks, autoruns, installed apps.</div>
+    <div class="tools"><strong>Tools:</strong> Registry Explorer (+ plugins), RECmd</div>
+  </a>
+  <a class="tile t-9" href="#/09-ntuser-dat">
+    <div class="n">09</div>
+    <div class="t">NTUSER.dat</div>
+    <div class="d">Search/typed paths, RecentDocs, RunMRU, Office MRU, TrustRecords, ComDlg32.</div>
+    <div class="tools"><strong>Tools:</strong> Registry Explorer, RECmd</div>
+  </a>
+  <a class="tile t-10" href="#/10-application-execution">
+    <div class="n">10</div>
+    <div class="t">Application Execution</div>
+    <div class="d">BAM/DAM, UserAssist, Prefetch, ShimCache, AmCache, FeatureUsage.</div>
+    <div class="tools"><strong>Tools:</strong> AppCompatCacheParser, AmCacheParser, PECmd, WinPrefetchView</div>
+  </a>
+  <a class="tile t-11" href="#/11-cloud-storage">
+    <div class="n">11</div>
+    <div class="t">Cloud Storage</div>
+    <div class="d">OneDrive, Google Drive, Dropbox sync DBs; what synced, what didn't.</div>
+    <div class="tools"><strong>Tools:</strong> OneDriveExplorer, DB Browser for SQLite, DPAPI decrypt</div>
+  </a>
+  <a class="tile t-12" href="#/12-shell-items-lnk">
+    <div class="n">12</div>
+    <div class="t">Shell Items &amp; LNK</div>
+    <div class="d">PIDLs, link headers, target metadata, TrackerDataBlock MAC.</div>
+    <div class="tools"><strong>Tools:</strong> LECmd</div>
+  </a>
+  <a class="tile t-13" href="#/13-jumplists-shellbags">
+    <div class="n">13</div>
+    <div class="t">Jump Lists &amp; Shellbags</div>
+    <div class="d">Automatic/custom destinations, per-folder shell state, deleted-folder evidence.</div>
+    <div class="tools"><strong>Tools:</strong> JLECmd, SBECmd</div>
+  </a>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC — V2 · split-page cheat sheet</span>
+  <span>Use the left nav to open any section directly.</span>
+</div>
+
+</div></body></html>

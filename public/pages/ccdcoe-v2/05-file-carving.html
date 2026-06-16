@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 — File Carving · CCDCOE IDFC V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--green);--accent-dim:var(--green-dim);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.6;padding:16px 16px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.crumb{font-size:9.5px;color:var(--dm2);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:4px}
+.crumb .acc{color:var(--accent)}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:3px}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:11px;line-height:1.55}
+.tor .sl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:6px}
+.tor .tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;margin:0 3px 3px 0;font-size:10px;color:#9CDCFE}
+.tor .row{margin-bottom:2px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:14px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;line-height:1.15}
+
+.prose{font-size:11.5px;color:var(--tx);line-height:1.65}
+.prose p{margin-bottom:6px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10.5px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:11px;line-height:1.55}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:9px;top:3px}
+.prose ol{list-style:none;padding-left:0;margin:4px 0 6px;counter-reset:step}
+.prose ol li{position:relative;padding-left:20px;margin-bottom:3px;font-size:11px;line-height:1.55;counter-increment:step}
+.prose ol li::before{content:counter(step);position:absolute;left:0;top:0;color:var(--accent);font-family:var(--sans);font-weight:700;font-size:10px}
+
+.cmds{display:flex;flex-direction:column;gap:5px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10.5px;color:#C8E6FF;word-break:break-all;line-height:1.45}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.path{font-family:var(--mono);font-size:10px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.45;margin:3px 0}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:7px 10px;border-radius:5px;font-size:11px;line-height:1.5;margin-top:4px}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:13px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10.5px;min-width:260px}
+.et th{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:5px 7px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.45}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:8px;padding:10px 13px;margin-top:12px}
+.xref .sl{color:var(--accent);margin-bottom:5px}
+.xref .prose{font-size:11px}
+
+.ft{margin-top:18px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🔪</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V2 / <span class="acc">05 — File Carving</span></div>
+      <div class="t1">File Carving &amp; Recovery</div>
+      <div class="t2">What NTFS leaves behind when a file is deleted — and how to claw it back</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-g">Recovery</span>
+    <span class="b b-r">Deletion</span>
+    <span class="b b-b">Magic Bytes</span>
+    <span class="b b-a">VSS</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">MFTECmd</span><span class="tag">Arsenal Image Mounter</span><span class="tag">KAPE --vss</span><span class="tag">PhotoRec</span><span class="tag">Autopsy</span><span class="tag">HxD / 010 Editor</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">$MFT records (InUse=False)</span><span class="tag">Unallocated clusters</span><span class="tag">$Recycle.Bin $I/$R</span><span class="tag">VSS snapshots</span><span class="tag">File slack</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">In-use flag</span><span class="tag">Resident data</span><span class="tag">Magic bytes</span><span class="tag">Signature carving</span><span class="tag">Fragmentation</span><span class="tag">Overwrite</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🪦</span><span class="ct">What NTFS actually does on delete</span></div>
+    <div class="prose">
+      <p>"Delete" on NTFS is a <strong>bookkeeping change</strong>, not a data wipe. The bytes stay; the filesystem just stops pointing at them and marks the real estate as available.</p>
+      <ul>
+        <li><strong>$MFT record</strong> — the <em>in-use flag</em> (bit 0 of the flags field in the MFT record header) is cleared. The record sits in place, complete with filename, MACB, parent reference and (if resident) the file's own bytes, until the slot is reused for a new file.</li>
+        <li><strong>Parent directory index</strong> — the filename entry is removed from the active B+ tree in <code>$INDEX_ROOT</code> / <code>$INDEX_ALLOCATION</code>. It may still linger in <em>index entry slack</em> inside the index node.</li>
+        <li><strong>$Bitmap</strong> — the clusters the file occupied flip from <em>1 (allocated)</em> to <em>0 (free)</em>. The cluster contents are <strong>not zeroed</strong>; they wait, intact, until the allocator hands them to a new file.</li>
+        <li><strong>Resident files</strong> — anything small enough (≈ &lt; 700 B) lives entirely inside the MFT record's <code>$DATA</code> attribute. There are no clusters to free; the data dies <em>with the record slot</em>.</li>
+        <li><strong>$LogFile</strong> records the metadata transaction; <strong>$UsnJrnl:$J</strong> records the move into <code>$Recycle.Bin</code> and the eventual real delete (USN reasons <code>0x200</code> rename + <code>0x40000200</code> close-after-delete).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">Where deleted data hides</span></div>
+    <div class="prose">
+      <p>If the OS only changed pointers, the data is still somewhere. Know every place a "deleted" file leaves residue:</p>
+      <ul>
+        <li><strong>MFT slot itself</strong> — name, MACB, parent ref, and (for resident files) the entire payload.</li>
+        <li><strong>Unallocated clusters</strong> — the full file content, untouched until overwritten. Carver territory.</li>
+        <li><strong>File slack</strong> — the unused bytes between end-of-file and end-of-cluster. Holds tails of older files.</li>
+        <li><strong>Volume Shadow Copies</strong> — past versions from earlier snapshots. From the filesystem's view they are <em>still allocated</em>, so they survive deletion of the live file.</li>
+        <li><strong>$Recycle.Bin\&lt;SID&gt;\</strong> — <code>$I</code> (original path, size, delete time) and <code>$R</code> (the actual payload) pair. Not "deleted" yet — just moved.</li>
+        <li><strong>pagefile.sys / hiberfil.sys</strong> — fragments of file contents that lived in RAM at delete time.</li>
+        <li><strong>Caches</strong> — browser cache, <code>thumbcache_*.db</code>, Office MRU previews, app-specific caches keep thumbnails and snippets long after the original is gone.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🧾</span><span class="ct">MFTECmd — start here, not with the carver</span></div>
+    <div class="prose">
+      <p><strong>MFTECmd</strong> (Eric Zimmerman) parses <code>$MFT</code> directly. For every deleted record it gives you the <em>full original filename</em>, parent path, MACB timestamps, and — if the file was resident — the file content inline. Step one of every recovery; carving is a fallback when MFT can't help.</p>
+      <ul>
+        <li>Filter <code>InUse == False</code> to get the deleted set.</li>
+        <li><code>IsDirectory</code>, <code>HasAds</code>, <code>FileSize</code> and the <em>parent path</em> column are usually enough to triage.</li>
+        <li>Resident content is exposed in the <code>--de</code> dump or the J/Log outputs.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Parse $MFT to CSV</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">F:\$MFT</span> <span class="kw">--csv</span> <span class="val">C:\out</span> <span class="kw">--csvf</span> <span class="val">mft.csv</span></div></div>
+      <div class="cmd"><div class="lbl">Filter deleted entries (PowerShell)</div><div class="cc">Import-Csv <span class="val">C:\out\mft.csv</span> | ? { $_.InUse -eq <span class="val">"False"</span> } | Export-Csv <span class="val">deleted.csv</span> -NoTypeInformation</div></div>
+      <div class="cmd"><div class="lbl">Dump a specific MFT entry (resident bytes)</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">F:\$MFT</span> <span class="kw">--de</span> <span class="val">0x12345</span> <span class="kw">--csv</span> <span class="val">C:\out</span></div></div>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🗂</span><span class="ct">Arsenal Image Mounter + KAPE --vss</span></div>
+    <div class="prose">
+      <p><strong>Arsenal Image Mounter (AIM)</strong> mounts an E01/raw image as a real Windows volume — disk-level, not file-level — so that Volume Shadow Copy Service sees and exposes the snapshots inside it. Then <strong>KAPE</strong> with <code>--vss</code> walks <em>every</em> VSS store and re-collects targets from each.</p>
+      <ul>
+        <li>Files deleted <em>between</em> snapshots reappear from earlier VSS copies.</li>
+        <li>Even overwritten files survive if a snapshot froze the old content.</li>
+        <li>Combine with <code>KapeTriage</code> or specific targets (<code>RegistryHives</code>, <code>EventLogs</code>) for a fast pass.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Mount image with AIM (GUI: write-temporary mode)</div><div class="cc"><span class="cmt"># File → Mount disk image → write-temporary → drive letter, e.g. F:</span></div></div>
+      <div class="cmd"><div class="lbl">KAPE triage across all VSS</div><div class="cc">kape.exe <span class="kw">--tsource</span> <span class="val">F:</span> <span class="kw">--target</span> <span class="val">KapeTriage</span> <span class="kw">--tdest</span> <span class="val">C:\out</span> <span class="kw">--vss</span></div></div>
+      <div class="cmd"><div class="lbl">Just the registry hives, from every snapshot</div><div class="cc">kape.exe <span class="kw">--tsource</span> <span class="val">F:</span> <span class="kw">--target</span> <span class="val">RegistryHives</span> <span class="kw">--tdest</span> <span class="val">C:\out</span> <span class="kw">--vss</span> <span class="kw">--vhdx</span> <span class="val">case01</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🪚</span><span class="ct">PhotoRec — signature carving for unallocated</span></div>
+    <div class="prose">
+      <p><strong>PhotoRec</strong> (CGSecurity) ignores the filesystem entirely and scans the raw byte stream for known <em>magic bytes</em>. It recovers <em>content only</em> — no filename, no path, no MACB.</p>
+      <ul>
+        <li>Best aimed at <em>unallocated space</em> specifically (free option in the menu).</li>
+        <li>Output files are renamed <code>f00012345.jpg</code> — original names are gone with the MFT entry.</li>
+        <li>Limit signatures to what you care about; "everything" produces gigabytes of false positives.</li>
+        <li>Run on a <strong>copy</strong> of the image, not the master.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Interactive (preferred for teaching)</div><div class="cc">photorec <span class="val">/d C:\out\carved</span> <span class="val">image.E01</span></div></div>
+      <div class="cmd"><div class="lbl">Scripted — JPG + PDF + DOCX only</div><div class="cc">photorec <span class="kw">/d</span> <span class="val">C:\out</span> <span class="kw">/cmd</span> <span class="val">"image.dd fileopt,everything,disable,jpg,enable,pdf,enable,zip,enable,search"</span></div></div>
+      <div class="cmd"><div class="lbl">Free-space only (skip allocated)</div><div class="cc"><span class="cmt"># In menu: choose partition → [ Free ] instead of [ Whole ]</span></div></div>
+    </div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong>Carver reality check:</strong> PhotoRec on a heavily <em>fragmented</em> disk produces <em>noisy, half-broken</em> output — a JPG header followed by a chunk of a Word document is "recovered" as a corrupt JPG. And on a <em>BitLocker/EFS</em> volume that hasn't been decrypted yet, every byte looks random; you will burn CPU and find nothing. Decrypt first, then carve.</span></div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🧰</span><span class="ct">Autopsy &amp; the Hex Editor of last resort</span></div>
+    <div class="prose">
+      <p><strong>Autopsy</strong> is the one-stop GUI: it parses <code>$MFT</code> and lists deleted entries, can ingest VSS, runs PhotoRec as an ingest module, indexes text, and pivots into the timeline. Best didactic tool — every recovery technique in one pane.</p>
+      <ul>
+        <li><em>Deleted Files</em> view = MFT records with InUse=False.</li>
+        <li><em>Carved Files</em> view = PhotoRec ingest output.</li>
+        <li><em>Keyword search</em> indexes unallocated too — useful for plaintext fragments.</li>
+      </ul>
+      <p><strong>Hex Editor (HxD, 010 Editor)</strong> is the last resort. You go in by hand to:</p>
+      <ul>
+        <li>Verify a carved file's header/footer are sane.</li>
+        <li>Read inside <em>file slack</em> where automated tools refuse to look.</li>
+        <li>Hunt known plaintext (passphrases, URLs, ransom notes) across cluster boundaries.</li>
+        <li>Carve a fragment by hand when the signature is unusual or the footer is missing.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Autopsy ingest — typical config</div><div class="cc"><span class="cmt"># New case → add data source (E01) → enable: File Type ID, Hash Lookup, Keyword Search, PhotoRec Carver, VSS</span></div></div>
+      <div class="cmd"><div class="lbl">010 Editor — run a template to validate a carved JPEG</div><div class="cc"><span class="cmt"># Templates → JPGTemplate.bt — flags broken SOI/EOI markers immediately</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">🧬</span><span class="ct">How file carving actually works — and the magic-byte cheat sheet</span></div>
+    <div class="prose">
+      <p>A <strong>carver</strong> ignores the filesystem and scans the raw byte stream for <em>file signatures</em> (magic bytes) at the start of allocation units. When it finds a known <em>header</em> it searches forward for the matching <em>footer</em> (or applies a max-size heuristic) and writes the slice out as a recovered file. Carvers know hundreds of signatures; you only need to recognise the common ones to read what a tool produced.</p>
+    </div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>File type</th><th>Header (hex)</th><th>ASCII</th><th>Footer / length rule</th></tr></thead>
+      <tbody>
+        <tr><td>JPEG / JFIF / EXIF</td><td>FF D8 FF E0 / E1 / DB</td><td>ÿØÿà</td><td>FF D9 (EOI marker)</td></tr>
+        <tr><td>PNG</td><td>89 50 4E 47 0D 0A 1A 0A</td><td>.PNG\r\n\x1a\n</td><td>49 45 4E 44 AE 42 60 82 (IEND chunk + CRC)</td></tr>
+        <tr><td>GIF</td><td>47 49 46 38 37/39 61</td><td>GIF87a / GIF89a</td><td>00 3B (trailer)</td></tr>
+        <tr><td>PDF</td><td>25 50 44 46 2D</td><td>%PDF-</td><td>25 25 45 4F 46 (%%EOF)</td></tr>
+        <tr><td>ZIP / DOCX / XLSX / PPTX / JAR / APK</td><td>50 4B 03 04</td><td>PK..</td><td>50 4B 05 06 (EOCD record)</td></tr>
+        <tr><td>OLE / legacy DOC / XLS / MSI</td><td>D0 CF 11 E0 A1 B1 1A E1</td><td>ÐÏ.à¡±.á</td><td>Length from OLE header (no fixed footer)</td></tr>
+        <tr><td>GZIP</td><td>1F 8B 08</td><td>.‹.</td><td>No footer — CRC32 + ISIZE at end (length-driven)</td></tr>
+        <tr><td>7z</td><td>37 7A BC AF 27 1C</td><td>7z¼¯'.</td><td>Length from header</td></tr>
+        <tr><td>RAR</td><td>52 61 72 21 1A 07 00/01</td><td>Rar!...</td><td>Length from header</td></tr>
+        <tr><td>Windows PE (EXE/DLL)</td><td>4D 5A</td><td>MZ</td><td>Length from PE header (SizeOfImage)</td></tr>
+        <tr><td>ELF</td><td>7F 45 4C 46</td><td>.ELF</td><td>Length from program headers</td></tr>
+        <tr><td>SQLite 3</td><td>53 51 4C 69 74 65 20 66 6F 72 6D 61 74 20 33 00</td><td>SQLite format 3.</td><td>Length from header (page_count × page_size)</td></tr>
+        <tr><td>EVTX (Windows event log)</td><td>45 6C 66 46 69 6C 65 00</td><td>ElfFile\0</td><td>Length from header (chunk-aligned, 64 KB blocks)</td></tr>
+        <tr><td>Registry hive</td><td>72 65 67 66</td><td>regf</td><td>Length from hive header</td></tr>
+        <tr><td>MP4 / MOV / 3GP</td><td>?? ?? ?? ?? 66 74 79 70</td><td>....ftyp</td><td>Box-driven length (mdat / moov)</td></tr>
+        <tr><td>BMP</td><td>42 4D</td><td>BM</td><td>Length from header (offset 0x02)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al b"><span class="ali">💡</span><span><strong>Cluster alignment matters:</strong> most carvers only check for headers at the start of each cluster (4 KB on default NTFS), so a header lurking at an arbitrary byte offset inside slack will be missed unless you ask for byte-granular scanning.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">⛔</span><span class="ct">What carving cannot get back</span></div>
+    <div class="prose">
+      <p>Carving is powerful but blind. Set the examiner's expectations honestly:</p>
+      <ul>
+        <li><strong>Fragmented files</strong> — header found, but the next cluster belongs to another file. Carvers stitch contiguous runs and assume continuity; a fragmented DOCX comes out corrupt.</li>
+        <li><strong>Resident files</strong> — too small to leave any cluster footprint. Lives in the MFT record only; PhotoRec will miss it. <em>That's why MFTECmd is step 1.</em></li>
+        <li><strong>Overwritten files</strong> — once another file's data is written to those freed clusters, the original is gone. No magic recovery.</li>
+        <li><strong>Filenames &amp; paths</strong> — carved files are renamed <code>f00012345.ext</code>. Without the MFT record, there is no original name.</li>
+        <li><strong>Timestamps</strong> — there is no metadata in raw clusters. PhotoRec stamps a "carved at" time only.</li>
+        <li><strong>Encrypted content</strong> — BitLocker / EFS clusters look like random bytes; no signature matches. Carving must happen <em>after</em> decryption.</li>
+        <li><strong>Compressed-by-NTFS files</strong> — even contiguous, the on-disk bytes don't match the raw magic until decompressed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🪜</span><span class="ct">Workflow priority — the order to actually run things</span></div>
+    <div class="prose">
+      <p>Run cheap, metadata-rich techniques first. Carve raw clusters only when those are exhausted.</p>
+      <ol>
+        <li><strong>MFTECmd on $MFT</strong> — recover deleted records: original filename, parent path, MACB, and resident content inline.</li>
+        <li><strong>AIM + KAPE --vss</strong> — mount the image, walk every Volume Shadow Copy, re-collect targets. Anything that existed at a snapshot is back.</li>
+        <li><strong>$Recycle.Bin $I / $R pairs</strong> — soft-deleted files with full original path, size and delete timestamp. Map the <code>&lt;SID&gt;</code> to a user (see §07).</li>
+        <li><strong>PhotoRec / Autopsy carving of unallocated</strong> — recover <em>content</em> for anything the MFT no longer remembers.</li>
+        <li><strong>Hex editor on slack, pagefile, hiberfil</strong> — last sweep for fragments, plaintext, and string remnants.</li>
+      </ol>
+    </div>
+    <div class="al g"><span class="ali">✅</span><span><strong>Examiner rule:</strong> never report a carved blob as <em>"the user's file"</em> without corroborating its existence in the MFT, VSS, Recycle.Bin, Prefetch (§10), or another metadata source. Carving alone gives content, not provenance.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>A carved file is a <em>headless blob</em> until you tie it back to filesystem metadata, registry activity or execution traces. The other sections supply that context:</p>
+    <ul>
+      <li><strong>§04 NTFS</strong> — for the structure of <code>$MFT</code> records, the <code>$Bitmap</code> allocation map, and <code>$LogFile</code> / <code>$UsnJrnl:$J</code> deletion transactions that underpin every recovery technique here.</li>
+      <li><strong>§03 KAPE</strong> — for the full <code>--vss</code> target/module flow, VHDX containerisation, and how <code>KapeTriage</code> orchestrates collection across snapshots.</li>
+      <li><strong>§02 Memory Forensics</strong> — pagefile and hiberfil string fragments often hold cleartext copies of documents and credentials that vanished from disk.</li>
+      <li><strong>§10 Prefetch / AmCache</strong> — to corroborate that a <em>now-deleted</em> binary actually ran on the host: even after the EXE is gone, its <code>.pf</code> file and the AmCache SHA-1 endure.</li>
+      <li><strong>§07 SAM</strong> — to resolve the <code>&lt;SID&gt;</code> directory under <code>$Recycle.Bin\</code> to a real local user account and place the deletion with a person.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V2 · §05 File Carving</span>
+  <span>Next → §06 Registries Overview</span>
+</div>
+
+</div></body></html>

@@ -1,0 +1,1455 @@
+[
+  {
+    "title": "Evidence Collection",
+    "tools": [
+      {
+        "id": "1",
+        "title": "FTK Imager"
+      },
+      {
+        "id": "2",
+        "title": "Tableau"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "E01 image"
+      }
+    ]
+  },
+  {
+    "title": "Memory Forensics",
+    "tools": [
+      {
+        "id": "1",
+        "title": "Magnet RAM Capture"
+      },
+      {
+        "id": "2",
+        "title": "DumpIt"
+      },
+      {
+        "id": "3",
+        "title": "WinPmem"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "hiberfil"
+      },
+      {
+        "id": "2",
+        "title": "pagefil"
+      }
+    ]
+  },
+  {
+    "title": "KAPE and AIM",
+    "tools": [
+      {
+        "id": "1",
+        "title": "KAPE"
+      },
+      {
+        "id": "2",
+        "title": "Arsenal Image Mounter"
+      },
+      {
+        "id": "3",
+        "title": "gKAPE"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "$MFT"
+      },
+      {
+        "id": "2",
+        "title": "$LogFile"
+      },
+      {
+        "id": "3",
+        "title": "$UsrJrnl"
+      },
+      {
+        "id": "4",
+        "title": "Registry Hives"
+      },
+      {
+        "id": "5",
+        "title": "EventLogs"
+      },
+      {
+        "id": "6",
+        "title": "Prefetch"
+      },
+      {
+        "id": "7",
+        "title": "AmCache"
+      },
+      {
+        "id": "8",
+        "title": "ScheduledTasks"
+      },
+      {
+        "id": "9",
+        "title": "StartupInfo"
+      },
+      {
+        "id": "10",
+        "title": "LNK files"
+      },
+      {
+        "id": "11",
+        "title": "JumpLists"
+      },
+      {
+        "id": "12",
+        "title": "ShellBags"
+      },
+      {
+        "id": "13",
+        "title": "ChromeHistory"
+      },
+      {
+        "id": "14",
+        "title": "FirefoxHistory"
+      },
+      {
+        "id": "15",
+        "title": "Hiberfil"
+      },
+      {
+        "id": "16",
+        "title": "Pagefil"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "Read only",
+        "references": [
+          "tools:1"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Write Temporary",
+        "references": [
+          "tools:1"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "Target",
+        "references": [
+          "tools:1"
+        ]
+      },
+      {
+        "id": "4",
+        "title": "Module",
+        "references": [
+          "tools:1"
+        ]
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "tip 1"
+      }
+    ]
+  },
+  {
+    "title": "Windows Filesystem and NTFS",
+    "tools": [
+      {
+        "id": "1",
+        "title": "MFTECmd"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "$MFT",
+        "sub-artefacts": [
+          "$STANDARD_INFORMATION",
+          "$ATTRIBUTE_LIST",
+          "$FILE_NAME",
+          "$OBJECT_ID",
+          "$SECURITY_DESCRIPTOR",
+          "$DATA",
+          "$INDEX_ROOT",
+          "$PREPARSE_POINT"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "$Volume"
+      },
+      {
+        "id": "3",
+        "title": "$Bitmap"
+      },
+      {
+        "id": "4",
+        "title": "$Secure"
+      },
+      {
+        "id": "5",
+        "title": "$MFTMirr"
+      },
+      {
+        "id": "6",
+        "title": "$AttrDef"
+      },
+      {
+        "id": "7",
+        "title": "$Boot"
+      },
+      {
+        "id": "8",
+        "title": "$UpCase"
+      },
+      {
+        "id": "9",
+        "title": "$LogFile"
+      },
+      {
+        "id": "10",
+        "title": ".root"
+      },
+      {
+        "id": "11",
+        "title": "$BadClus"
+      },
+      {
+        "id": "12",
+        "title": "$Extend"
+      },
+      {
+        "id": "13",
+        "title": "ADS(alternate data streams)"
+      },
+      {
+        "id": "14",
+        "title": "VSS(Volume shadow copies)"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "MACB timestamps",
+        "sub-concepts": [
+          "timestomping"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Residential vs Non-Residential data",
+        "references": [
+          "artefacts:1"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "NTFS",
+        "sub-concepts": [
+          "sectors",
+          "clusters",
+          "volumes",
+          "files"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "File Carving",
+    "description": "Explain what NTFS does when files are deleted, what can survive deletion, where deleted files are stored and how the file carving process works. Also explain what file carving cannot retrieve",
+    "tools": [
+      {
+        "id": "1",
+        "title": "MFTECmd"
+      },
+      {
+        "id": "2",
+        "title": "PhotoRec"
+      },
+      {
+        "id": "3",
+        "title": "Autopsy"
+      },
+      {
+        "id": "4",
+        "title": "Hex Editor"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "File signatures (magic bytes)"
+      }
+    ]
+  },
+  {
+    "title": "Registries Overview",
+    "tools": [
+      {
+        "id": "1",
+        "title": "Registry Explorer"
+      },
+      {
+        "id": "2",
+        "title": "RECmd"
+      },
+      {
+        "id": "3",
+        "title": "RegRipper"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "SAM",
+        "description": "on disk config\\SAM, mounted as HKLM\\SAM",
+        "sub-resources": [
+          "local user accounts",
+          "password hashes",
+          "RIDs"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "SYSTEM",
+        "description": "on disk config\\SYSTEM, mounted as HKLM\\SYSTEM",
+        "sub-resources": [
+          "Hardware",
+          "Drivers",
+          "ControlSets",
+          "Services"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "SOFTWARE",
+        "description": "on disk config\\SOFTWARE, mounted as HKLM\\SOFTWARE",
+        "sub-resources": [
+          "Installed Apps",
+          "OS Version",
+          "Network Profiles"
+        ]
+      },
+      {
+        "id": "4",
+        "descrijtion": "SECURITY",
+        "description": "on disk config\\SECURITY, mounted as HKLM\\SECURITY",
+        "sub-resources": [
+          "Security Policy",
+          "LSA secrets"
+        ]
+      },
+      {
+        "id": "5",
+        "title": "NTUSER.dat",
+        "description": "on disk Users\\<user>\\NTUSER.dat, mounted as HKCU",
+        "sub-resources": [
+          "Per-user settings",
+          "MRU Lists",
+          "activity traces"
+        ]
+      },
+      {
+        "id": "6",
+        "title": "USRCLASS.dat",
+        "description": "on disk Users\\<user>\\AppData\\Local\\..., mounted as HKCU\\...Classes",
+        "sub-resources": [
+          "Shell associations",
+          "Shellbags",
+          "COM"
+        ]
+      },
+      {
+        "id": "7",
+        "title": "LastWriteTime",
+        "description": "Associated with each registry key, is a 64-bit FILETIME(UTC)"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "The structure of the Registry (Hive -> Key -> Subkey -> Value)"
+      },
+      {
+        "id": "2",
+        "title": "Deleted keys and Dirty Hives"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "tip 1"
+      }
+    ]
+  },
+  {
+    "title": "SAM",
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "SAM\\Domains\\Account\\Users\\[hex RID]",
+        "description": "Locked on a live system",
+        "sub-artefacts": [
+          "usernames",
+          "NTLM password hash",
+          "RID",
+          "SID",
+          "last logon",
+          "password last set",
+          "failed login count",
+          "account flags",
+          "group membership"
+        ]
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "RID",
+        "references": [
+          "artefacts:1"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Local vs Domain accounts",
+        "references": [
+          "artefacts:1"
+        ]
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Finding all users in Registry Explorer",
+        "description": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList with Plugin: ProfileList - one subkey per account that has logged on"
+      },
+      {
+        "id": "2",
+        "title": "Microsoft / Cloud account traces in SAM",
+        "description": "SAM\\Domains\\Account\\Users\\[RID] + SOFTWARE\\Microsoft\\IdentityStore\\LogonCache + NTUSER.DAT\\...\\OneDrive"
+      },
+      {
+        "id": "3",
+        "title": "Use SAM Users plugin in Registry Explorer"
+      }
+    ]
+  },
+  {
+    "title": "SYSTEM & SOFTWARE",
+    "tools": {
+      "id": "1",
+      "title": "DCode"
+    },
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"
+      },
+      {
+        "id": "2",
+        "title": "SYSTEM\\ControlSet001\\"
+      },
+      {
+        "id": "3",
+        "title": "SYSTEM\\ControlSet002\\"
+      },
+      {
+        "id": "4",
+        "title": "CurrentControlSet"
+      },
+      {
+        "id": "5",
+        "title": "SYSTEM\\ControlSet001\\Control\\ComputerName\\ComputerName"
+      },
+      {
+        "id": "6",
+        "title": "SYSTEM\\ControlSet001\\Control\\TimeZoneInformation"
+      },
+      {
+        "id": "7",
+        "title": "SYSTEM\\ControlSet001\\Services\\Tcpip\\Parameters\\Interfaces\\{GUID}"
+      },
+      {
+        "id": "8",
+        "title": "SOFTWARE\\...\\NetworkCards"
+      },
+      {
+        "id": "9",
+        "title": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\Profiles"
+      },
+      {
+        "id": "10",
+        "title": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"
+      },
+      {
+        "id": "11",
+        "title": "SOFTWARE\\WOW6432Node\\...\\Uninstall"
+      },
+      {
+        "id": "12",
+        "title": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\{capability}\\{app}"
+      },
+      {
+        "id": "13",
+        "title": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
+      },
+      {
+        "id": "14",
+        "title": "NTUSER.DAT\\...\\Run"
+      },
+      {
+        "id": "15",
+        "title": "SYSTEM\\ControlSet001\\Control\\Windows"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "OS profiling"
+      },
+      {
+        "id": "2",
+        "title": "Plugins in registry explorer"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Registry Explorer OS Version plugin"
+      },
+      {
+        "id": "2",
+        "title": "Registry Explorer DHCPNetworkHints plugin"
+      },
+      {
+        "id": "3",
+        "title": "Registry Ecplorer Network List plugin"
+      },
+      {
+        "id": "4",
+        "title": "Registry Explorer Application List plugin"
+      },
+      {
+        "id": "5",
+        "title": "Registry Explorer Shutdown plugin"
+      }
+    ]
+  },
+  {
+    "title": "NTUSER.dat",
+    "tools": [
+      {
+        "id": "1",
+        "title": "tool 1"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\WordWheelQuery"
+      },
+      {
+        "id": "2",
+        "title": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\TypedPaths"
+      },
+      {
+        "id": "3",
+        "title": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RecentDocs"
+      },
+      {
+        "id": "4",
+        "title": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RunMRU"
+      },
+      {
+        "id": "5",
+        "title": "Software\\Microsoft\\Office\\<ver>\\<app>\\File MRU"
+      },
+      {
+        "id": "6",
+        "title": "Software\\Microsoft\\Office\\<ver>\\<app>\\Security\\TrustRecords"
+      },
+      {
+        "id": "7",
+        "title": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32"
+      },
+      {
+        "id": "8",
+        "title": "ComDlg32\\OpenSavePidlMRU"
+      },
+      {
+        "id": "9",
+        "title": "ComDlg32\\LastVisitedPidlMRU"
+      },
+      {
+        "id": "10",
+        "title": "C:\\Users\\<username>\\AppData\\Local\\Microsoft\\Windows\\UsrClass.dat"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "concept 1"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Registry Explorer RecentDocs plugin"
+      }
+    ]
+  },
+  {
+    "title": "Application Execution",
+    "tools": [
+      {
+        "id": "1",
+        "title": "AppCompatCacheParser"
+      },
+      {
+        "id": "2",
+        "title": "AmCacheParser"
+      },
+      {
+        "id": "3",
+        "title": "PECmd"
+      },
+      {
+        "id": "4",
+        "title": "WinPrefetchView"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "SYSTEM\\ControlSet001\\Services\\bam\\UserSettings\\<SID>"
+      },
+      {
+        "id": "2",
+        "title": "SYSTEM\\ControlSet001\\Services\\dam\\UserSettings\\<SID>"
+      },
+      {
+        "id": "3",
+        "title": "NTUSER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RunMRU"
+      },
+      {
+        "id": "4",
+        "title": "NTUSER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\UserAssist\\{GUID}\\Count"
+      },
+      {
+        "id": "5",
+        "title": "NTUSER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FeatureUsage"
+      },
+      {
+        "id": "6",
+        "title": "SYSTEM\\ControlSet001\\Control\\Session Manager\\AppCompatCache",
+        "references": [
+          "tools:1"
+        ]
+      },
+      {
+        "id": "5",
+        "title": "C:\\Windows\\AppCompat\\Programs\\Amcache.hve"
+      },
+      {
+        "id": "6",
+        "title": "C:\\Windows\\Prefetch\\—files named: APPNAME-<hash>.pf"
+      },
+      {
+        "id": "7",
+        "title": "HKLM\\SYSTEM\\ControlSet001\\Control\\Session Manager\\Memory Management\\PrefetchParameters"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "concept 1"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Registry Explorer BamDam plugin"
+      },
+      {
+        "id": "2",
+        "title": "Registry Explorer UserAssist plugin"
+      },
+      {
+        "id": "3",
+        "title": "Registry Explorer FeatureUsage plugin"
+      }
+    ]
+  },
+  {
+    "title": "Cloud Storage",
+    "tools": [
+      {
+        "id": "1",
+        "title": "OneDriveExplorer"
+      },
+      {
+        "id": "2",
+        "title": "DB Browser for SQLite"
+      },
+      {
+        "id": "3",
+        "title": "DPAPI decrypt"
+      },
+      {
+        "id": "4",
+        "title": "pypykatz"
+      },
+      {
+        "id": "5",
+        "title": "Magnet Axiom"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "SyncEngineDatabase.db",
+        "references": [
+          "tools:1"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "metadata_sqlite_db",
+        "references": [
+          "tools:2"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "filecache.dbx",
+        "references": [
+          "tools:2"
+        ]
+      },
+      {
+        "id": "4",
+        "title": "NTUSER\\Software\\Microsoft\\OneDrive\\Accounts\\Personal (or Business)"
+      },
+      {
+        "id": "5",
+        "title": "%LOCALAPPDATA%\\Google\\DriveFS\\<account_id>\\"
+      },
+      {
+        "id": "6",
+        "title": "%APPDATA%\\Dropbox\\"
+      },
+      {
+        "id": "7",
+        "title": "C:\\Windows\\System32\\LogFiles\\SUM\\",
+        "sub-resources": [
+          "Current.mdb",
+          "SystemIdentity.mdb"
+        ]
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "OneDriveExplorer parses SyncEngineDatabase.db files and user_cid.dat files"
+      },
+      {
+        "id": "2",
+        "title": "OneDriveExplorer supports ODL log parsing"
+      }
+    ]
+  },
+  {
+    "title": "Shell Items & Shortcut (LNK) Files",
+    "tools": [
+      {
+        "id": "1",
+        "title": "LECmd"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "Shell item",
+        "sub-artefacts": [
+          "size",
+          "type",
+          "file size",
+          "last modified",
+          "file attributes",
+          "primary name",
+          "signature",
+          "created time",
+          "last accessed time",
+          "MFT entry + sequence",
+          "long name"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "LNK file",
+        "sub-artefacts": [
+          "ShellLinkHeader",
+          "LinkTargetListID",
+          "LinkInfo",
+          "StringData",
+          "ExtraData",
+          "Target Metadata"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "PIDI"
+      },
+      {
+        "id": "4",
+        "title": "Volume Serial Number"
+      },
+      {
+        "id": "5",
+        "title": "TrackerDataBlock"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "Type Bytes"
+      },
+      {
+        "id": "2",
+        "title": "Automatic vs Custom LNK files"
+      },
+      {
+        "id": "3",
+        "title": "Do not confuse target metadata of link files with other link file data like timestamps"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "How to extract MAC address of the NIC from the TrackerDataBlock"
+      }
+    ]
+  },
+  {
+    "title": "Jump Lists & ShellBags",
+    "tools": [
+      {
+        "id": "1",
+        "title": "JLECmd"
+      },
+      {
+        "id": "2",
+        "title": "Shellbags Explorer"
+      },
+      {
+        "id": "3",
+        "title": "SBECmd"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "automaticDestinations"
+      },
+      {
+        "id": "2",
+        "title": "customDestinations"
+      },
+      {
+        "id": "3",
+        "title": "DestList"
+      },
+      {
+        "id": "4",
+        "title": "AppID"
+      },
+      {
+        "id": "5",
+        "title": "%AppData%\\Microsoft\\Windows\\Recent\\"
+      },
+      {
+        "id": "6",
+        "title": "%LocalAppData%\\Microsoft\\Windows\\"
+      },
+      {
+        "id": "7",
+        "title": "Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU + Bags"
+      },
+      {
+        "id": "8",
+        "title": "Software\\Microsoft\\Windows\\Shell\\BagMRU + Bags"
+      },
+      {
+        "id": "8",
+        "title": "Software\\Microsoft\\Windows\\Shell\\BagMRU + Bags"
+      },
+      {
+        "id": "9",
+        "title": "ShellNoRoam"
+      },
+      {
+        "id": "10",
+        "title": "Wow6432Node"
+      },
+      {
+        "id": "11",
+        "title": "Volume Shadow Copies"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "Object Compound File"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "The MRU position 0 rule"
+      },
+      {
+        "id": "2",
+        "title": "Watch out for windows updates, they can rewrite timestamps"
+      }
+    ]
+  },
+  {
+    "title": "USB Device Forensics",
+    "tools": [
+      {
+        "id": "1",
+        "title": "tool 1"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "MSC"
+      },
+      {
+        "id": "2",
+        "title": "UASP"
+      },
+      {
+        "id": "3",
+        "title": "MTP"
+      },
+      {
+        "id": "4",
+        "title": "PTP"
+      },
+      {
+        "id": "5",
+        "title": "HID"
+      },
+      {
+        "id": "6",
+        "title": "HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR\\"
+      },
+      {
+        "id": "7",
+        "title": "HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USB\\"
+      },
+      {
+        "id": "8",
+        "title": "MountedDevices"
+      },
+      {
+        "id": "9",
+        "title": "WPDBUSENUM"
+      },
+      {
+        "id": "10",
+        "title": "DeviceClasses"
+      },
+      {
+        "id": "11",
+        "title": "NTUSER.DAT\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MountPoints2\\"
+      },
+      {
+        "id": "12",
+        "title": "iSerialNumber"
+      },
+      {
+        "id": "13",
+        "title": "VID"
+      },
+      {
+        "id": "14",
+        "title": "PID"
+      },
+      {
+        "id": "15",
+        "title": "USBSTOR\\<device>\\<iSerial>\\Properties\\{83da6326-97a6-4088-9453-a1923f573b29}\\"
+      },
+      {
+        "id": "16",
+        "title": "HKLM\\SYSTEM\\MountedDevices"
+      },
+      {
+        "id": "17",
+        "title": "HKLM\\SYSTEM\\CurrentControlSet\\Enum\\SWD\\WPDBUSENUM\\"
+      },
+      {
+        "id": "17",
+        "title": "VSN(Volume Serial Number)"
+      },
+      {
+        "id": "18",
+        "title": "Microsoft-Windows-Partition%4Diagnostic.evtx",
+        "sub-artefacts": [
+          "event id 1006"
+        ]
+      },
+      {
+        "id": "19",
+        "title": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\EMDMgmt\\"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "USB Plug and Play"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Look up make and models using VID and PID"
+      },
+      {
+        "id": "2",
+        "title": "When the & symbol is the second character of the serial it is windows assigned, not a real serial"
+      },
+      {
+        "id": "3",
+        "title": "ParentIdPrefix present in the serial number, then it is a UASP (USB attached SCSI) device"
+      },
+      {
+        "id": "4",
+        "title": "Same values in registries for USB devices might mean different things depending on windows OS version"
+      },
+      {
+        "id": "5",
+        "title": "EMDMgmt and some logs store the VSN in decimal instead of hex"
+      },
+      {
+        "id": "6",
+        "title": "The VSN is the join key, found in LNK/Jump Lists, Shellbags, Event 1006, EMDMgmt"
+      },
+      {
+        "id": "7",
+        "title": "Windows update can clear USB evidence"
+      },
+      {
+        "id": "8",
+        "title": "Auditing removable storage and PnP"
+      }
+    ]
+  },
+  {
+    "title": "Network Forensics",
+    "tools": [
+      {
+        "id": "1",
+        "title": "Wireshark"
+      },
+      {
+        "id": "2",
+        "title": "tshark"
+      },
+      {
+        "id": "3",
+        "title": "tcpdump"
+      },
+      {
+        "id": "4",
+        "title": "Scrapy"
+      },
+      {
+        "id": "5",
+        "title": "NetworkMiner"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "HKLM\\SYSTEM\\CCS\\Services\\Tcpip\\Parameters"
+      },
+      {
+        "id": "2",
+        "title": "HKLM\\SYSTEM\\CCS\\Services\\Tcpip\\Parameters\\Interfaces\\{GUID}"
+      },
+      {
+        "id": "3",
+        "title": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\Profiles"
+      },
+      {
+        "id": "4",
+        "title": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\Signatures\\Unmanaged"
+      },
+      {
+        "id": "5",
+        "title": "HKCU\\Software\\Microsoft\\Terminal Server Client\\Servers"
+      },
+      {
+        "id": "6",
+        "title": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"
+      },
+      {
+        "id": "7",
+        "title": "PCAP"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "Attacker Traffic"
+      },
+      {
+        "id": "2",
+        "title": "Encrypted channels"
+      },
+      {
+        "id": "3",
+        "title": "data reconstruction"
+      },
+      {
+        "id": "4",
+        "title": "Timeline anchoring"
+      },
+      {
+        "id": "5",
+        "title": "Analysing an unknown protocol"
+      },
+      {
+        "id": "6",
+        "title": "Protocol Reverse Engineering"
+      },
+      {
+        "id": "7",
+        "title": "Encryption in custom protocol"
+      }
+    ]
+  },
+  {
+    "title": "Email Forensics",
+    "tools": [
+      {
+        "id": "1",
+        "title": "Outlook"
+      },
+      {
+        "id": "2",
+        "title": "Xst Reader"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "Email Headers",
+        "sub-artefacts": [
+          "Received",
+          "From",
+          "Reply-To",
+          "Message-ID",
+          "Date",
+          "Authentication-Results",
+          "X-*Headers",
+          "References"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Email Body and attachments"
+      },
+      {
+        "id": "3",
+        "title": "Metadata"
+      },
+      {
+        "id": "4",
+        "title": "Store files"
+      },
+      {
+        "id": "5",
+        "title": "Server/Cloud logs"
+      },
+      {
+        "id": "6",
+        "title": "Webmail traces"
+      },
+      {
+        "id": "7",
+        "title": "SPF"
+      },
+      {
+        "id": "8",
+        "title": "DKIM"
+      },
+      {
+        "id": "9",
+        "title": "DMARC"
+      },
+      {
+        "id": "10",
+        "title": "Extended MAPI headers"
+      },
+      {
+        "id": "11",
+        "title": "%UserProfile%\\Documents\\Outlook Files\\*.pst",
+        "references": "concepts:1"
+      },
+      {
+        "id": "12",
+        "title": "%LocalAppData%\\Microsoft\\Outlook\\*.ost ( + *.nst )",
+        "references": "concepts:1"
+      },
+      {
+        "id": "13",
+        "title": "NST",
+        "references": "concepts:1"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "Host Based email storage"
+      },
+      {
+        "id": "2",
+        "title": "Mail server"
+      },
+      {
+        "id": "3",
+        "title": "Cloud email server"
+      },
+      {
+        "id": "4",
+        "title": "Mobile storage"
+      },
+      {
+        "id": "5",
+        "title": "Attachment recovery from PST/OST messages"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Use tools to parse email headers"
+      }
+    ]
+  },
+  {
+    "title": "Windows Artefacts",
+    "tools": [
+      {
+        "id": "1",
+        "title": "WinSearchDBAnalyzer"
+      },
+      {
+        "id": "2",
+        "title": "Timeline Explorer"
+      },
+      {
+        "id": "3",
+        "title": "Thumbcache Viewer"
+      },
+      {
+        "id": "4",
+        "title": "RBCmd"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "C:\\ProgramData\\Microsoft\\Search\\Data\\Applications\\Windows\\",
+        "sub-artefacts": [
+          "Windows.edb",
+          "Windows-gather.db",
+          "Windows-usn.db",
+          "WAL Logs",
+          "File name",
+          "File path",
+          "Size",
+          "Attributes",
+          "GatherTime",
+          "Partial content",
+          "Outlook mail",
+          "Browser history"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "%LocalAppData%\\Microsoft\\Windows\\Explorer\\",
+        "sub-artefacts": [
+          "thumbcache_32.db",
+          "thumbcache_96.db",
+          "thumbcache_256.db",
+          "thumbcache_1024.db",
+          "iconcache_*.db"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "C:\\$Recycle.Bin\\<user-SID>\\",
+        "sub-artefacts": [
+          "$I",
+          "$R"
+        ]
+      },
+      {
+        "id": "3",
+        "title": "$I",
+        "sub-artefacts": [
+          "Original Name",
+          "File Size",
+          "Deleted"
+        ]
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Explain how to find file name information from a thumbcache finding (preview + cacheID)"
+      },
+      {
+        "id": "2",
+        "title": "Explain how the $I and $R variables are linked via a shared ID"
+      }
+    ]
+  },
+  {
+    "title": "SRUM",
+    "tools": [
+      {
+        "id": "1",
+        "title": "esentutl.exe"
+      },
+      {
+        "id": "2",
+        "title": "SrumECmd"
+      },
+      {
+        "id": "3",
+        "title": "ESEDatabaseView"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "C:\\Windows\\System32\\sru\\SRUDB.dat",
+        "sub-artefacts": [
+          "program executed",
+          "by which user program executed",
+          "bytes sent/received",
+          "network connected",
+          "cpu / resource usage"
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Application Resource Usage table"
+      },
+      {
+        "id": "3",
+        "title": "SruDbIdMapTable"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "SRUM DUMP"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "tip 1"
+      }
+    ]
+  },
+  {
+    "title": "Event Log Analysis",
+    "tools": [
+      {
+        "id": "1",
+        "title": "EvtxECmd"
+      },
+      {
+        "id": "2",
+        "title": "XPath"
+      },
+      {
+        "id": "3",
+        "title": "Event Log Explorer"
+      }
+    ],
+    "artefacts": [
+      {
+        "id": "1",
+        "title": "C:\\Windows\\System32\\winevt\\Logs\\*.evtx",
+        "sub-artefacts": [
+          "Security",
+          "System",
+          "Application",
+          "TerminalServices-*",
+          "WLAN-AutoConfig",
+          "Office Alerts",
+          "Event ID",
+          "Event Level",
+          "Provider",
+          "TimeCreated",
+          "TargetUser",
+          "LogonId"
+        ]
+      },
+      {
+        "id": "1",
+        "title": "Security Log",
+        "sub-artefacts": [
+          "Logon/Logoff",
+          "Account Logon",
+          "Object Access",
+          "Account Mgmt",
+          "Previlege Use",
+          "Policy Change"
+        ]
+      }
+    ],
+    "concepts": [
+      {
+        "id": "1",
+        "title": "Event IDs"
+      },
+      {
+        "id": "2",
+        "title": "Logon type codes"
+      },
+      {
+        "id": "3",
+        "title": "RDP"
+      }
+    ],
+    "tips": [
+      {
+        "id": "1",
+        "title": "Identify logon session using the logon ID"
+      }
+    ]
+  }
+]

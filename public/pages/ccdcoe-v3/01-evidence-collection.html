@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Evidence Collection · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--red);--accent-dim:var(--red-dim);--accent-deep:var(--red-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,255,225,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">📥</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">01 — Evidence Collection</span></div>
+      <div class="t1">Evidence Collection — Artefacts of Acquisition</div>
+      <div class="t2">The image isn't a finding — it's the <em>substrate</em> every later finding rests on</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">Container</span>
+    <span class="b b-a">Hash chain</span>
+    <span class="b b-b">CoC</span>
+    <span class="b b-p">Integrity</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">E01 / Ex01</span><span class="tag">raw / dd</span><span class="tag">AFF4</span><span class="tag">VHD / VHDX</span><span class="tag">Hash sidecars</span><span class="tag">Chain-of-Custody log</span><span class="tag">Acquisition log</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">FTK Imager</span><span class="tag">Autopsy / EnCase / X-Ways</span><span class="tag">libewf</span><span class="tag">Arsenal Image Mounter</span></div>
+  <div class="row"><span class="sl">Forensic value</span><span class="tag">Provenance</span><span class="tag">Reproducibility</span><span class="tag">Bit-level recovery</span><span class="tag">Court admissibility</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">📐</span><span class="ct">What an acquisition artefact actually contains</span></div>
+    <div class="prose">
+      <p>An <strong>acquisition artefact</strong> is a bit-for-bit copy of a storage medium, wrapped in a container that records <em>how, when and by whom</em> it was produced. Two halves matter equally:</p>
+      <ul>
+        <li><strong>The payload</strong> — every sector of the source, including unallocated space, slack, swap, hibernation, alternate data streams, free-but-not-zeroed blocks. Everything later sections (§04 NTFS, §05 carving, §02 memory) parse is buried in here.</li>
+        <li><strong>The provenance</strong> — examiner name, case ID, acquisition timestamps, source serial number, MD5/SHA-1/SHA-256 of the source <em>and</em> of the image. This is what makes the payload <em>defensible</em>; without it, the bits are just bits.</li>
+      </ul>
+      <p>The forensic value of the image is therefore not just "what files does it contain" but "<em>can I prove these files are exactly what was on the disk at acquisition time</em>". Pick the container that preserves both.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">💾</span><span class="ct">E01 / Ex01 — the EnCase Evidence File</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Integrity</span>
+      <span class="fvc k-pivot">Provenance</span>
+      <span class="fvc k-recover">Recovery</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> wherever the acquirer wrote it. Multi-segment files: <code>case01.E01</code>, <code>.E02</code>, … (or <code>.Ex01</code> for the AD1/L01 successor).</p>
+      <p><strong>What it carries:</strong></p>
+      <ul>
+        <li><em>Header</em> — case number, evidence number, examiner, acquisition / system date, OS, tool version, drive serial, optional notes.</li>
+        <li><em>Bitstream</em> — chunked into 32 KB blocks, optionally compressed, each block CRC-protected so localised corruption stays localised.</li>
+        <li><em>Embedded MD5 + SHA-1</em> — computed across the whole source during acquisition; recomputed and re-verified on every read.</li>
+        <li><em>Segment footers</em> — link the multi-file set together; missing a segment is detectable.</li>
+      </ul>
+      <p><strong>Forensic value:</strong> the file <em>self-verifies</em>. Any read that flips a bit raises a CRC error before the parser sees bad data. The header tells you who acquired what, when — without trusting any external paperwork.</p>
+      <p><strong>What it cannot tell you:</strong> what was on the disk before acquisition started. RAM at acquisition time. Anything overwritten between the incident and the image being taken.</p>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🧱</span><span class="ct">raw / dd — the flat sector copy</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Recovery</span>
+      <span class="fvc k-pivot">Portability</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> a single <code>.raw</code> / <code>.dd</code> / <code>.img</code> file the size of the source, or split into <code>.000, .001, …</code> chunks.</p>
+      <p><strong>What it carries:</strong> exactly the source bitstream, with <em>no headers, no metadata, no embedded hashes</em>. Sector 0 of the file is sector 0 of the disk.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li>Trivially mountable — any loopback driver, <code>losetup</code>, <code>xmount</code>, AIM, FTK Imager — and any carving / parsing tool reads it without conversion.</li>
+        <li>Acts as the lowest-common-denominator format when a third tool only speaks "raw".</li>
+        <li>Easy to slice (e.g., extract a single partition with <code>dd skip=… count=…</code>) because the byte offsets are the disk's byte offsets.</li>
+      </ul>
+      <p><strong>What it cannot tell you:</strong> nothing about its own provenance. You <em>must</em> keep an external hash + CoC log alongside it — drop those and the image becomes evidence of nothing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">AFF4 — the multi-stream evidence bundle</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Integrity</span>
+      <span class="fvc k-recover">Recovery</span>
+      <span class="fvc k-pivot">Bundling</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> a single <code>.aff4</code> ZIP-based container (often produced by WinPmem in IR).</p>
+      <p><strong>What it carries:</strong> multiple independently-addressable <em>streams</em> in one container — typically <em>PhysicalMemory</em>, <em>pagefile.sys</em>, <em>hiberfil.sys</em>, the disk image, the binary that did the capture, and a Turtle/RDF manifest describing each stream (size, hash, acquisition tool, timestamp, host name).</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li>One file = one piece of evidence to track — no risk of orphaning a pagefile sidecar.</li>
+        <li>Per-chunk SHA-256 catches storage bit-rot far earlier than an end-of-file hash would.</li>
+        <li>Streams are listable (<code>--list</code>) and exportable individually — feed memory to Volatility, hiberfil to <code>hibr2bin</code> — without re-acquiring.</li>
+      </ul>
+      <p><strong>What it cannot tell you:</strong> not all forensic suites speak AFF4. For analysis you often <em>export</em> a raw stream and work on that — keep the AFF4 as the master, parse the export.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🗄</span><span class="ct">VHD / VHDX — the Microsoft container</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Mountability</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> <code>.vhd</code> / <code>.vhdx</code> file. Native to Windows / Hyper-V.</p>
+      <p><strong>What it carries:</strong> a sparse or fixed-size disk image with a small footer (dynamic VHDs) or header (VHDX). VHDX additionally carries a metadata region and resilient log for crash-safe writes.</p>
+      <p><strong>Forensic value:</strong> Windows mounts it as a real volume with a double-click — handy for quick review on a sandbox analysis VM. Also the format <em>KAPE</em> can target directly (no AIM required).</p>
+      <p><strong>What it cannot tell you:</strong> by default it carries no examiner metadata or self-verifying hashes — treat it like raw plus a thin wrapper. Always pair with an external hash + CoC.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🔐</span><span class="ct">Hash sidecar files — the independent witness</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Integrity</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> a tiny text file next to the image — <code>case01.E01.md5</code>, <code>case01.E01.sha256</code>, or a combined <code>HASHES.txt</code> in the case folder.</p>
+      <p><strong>What it carries:</strong> the hash of the <em>source disk</em> (computed during read) and the hash of the <em>image</em> (computed after write). For E01/AFF4 these duplicate the embedded values; for raw they are the only record.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li><em>Source-hash ≡ image-hash ≡ working-copy-hash</em> — three independent equal values is the gold standard the court wants.</li>
+        <li>Detects silent corruption: an old E01 returning the same embedded hash but a <em>different</em> recomputed hash on read = storage bit-rot.</li>
+        <li>Cheap to recompute and re-sign at any later stage of the case.</li>
+      </ul>
+      <p><strong>What it cannot tell you:</strong> nothing about <em>what</em> changed if the hash is mismatched — only that something did. Investigate, do not erase.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📋</span><span class="ct">Chain-of-Custody &amp; acquisition log</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Provenance</span>
+      <span class="fvc k-integrity">Admissibility</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> paper or PDF in the case folder; sometimes the acquisition tool's own <code>.txt</code> log (FTK Imager writes one automatically).</p>
+      <p><strong>What it carries:</strong></p>
+      <ul>
+        <li>Source identifiers — make, model, serial, capacity, photographs.</li>
+        <li>Acquisition environment — write-blocker model + firmware, host workstation, tool version.</li>
+        <li>Timestamps for every transfer of custody, every analysis session, every working copy.</li>
+        <li>Examiner signatures at each handoff.</li>
+      </ul>
+      <p><strong>Forensic value:</strong> ties the bits in the image to the physical disk seized at the scene. Without it, the defence can argue the image came from somewhere else entirely.</p>
+      <p><strong>What it cannot tell you:</strong> nothing about the contents. A flawless CoC over a contaminated image proves only that you carefully tracked contaminated evidence.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — at a glance</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Artefact</th><th>Where</th><th>Forensic value</th><th>Limitations / pitfalls</th></tr></thead>
+      <tbody>
+        <tr><td>E01 / Ex01</td><td>Case folder, multi-segment</td><td>Self-verifying, examiner metadata embedded, chunk-level CRC, compressible</td><td>Proprietary-ish; older Ex01 not universally supported</td></tr>
+        <tr><td>raw / dd</td><td>Single file or split chunks</td><td>Universally readable; identical byte offsets to source</td><td>No metadata, no embedded hash — sidecar is mandatory</td></tr>
+        <tr><td>AFF4</td><td>Single ZIP-based container</td><td>Bundles RAM + pagefile + hiberfil + disk + manifest; per-chunk SHA-256</td><td>Tool support narrower than E01; usually export-then-parse</td></tr>
+        <tr><td>VHD / VHDX</td><td>Single <code>.vhd(x)</code> file</td><td>Native Windows mount; readable by Hyper-V &amp; KAPE</td><td>No embedded examiner metadata; treat as raw + wrapper</td></tr>
+        <tr><td>Hash sidecar</td><td>Tiny text file beside image</td><td>Independent integrity witness; detects silent corruption</td><td>Useless if lost — store with the image &amp; in the case folder</td></tr>
+        <tr><td>Chain-of-Custody log</td><td>Paper / PDF in case folder</td><td>Ties bits to the physical disk; signed at every handoff</td><td>Gaps in signatures = arguments about authenticity in court</td></tr>
+        <tr><td>Acquisition tool log</td><td>Auto-written <code>.txt</code> beside image</td><td>Records exact tool version, flags, start/stop times</td><td>Easy to forget to collect — capture it before closing the tool</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong>Order of volatility:</strong> if the host is live, RAM (§02) is captured <em>before</em> the disk. Disk survives a power cut — RAM doesn't, and once gone there is no acquisition artefact to recover it from.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>The acquisition artefact itself is what you defend in court; here is how its fields tie to evidence later in the case:</p>
+    <ul>
+      <li><strong>Hash chain</strong> — source hash on CoC log ≡ embedded hash in E01/AFF4 ≡ fresh hash of the working copy. Three independent, identical values.</li>
+      <li><strong>E01 acquisition timestamp ↔ Memory dump timestamp (§02)</strong> — RAM should be earlier; if it isn't, the order-of-volatility was violated.</li>
+      <li><strong>E01 acquisition timestamp ↔ SYSTEM hive ShutdownTime (§08)</strong> — once parsed, the last shutdown recorded inside the image should match the time the responder pulled the plug.</li>
+      <li><strong>Source serial in CoC ↔ <code>$Volume</code> serial in the image (§04)</strong> — both anchor the image to the physical device.</li>
+      <li><strong>Tool log version ↔ MFTECmd / EvtxECmd output version</strong> — reproducibility: another examiner re-running the same versions must get byte-identical parses.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §01 Evidence Collection</span>
+  <span>Next → §02 Memory Forensics</span>
+</div>
+
+</div></body></html>
