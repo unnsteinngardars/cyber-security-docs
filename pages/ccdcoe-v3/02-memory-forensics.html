@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 — Memory Forensics · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--teal);--accent-dim:var(--teal-dim);--accent-deep:var(--teal-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,255,225,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-creds{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🧠</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">02 — Memory Forensics</span></div>
+      <div class="t1">Memory Forensics — Artefacts of the Volatile Layer</div>
+      <div class="t2">Five places where RAM (or what used to be RAM) is still recoverable</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-t">RAM</span>
+    <span class="b b-r">Volatile</span>
+    <span class="b b-a">Hibernation</span>
+    <span class="b b-b">Paging</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">RAM dump (raw)</span><span class="tag">RAM dump (AFF4)</span><span class="tag">hiberfil.sys</span><span class="tag">pagefile.sys</span><span class="tag">swapfile.sys</span><span class="tag">.vmem / .vmsn</span><span class="tag">crash dump (.dmp)</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">Volatility 3</span><span class="tag">MemProcFS</span><span class="tag">hibr2bin</span><span class="tag">strings / bulk_extractor</span></div>
+  <div class="row"><span class="sl">Forensic value</span><span class="tag">Process tree</span><span class="tag">Network sockets</span><span class="tag">Credentials</span><span class="tag">Injected code</span><span class="tag">Keys</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">⚡</span><span class="ct">Why memory artefacts are unique</span></div>
+    <div class="prose">
+      <p>Memory artefacts are the only place certain facts ever exist. The disk can tell you a process <em>ran</em> (Prefetch §10, AmCache §10); only memory can tell you <em>what arguments</em> it ran with, <em>which sockets</em> it had open, and <em>which credentials</em> were resident in LSASS when you walked in. RFC 3227's <em>order of volatility</em> is therefore an artefact-availability rule, not a procedural nicety.</p>
+      <p>The forensic-value lens for this section: <em>which container preserves which fact, and for how long</em>. A live RAM dump is the gold standard; hiberfil is a free historical snapshot; pagefile is fragmentary but often saves the day when both are missing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">💽</span><span class="ct">RAM dump (raw) — the live snapshot</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Process tree</span>
+      <span class="fvc k-creds">Credentials</span>
+      <span class="fvc k-pivot">Network</span>
+      <span class="fvc k-time">Live state</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> a flat <code>.raw</code> / <code>.bin</code> / <code>.mem</code> / <code>.dmp</code> file roughly the size of installed physical memory.</p>
+      <p><strong>What it carries — facts that exist <em>nowhere else</em>:</strong></p>
+      <ul>
+        <li><em>Process &amp; thread structures</em> (<code>EPROCESS</code>, <code>ETHREAD</code>) — full process tree with PPIDs, command lines, environment variables, security tokens.</li>
+        <li><em>Loaded modules &amp; injected code</em> — reflectively loaded DLLs, hollowed processes, unbacked executable pages.</li>
+        <li><em>Live TCP/UDP endpoints</em> — owning PID, local/remote IPs, state — including connections that were torn down before any disk artefact recorded them.</li>
+        <li><em>LSASS memory</em> — NTLM hashes, Kerberos tickets, sometimes plaintext credentials.</li>
+        <li><em>Open handles &amp; mapped files</em> — exactly which registry keys, mutexes, files each process held.</li>
+        <li><em>Encryption keys</em> — BitLocker FVEK, VeraCrypt master keys, SSH-agent keys, browser cookie-encryption keys.</li>
+        <li><em>Console history, clipboard, kernel callbacks, rootkit hooks.</em></li>
+      </ul>
+      <p><strong>Limits:</strong> evaporates at power-off. The dump is also a <em>moment</em> — anything paged out at that instant is in <code>pagefile.sys</code>, not here.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">RAM dump (AFF4 bundle)</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Integrity</span>
+      <span class="fvc k-pivot">Bundling</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> single <code>.aff4</code> container (WinPmem default).</p>
+      <p><strong>What it carries — same as the raw dump, <em>plus</em>:</strong></p>
+      <ul>
+        <li>Embedded <em>pagefile.sys</em> and <em>hiberfil.sys</em> streams so Volatility's <code>--swap-locations</code> resolves paged-out memory without external files.</li>
+        <li>Per-chunk SHA-256 + acquisition manifest (host name, tool version, page-table base, timestamp).</li>
+        <li>A copy of the capturing binary so reproducibility holds across years.</li>
+      </ul>
+      <p><strong>Forensic value vs raw:</strong> turns the dump into a self-contained, self-verifying piece of evidence. Export raw later for tools that don't speak AFF4.</p>
+      <p><strong>Limits:</strong> some Volatility plugins still want raw — keep an export beside the AFF4.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🛏</span><span class="ct">hiberfil.sys — historical RAM, free on disk</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Past process tree</span>
+      <span class="fvc k-time">Historical</span>
+      <span class="fvc k-recover">Off-host recovery</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> <code>C:\hiberfil.sys</code> — hidden, system-protected, locked while running.</p>
+      <p><strong>What it carries:</strong> a Xpress-Huffman-compressed snapshot of physical memory written at hibernate (or partial hibernate via Fast Startup). After decompression it is functionally a RAM dump <em>from the moment the user hit suspend</em>.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li>A <em>second time-point</em> of memory, often days or weeks before the incident — process tree at suspend, sockets at suspend, credentials at suspend.</li>
+        <li><strong>Fast Startup</strong> (default on Win10/11 laptops) writes a partial hiberfil <em>even when the user thinks they never hibernate</em>. The off-host responder almost always has one available.</li>
+        <li>Magic <code>HIBR</code> = unread (full snapshot). Magic <code>RSTR</code> = partially overwritten on resume — still extractable, just degraded.</li>
+      </ul>
+      <p><strong>Limits:</strong> compressed and structured — needs <code>hibr2bin</code> or Volatility's hibernation layer to flatten. After a clean resume the kernel sometimes zeroes the file; check magic bytes first.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📄</span><span class="ct">pagefile.sys — fragments after eviction</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Strings</span>
+      <span class="fvc k-creds">Creds in plaintext</span>
+      <span class="fvc k-time">Long-lived</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> <code>C:\pagefile.sys</code> (or wherever the system was configured to put it).</p>
+      <p><strong>What it carries:</strong> 4 KB pages of process memory the kernel decided to evict to disk. <em>No headers, no index</em> — just a soup of pages whose owning processes may no longer exist.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li>Plaintext fragments survive long after the source process exited: browser tabs, decrypted Office documents, IM chat buffers, PowerShell command strings.</li>
+        <li>Strings / regex carving recovers URLs, file paths, IP addresses, base64 blobs, credentials.</li>
+        <li>Volatility 3 can attach it (<code>--swap-locations</code>) to resolve memory regions that were paged out at dump time.</li>
+      </ul>
+      <p><strong>Limits:</strong> no structure — you cannot reconstruct a process from pagefile alone. Wiped on shutdown only if <code>ClearPageFileAtShutdown=1</code> (rare).</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📃</span><span class="ct">swapfile.sys — UWP / app-suspend swap</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">App state</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> <code>C:\swapfile.sys</code>.</p>
+      <p><strong>What it carries:</strong> compressed working sets of suspended <em>Store / UWP / modern</em> apps. Much smaller than pagefile, with a different eviction trigger (app suspend, not memory pressure).</p>
+      <p><strong>Forensic value:</strong> sometimes preserves the in-memory state of UWP apps (Mail, Calendar, OneNote modern, Edge tabs) that were running but suspended at acquisition time. Often overlooked.</p>
+      <p><strong>Limits:</strong> smaller corpus, compressed — useful in conjunction with pagefile, not as a sole source.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🖥</span><span class="ct">.vmem / .vmsn — virtual-machine equivalents</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Process tree</span>
+      <span class="fvc k-pivot">No driver needed</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where it lives:</strong> alongside the VM's <code>.vmx</code> — typically <code>guest.vmem</code> (RAM) plus <code>guest.vmsn</code> (snapshot file holding CPU/register state) for VMware. Hyper-V's <code>.bin</code> + <code>.vsv</code> serve the same role.</p>
+      <p><strong>What it carries:</strong> functionally identical to a live RAM dump — same EPROCESS / sockets / handles — but produced by <em>pausing the VM</em> rather than loading a kernel driver in the guest.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li>Acquisition is host-side and leaves <em>zero footprint in the guest</em> — ideal when anti-forensic malware watches for driver loads.</li>
+        <li><code>.vmsn</code> snapshots can capture a known-good baseline plus an incident state, enabling diff analysis.</li>
+        <li>Volatility / MemProcFS treat <code>.vmem</code> like raw memory — no conversion needed.</li>
+      </ul>
+      <p><strong>Limits:</strong> only available if the target is virtualised. Some hypervisors compress or encrypt the snapshot file — check the format before parsing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — what survives where</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Memory fact</th><th>Live RAM</th><th>hiberfil.sys</th><th>pagefile.sys</th><th>swapfile.sys</th><th>Disk-only fallback</th></tr></thead>
+      <tbody>
+        <tr><td>Process list + PPID + command line</td><td>Full</td><td>Full (as of hibernate)</td><td>Fragments</td><td>UWP apps only</td><td>Prefetch (truncated), §10</td></tr>
+        <tr><td>Open TCP / UDP sockets + owning PID</td><td>Full</td><td>Full</td><td>Rare</td><td>—</td><td>None on disk</td></tr>
+        <tr><td>Loaded DLLs / injected pages</td><td>Full</td><td>Full</td><td>Pages of</td><td>UWP pages</td><td>AmCache file listing, §10</td></tr>
+        <tr><td>LSASS credential material</td><td>Full</td><td>Full</td><td>Sometimes (plaintext)</td><td>—</td><td>SAM / SECURITY hashes, §07</td></tr>
+        <tr><td>Encryption keys (BitLocker FVEK etc.)</td><td>Full</td><td>Full</td><td>Possible</td><td>—</td><td>None — once gone, gone</td></tr>
+        <tr><td>Clipboard / console history</td><td>Full</td><td>Full</td><td>Fragments</td><td>—</td><td>None on disk</td></tr>
+        <tr><td>Registry values not yet flushed</td><td>Full</td><td>Full</td><td>Pages of</td><td>—</td><td>Hive on disk lags, §06</td></tr>
+        <tr><td>Browser tabs / DNS cache / cookies</td><td>Full</td><td>Full</td><td>Fragments</td><td>Edge UWP fragments</td><td>SQLite history (§11 / browser)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al g"><span class="ali">✅</span><span><strong>Off-host triage trick:</strong> even on a powered-off laptop, <em>hiberfil + pagefile + swapfile</em> together often reconstruct enough of the suspended state to identify malicious processes — no live capture needed.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📋</span><span class="ct">Artefact reference — locations &amp; pitfalls</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Artefact</th><th>Where</th><th>Format</th><th>Forensic value</th><th>Limitations</th></tr></thead>
+      <tbody>
+        <tr><td>RAM dump (raw)</td><td>External media — capture target</td><td>Flat byte-for-byte</td><td>Process tree, sockets, creds, keys, injected code</td><td>Lost at power-off; size = installed RAM</td></tr>
+        <tr><td>RAM dump (AFF4)</td><td>External media</td><td>ZIP-based container, multi-stream</td><td>RAM + pagefile + hiberfil + manifest in one file, per-chunk SHA-256</td><td>Not every parser reads AFF4 — export raw for analysis</td></tr>
+        <tr><td>hiberfil.sys</td><td><code>C:\hiberfil.sys</code></td><td>Xpress-Huffman compressed</td><td>Historical RAM snapshot — often present via Fast Startup</td><td>Locked while running; needs <code>hibr2bin</code> or Volatility</td></tr>
+        <tr><td>pagefile.sys</td><td><code>C:\pagefile.sys</code></td><td>Unstructured 4 KB pages</td><td>Strings, URLs, plaintext creds, paged-out process memory</td><td>No process structure recoverable from it alone</td></tr>
+        <tr><td>swapfile.sys</td><td><code>C:\swapfile.sys</code></td><td>Compressed</td><td>Working sets of suspended UWP / Store apps</td><td>Small; pair with pagefile</td></tr>
+        <tr><td>.vmem / .vmsn</td><td>VM directory</td><td>Raw memory + register state</td><td>Driver-less guest acquisition; diff against baseline snapshots</td><td>Only if the target is virtualised</td></tr>
+        <tr><td>crash dump (.dmp)</td><td><code>C:\Windows\MEMORY.DMP</code>, minidumps</td><td>Microsoft crash format</td><td>Free historical snapshot if BSOD occurred near incident time</td><td>Often kernel-only or minidump — not full RAM</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al r"><span class="ali">🛑</span><span><strong>Acquisition gotcha:</strong> writing the RAM dump to <code>C:</code> overwrites the very pages you're trying to capture. Always dump to external media. AFF4 + driver-signed tools (WinPmem) survive Secure Boot.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>Memory artefacts are most powerful when triangulated against disk-side artefacts:</p>
+    <ul>
+      <li><strong>Live process list ↔ Prefetch / AmCache (§10)</strong> — an EPROCESS for a binary with no <code>.pf</code> file = either a brand-new execution (no prefetch yet) or anti-forensic cleanup.</li>
+      <li><strong>Open sockets ↔ Event Log <code>Sysmon 3</code> / Security <code>5156</code> (§20)</strong> — live sockets without a matching firewall log = possible tampering or kernel-mode networking.</li>
+      <li><strong>Hiberfil process tree ↔ disk <code>$MFT</code> (§04)</strong> — a process running in hiberfil whose image file no longer exists on disk = wiped post-hibernate.</li>
+      <li><strong>LSASS credentials ↔ SAM (§07) / SECURITY</strong> — plaintext or NTLM hashes recovered from RAM should match (or expose) the on-disk credential material.</li>
+      <li><strong>Pagefile strings ↔ Browser history (§11/browser) / Email PST (§17)</strong> — a URL fragment in pagefile can be tied to a specific browsing event or message body.</li>
+      <li><strong>Memory dump timestamp ↔ Disk image acquisition timestamp (§01)</strong> — RAM must precede disk, otherwise order-of-volatility was violated.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §02 Memory Forensics</span>
+  <span>Next → §03 KAPE &amp; AIM</span>
+</div>
+
+</div></body></html>

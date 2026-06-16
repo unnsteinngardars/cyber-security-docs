@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Windows Filesystem / NTFS · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--purple);--accent-dim:var(--purple-dim);--accent-deep:var(--purple-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🗂</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">04 — Windows Filesystem / NTFS</span></div>
+      <div class="t1">NTFS — Artefacts of the Filesystem Itself</div>
+      <div class="t2">Everything is a file — and every <code>$</code>file answers a different question</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-p">$MFT</span>
+    <span class="b b-b">Journals</span>
+    <span class="b b-a">MACB</span>
+    <span class="b b-r">ADS</span>
+    <span class="b b-t">VSS</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">$MFT</span><span class="tag">$MFTMirr</span><span class="tag">$LogFile</span><span class="tag">$Volume</span><span class="tag">$AttrDef</span><span class="tag">$Bitmap</span><span class="tag">$Boot</span><span class="tag">$BadClus</span><span class="tag">$Secure</span><span class="tag">$UpCase</span><span class="tag">$Extend / $UsnJrnl</span><span class="tag">$STANDARD_INFORMATION</span><span class="tag">$FILE_NAME</span><span class="tag">$OBJECT_ID</span><span class="tag">$DATA</span><span class="tag">$INDEX_ROOT</span><span class="tag">$REPARSE_POINT</span><span class="tag">ADS</span><span class="tag">VSS</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">MFTECmd</span><span class="tag">Timeline Explorer</span><span class="tag">log2timeline / plaso</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Sector / Cluster / Volume / File</span><span class="tag">MACB ($SI vs $FN)</span><span class="tag">Resident vs non-resident</span><span class="tag">Timestomping detection</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Why NTFS artefacts are so rich</span></div>
+    <div class="prose">
+      <p>NTFS is <em>self-describing</em>: its own metadata is stored as files (records 0–15 of the MFT), each named with a leading <code>$</code>. That self-referential design means an examiner can read the filesystem the same way the kernel does — and recover information the kernel itself has discarded. Below, each <code>$</code>file is treated as an artefact with its own forensic value.</p>
+      <p>The hierarchy: <strong>sector</strong> (512 B or 4 KB on AF disks) → <strong>cluster</strong> (default 4 KB, the allocation unit — leftover bytes are slack) → <strong>volume</strong> (one NTFS instance, anchored at <code>$Boot</code>) → <strong>file</strong> (anything with an MFT record, including directories and the filesystem's own metadata).</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🗃</span><span class="ct">$MFT — the index of everything</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Two MACB sets</span>
+      <span class="fvc k-recover">Deleted entries</span>
+      <span class="fvc k-pivot">Anchor</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> record 0 of itself; physically a non-resident file mapped by <code>$DATA</code> runs.</p>
+      <p><strong>Structure:</strong> array of 1024-byte records, each a header + sequence of typed attributes. <code>EntryNumber</code> + <code>SequenceNumber</code> is the immutable file reference (FRN).</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Every file that exists <em>or has existed</em> on the volume — unused records persist verbatim until reused.</li>
+        <li>Two independent MACB sets per file (<code>$SI</code> + <code>$FN</code>) for timestomping detection.</li>
+        <li>Tiny files (≤ ~700 B) live <em>entirely inside the record</em> — recovered in full even after deletion.</li>
+        <li>Parent-FRN field rebuilds the full path tree.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> contents of non-resident files whose clusters were reused; runs without <code>$Bitmap</code> corroboration may point at overwritten data.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📜</span><span class="ct">$LogFile + $UsnJrnl — the journals</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Recent operations</span>
+      <span class="fvc k-recover">Names of wiped files</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>$LogFile</code> at MFT record 2; <code>$UsnJrnl:$J</code> inside <code>$Extend</code>.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><code>$LogFile</code> — transactional log of NTFS metadata operations (allocations, attribute writes). Replay reconstructs recent create / delete / rename activity even when the MFT entry is gone.</li>
+        <li><code>$UsnJrnl:$J</code> — name-level audit. Each entry: filename + parent FRN + USN reason code (<em>FILE_CREATE</em>, <em>RENAME_OLD_NAME</em>, <em>FILE_DELETE</em>, …). <em>Often the only place a wiped filename survives.</em></li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> events older than the journal's rotation horizon — these are ring buffers sized to a few hundred MB on a typical workstation (minutes to days of history).</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">NTFS metafiles — records 0–11, what each one is for</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>#</th><th>Metafile</th><th>What it carries</th><th>Forensic value</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><code>$MFT</code></td><td>Array of 1024 B records — every file</td><td>The spine of the disk; parsed by MFTECmd</td></tr>
+        <tr><td>1</td><td><code>$MFTMirr</code></td><td>Mirror of the first four <code>$MFT</code> entries</td><td>Recovery anchor when the primary MFT header is corrupted</td></tr>
+        <tr><td>2</td><td><code>$LogFile</code></td><td>Transactional metadata log</td><td>Replays recent metadata ops — recovers operations the FS no longer shows</td></tr>
+        <tr><td>3</td><td><code>$Volume</code></td><td>Label, <em>Volume Serial Number</em>, NTFS version</td><td>VSN is the join key for LNK / Jump Lists / ShellBags / Event 1006 (§14)</td></tr>
+        <tr><td>4</td><td><code>$AttrDef</code></td><td>Attribute-type ID → name table</td><td>Authoritative reference if a parser invents an attribute name</td></tr>
+        <tr><td>5</td><td><code>.</code> (root)</td><td>The volume's root directory</td><td>Top of the path tree; <code>$INDEX_ROOT</code> lists root children</td></tr>
+        <tr><td>6</td><td><code>$Bitmap</code></td><td>1 bit per cluster — allocated/free</td><td>Tells carving (§05) which clusters are in use vs free; cross-checks MFT data runs</td></tr>
+        <tr><td>7</td><td><code>$Boot</code></td><td>Boot sector — cluster size, MFT LCN, VSN</td><td>Format constants — needed to parse the rest of the volume</td></tr>
+        <tr><td>8</td><td><code>$BadClus</code></td><td>Clusters marked bad</td><td>Historic malware hiding place — bytes outside the FS but on the disk</td></tr>
+        <tr><td>9</td><td><code>$Secure</code></td><td>Deduplicated security descriptors (ACLs)</td><td>Owner, DACL, SACL — proves who could touch / audit a file</td></tr>
+        <tr><td>10</td><td><code>$UpCase</code></td><td>Unicode uppercase translation table</td><td>NTFS case-insensitive name compare uses this exact table</td></tr>
+        <tr><td>11</td><td><code>$Extend</code></td><td>Directory holding <code>$UsnJrnl</code>, <code>$Quota</code>, <code>$ObjId</code>, <code>$Reparse</code></td><td><code>$UsnJrnl:$J</code> is the name-level change journal</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al b"><span class="ali">📌</span><span>Records <strong>12–15</strong> reserved; <strong>16+</strong> user files. KAPE collects the whole set so MFTECmd can parse them off-host.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">🧩</span><span class="ct">MFT record attributes — what lives in a 1024-byte record</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Type</th><th>Attribute</th><th>What it carries</th><th>Forensic value</th></tr></thead>
+      <tbody>
+        <tr><td>0x10</td><td><code>$STANDARD_INFORMATION</code></td><td>MACB (×4), DOS flags, owner ID</td><td>Always present, resident. <em>User-writable via <code>SetFileTime</code> — the timestomping target</em></td></tr>
+        <tr><td>0x20</td><td><code>$ATTRIBUTE_LIST</code></td><td>Pointer list when attrs overflow the base record</td><td>Signals heavily fragmented / multi-stream files — follow the pointers</td></tr>
+        <tr><td>0x30</td><td><code>$FILE_NAME</code></td><td>Name + <em>second</em> MACB set, parent FRN, namespace</td><td>MACB only updates on create / rename / move — <em>the timestomping witness</em></td></tr>
+        <tr><td>0x40</td><td><code>$OBJECT_ID</code></td><td>16-byte GUID assigned by Distributed Link Tracking</td><td>Cross-refs to LNK <code>TrackerDataBlock</code> — links shortcut to target even after rename</td></tr>
+        <tr><td>0x50</td><td><code>$SECURITY_DESCRIPTOR</code></td><td>Legacy inline ACL or ID into <code>$Secure</code></td><td>Owner / DACL / SACL — who could touch / audit the file</td></tr>
+        <tr><td>0x80</td><td><code>$DATA</code></td><td>File contents. Resident or non-resident data runs</td><td>Multiple <code>$DATA</code> = <em>Alternate Data Streams</em>. Default stream unnamed</td></tr>
+        <tr><td>0x90</td><td><code>$INDEX_ROOT</code></td><td>Root of B+ tree of directory children</td><td>Directories are files whose payload is this index — slack retains deleted names</td></tr>
+        <tr><td>0xA0</td><td><code>$INDEX_ALLOCATION</code></td><td>Non-resident index nodes when dir outgrows <code>$INDEX_ROOT</code></td><td>Index slack can preserve deleted filenames long after deletion</td></tr>
+        <tr><td>0xB0</td><td><code>$BITMAP</code></td><td>Allocation map for index nodes</td><td>Tracks which index-buffer slots are in use</td></tr>
+        <tr><td>0xC0</td><td><code>$REPARSE_POINT</code></td><td>Symlinks, junctions, mount points, OneDrive placeholders</td><td>Microsoft tag ID identifies the kind (<code>0xA000000C</code> = symlink)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">🕒</span><span><strong>MACB rule:</strong> <code>$SI</code> is what the UI shows, what <code>SetFileTime</code> rewrites. <code>$FN</code> is what the kernel writes on create/rename/move. Divergence = timestomping. <code>$SI.Born &gt; $FN.Born</code> or <code>$SI</code> sub-second = <code>.0000000</code> while <code>$FN</code> shows microseconds → flag.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">Resident vs non-resident $DATA</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Full-file recovery</span>
+    </div>
+    <div class="prose">
+      <p>NTFS stores file contents in <code>$DATA</code>. Where it lives depends on size:</p>
+      <ul>
+        <li><strong>Resident</strong> — payload inline in the 1024 B record. No clusters allocated. The MFT entry <em>is</em> the file.</li>
+        <li><strong>Non-resident</strong> — header stays; payload lives in clusters described by <em>data runs</em> (<code>LCN, length</code>). The record is a map.</li>
+      </ul>
+      <p><strong>Forensic value:</strong> when a tiny file is deleted, its <em>full content persists inside <code>$MFT</code></em> until the slot is reused — small scripts, ransom notes, credential blobs recovered <em>without carving</em>. Non-resident files: clusters can be overwritten while the record still describes them → cross-check <code>$Bitmap</code> before trusting recovered runs.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🪞</span><span class="ct">Alternate Data Streams (ADS)</span></div>
+    <div class="fv">
+      <span class="fvc k-hidden">Hidden payload</span>
+      <span class="fvc k-pivot">Mark-of-the-Web</span>
+    </div>
+    <div class="prose">
+      <p>A second (or third…) <code>$DATA</code> attribute on the same record, distinguished by a <em>stream name</em>. Syntax: <code>file:stream:$DATA</code>.</p>
+      <ul>
+        <li><strong>Legitimate:</strong> <code>:Zone.Identifier</code> — <em>Mark-of-the-Web</em>, written by browsers / mail clients on downloaded files. Tells you the file came from outside.</li>
+        <li><strong>Abused:</strong> hidden executables, scripts, exfil archives. <code>dir</code> shows nothing — only <code>dir /R</code>, <code>Get-Item -Stream *</code>, or MFTECmd reveals them.</li>
+        <li><strong>Detail:</strong> an ADS has its own resident/non-resident flag but <em>shares the host file's <code>$SI</code> MACB</em> — the host's timestamps cover the hidden payload.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">🧊</span><span class="ct">Volume Shadow Copies (VSS) — historical filesystem snapshots</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Historical</span>
+      <span class="fvc k-recover">Wiped files</span>
+      <span class="fvc k-pivot">Diff baseline</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>\System Volume Information\</code> on the live FS; exposed as <code>\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyN\</code>.</p>
+      <p><strong>Structure:</strong> each shadow is a copy-on-write delta. Together they reconstruct the state of <em>every</em> file at each snapshot point — often weeks back.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li>Every snapshot has its own <code>$MFT</code> — diff today's MFTECmd output against a snapshot's to surface files <em>that existed and were later wiped</em>.</li>
+        <li>Registry hives inside a snapshot expose the past state of services, persistence keys, user accounts.</li>
+        <li>KAPE's <code>--vss</code> re-runs every target against each snapshot — turns the triage tarball into a historical record.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> changes between two snapshots that were undone before the next snapshot. Snapshots are not continuous — they are discrete points.</p>
+    </div>
+    <div class="al g"><span class="ali">✅</span><span><strong>The bridge to §05 file carving:</strong> when the live FS no longer contains a file, the shadow often still does — try VSS <em>before</em> resorting to signature-based carving.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — forensic question pivot</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Question</th><th>Primary artefact</th><th>Corroborating artefact</th></tr></thead>
+      <tbody>
+        <tr><td>Did this file ever exist?</td><td>$MFT entry (in-use or deleted)</td><td>$UsnJrnl FILE_CREATE record</td></tr>
+        <tr><td>What was the file's <em>real</em> creation time?</td><td>$FN.Born (timestomping-resistant)</td><td>$UsnJrnl create timestamp, $LogFile</td></tr>
+        <tr><td>Has someone timestomped this file?</td><td>$SI vs $FN MACB divergence</td><td>$UsnJrnl creation reason code</td></tr>
+        <tr><td>What did this volume call itself?</td><td>$Volume serial number</td><td>LNK volume serial (§12), USB Event 1006 (§14)</td></tr>
+        <tr><td>What was the file's content (small file)?</td><td>Resident $DATA inside $MFT</td><td>$LogFile recent write records</td></tr>
+        <tr><td>Is there a hidden payload on this file?</td><td>Named $DATA streams (ADS)</td><td>Zone.Identifier presence/absence</td></tr>
+        <tr><td>Was this file downloaded from the internet?</td><td>$DATA:Zone.Identifier ADS</td><td>Browser history (§11/browser)</td></tr>
+        <tr><td>Did this file exist last week and get wiped?</td><td>VSS snapshot $MFT</td><td>$UsnJrnl FILE_DELETE in current journal</td></tr>
+        <tr><td>Who could touch / audit this file?</td><td>$SECURITY_DESCRIPTOR → $Secure</td><td>Security.evtx 4663 (object access)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>NTFS artefacts are the substrate other artefacts reference — almost every later finding ties back to a field here:</p>
+    <ul>
+      <li><strong>$SI / $FN / $UsnJrnl triangle</strong> — three independent MACB witnesses; divergence is the timestomping signal.</li>
+      <li><strong>$Volume VSN ↔ LNK TrackerDataBlock (§12) ↔ JumpLists (§13) ↔ ShellBags ↔ Event 1006 (§14)</strong> — the VSN is the join key that ties a file event to a specific physical volume / device.</li>
+      <li><strong>$OBJECT_ID ↔ LNK <code>TrackerDataBlock</code></strong> — the GUID embedded in a LNK file matches the target's <code>$OBJECT_ID</code> attribute, even after rename.</li>
+      <li><strong>$Bitmap ↔ recovered data runs</strong> — confirms whether the bytes a deleted record points at are still intact or already reused.</li>
+      <li><strong>VSS $MFT ↔ live $MFT</strong> — diff surfaces files that existed historically and were later removed.</li>
+      <li><strong>$Secure ACLs ↔ Security.evtx 4663</strong> — the descriptor says who <em>could</em> touch the file; the event log says who <em>did</em>.</li>
+      <li><strong>Hive file <code>$SI.Modified</code> (§06 hive on disk) vs key <code>LastWriteTime</code></strong> — registry-key write time should be ≤ hive file modify time; mismatch suggests on-disk hive tampering.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §04 Windows Filesystem / NTFS</span>
+  <span>Next → §05 File Carving</span>
+</div>
+
+</div></body></html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Windows Filesystem / NTFS · CCDCOE IDFC V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--purple);--accent-dim:var(--purple-dim);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.6;padding:16px 16px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.crumb{font-size:9.5px;color:var(--dm2);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:4px}
+.crumb .acc{color:var(--accent)}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:3px}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:11px;line-height:1.55}
+.tor .sl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:6px}
+.tor .tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;margin:0 3px 3px 0;font-size:10px;color:#9CDCFE}
+.tor .row{margin-bottom:2px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:14px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;line-height:1.15}
+
+.prose{font-size:11.5px;color:var(--tx);line-height:1.65}
+.prose p{margin-bottom:6px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10.5px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:11px;line-height:1.55}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:9px;top:3px}
+
+.cmds{display:flex;flex-direction:column;gap:5px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10.5px;color:#C8E6FF;word-break:break-all;line-height:1.45}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.path{font-family:var(--mono);font-size:10px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.45;margin:3px 0}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:7px 10px;border-radius:5px;font-size:11px;line-height:1.5;margin-top:4px}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:13px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10.5px;min-width:260px}
+.et th{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:5px 7px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.45}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:8px;padding:10px 13px;margin-top:12px}
+.xref .sl{color:var(--accent);margin-bottom:5px}
+.xref .prose{font-size:11px}
+
+.ft{margin-top:18px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🗂</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V2 / <span class="acc">04 — Windows Filesystem / NTFS</span></div>
+      <div class="t1">Windows Filesystem &amp; NTFS</div>
+      <div class="t2">Everything is a file — including the filesystem itself</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-p">NTFS</span>
+    <span class="b b-b">$MFT</span>
+    <span class="b b-a">Attributes</span>
+    <span class="b b-r">MACB</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">MFTECmd (Eric Zimmerman)</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">$MFT</span><span class="tag">$MFTMirr</span><span class="tag">$LogFile</span><span class="tag">$Volume</span><span class="tag">$AttrDef</span><span class="tag">$Bitmap</span><span class="tag">$Boot</span><span class="tag">$BadClus</span><span class="tag">$Secure</span><span class="tag">$UpCase</span><span class="tag">$Extend</span><span class="tag">$STANDARD_INFORMATION</span><span class="tag">$ATTRIBUTE_LIST</span><span class="tag">$FILE_NAME</span><span class="tag">$OBJECT_ID</span><span class="tag">$SECURITY_DESCRIPTOR</span><span class="tag">$DATA</span><span class="tag">$INDEX_ROOT</span><span class="tag">$REPARSE_POINT</span><span class="tag">ADS</span><span class="tag">VSS</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Sectors / Clusters / Volumes</span><span class="tag">MACB timestamps</span><span class="tag">Resident vs non-resident</span><span class="tag">Timestomping detection</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📐</span><span class="ct">NTFS fundamentals — sectors, clusters, volumes, files</span></div>
+    <div class="prose">
+      <p><strong>NTFS</strong> is Windows' native filesystem. The taught hierarchy, smallest to largest:</p>
+      <ul>
+        <li><strong>Sector</strong> — the smallest addressable unit on disk. Classically <code>512 B</code>; modern Advanced Format disks present <code>4 KB</code>.</li>
+        <li><strong>Cluster</strong> — NTFS's smallest allocation unit, sized at format. Default <code>4 KB</code> = 8 × 512 B sectors. Every file consumes a whole-cluster multiple — the leftover is <em>slack</em> (§05).</li>
+        <li><strong>Volume</strong> — one NTFS instance, addressed by its <code>$Boot</code> sector and <em>Volume Serial Number</em> (recorded in <code>$Volume</code>).</li>
+        <li><strong>File</strong> — every object: regular files, directories (just files whose payload is <code>$INDEX_ROOT</code>), and even the filesystem metadata itself.</li>
+      </ul>
+      <p>The defining NTFS truth: <em>everything is a file</em>. The MFT, the bitmap, the journal — each is an entry in the MFT, indexable like any other file. That self-referential layout is what makes NTFS so forensically rich.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🗃</span><span class="ct">The $MFT — the spine of the filesystem</span></div>
+    <div class="prose">
+      <p>The <strong>Master File Table</strong> is an array of fixed-size <code>1024 B</code> records. One record per file (including itself — record <code>0</code>). Each record is a header followed by a sequence of typed <em>attributes</em>.</p>
+      <ul>
+        <li>Records carry a <strong>sequence number</strong> incremented on each reuse — the pair <code>record-seq</code> is how a file reference (FRN) survives deletion.</li>
+        <li>If a file's attributes won't fit in 1024 B, an <code>$ATTRIBUTE_LIST</code> in the base record points at extension records.</li>
+        <li>Records can be marked <em>unallocated</em>; the contents persist until reused, so MFTECmd will surface them as <em>deleted</em> entries.</li>
+        <li>The MFT itself is non-resident — its own <code>$DATA</code> runs map to clusters across the volume.</li>
+      </ul>
+      <p><em>The $MFT is the index of everything that exists, ever existed, or briefly existed on the volume.</em></p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">NTFS metafiles — MFT entries 0–15 (the table you wish you had on day one)</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>#</th><th>Name</th><th>What it is</th><th>Why the examiner cares</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><code>$MFT</code></td><td>The MFT itself — array of 1024-byte records describing every file</td><td>The single most important artefact on a Windows disk; parse with MFTECmd</td></tr>
+        <tr><td>1</td><td><code>$MFTMirr</code></td><td>Backup of the first four <code>$MFT</code> entries; sits mid-volume</td><td>Recovery anchor if the primary <code>$MFT</code> header is corrupted</td></tr>
+        <tr><td>2</td><td><code>$LogFile</code></td><td>Transactional log of every metadata change</td><td>Replays recent create / rename / delete / attribute writes — recovers operations the FS no longer reflects</td></tr>
+        <tr><td>3</td><td><code>$Volume</code></td><td>Volume label, serial number, NTFS version</td><td>Volume serial is the anchor that LNK / Jump Lists (§12) reference</td></tr>
+        <tr><td>4</td><td><code>$AttrDef</code></td><td>Attribute-type definitions table</td><td>Authoritative map of attribute type IDs → names &amp; constraints</td></tr>
+        <tr><td>5</td><td><code>.</code> (root)</td><td>The <code>\</code> directory of the volume</td><td>Top-level index; its <code>$INDEX_ROOT</code> lists the root children</td></tr>
+        <tr><td>6</td><td><code>$Bitmap</code></td><td>One bit per cluster — allocated (1) or free (0)</td><td>Carving (§05) trusts this to decide which clusters to scan</td></tr>
+        <tr><td>7</td><td><code>$Boot</code></td><td>Boot sector; first cluster of the volume</td><td>Cluster size, MFT start LCN, volume serial — the format constants</td></tr>
+        <tr><td>8</td><td><code>$BadClus</code></td><td>Listing of clusters marked bad</td><td>Hiding spot historically abused by malware to stash payloads outside the FS</td></tr>
+        <tr><td>9</td><td><code>$Secure</code></td><td>Deduplicated security descriptors (ACLs) for every file</td><td>Modern NTFS stores ACLs here; <code>$SECURITY_DESCRIPTOR</code> on the file is just an ID lookup</td></tr>
+        <tr><td>10</td><td><code>$UpCase</code></td><td>Unicode uppercase translation table</td><td>NTFS name comparison is case-insensitive via this exact table</td></tr>
+        <tr><td>11</td><td><code>$Extend</code></td><td>Directory holding <code>$UsnJrnl</code>, <code>$Quota</code>, <code>$ObjId</code>, <code>$Reparse</code></td><td><code>$UsnJrnl:$J</code> is the change journal — every filename change with reason codes</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al b"><span class="ali">📌</span><span>Entries <strong>12–15</strong> are reserved; <strong>16+</strong> are user files. Anything in <code>$Extend</code> sits at record 11's children — KAPE collects it, MFTECmd parses it.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">🧩</span><span class="ct">MFT record attributes — what lives inside a 1024-byte record</span></div>
+    <div class="prose">
+      <p>Every MFT record is a header plus a sequence of <em>attributes</em>, each with its own type ID, length, and resident/non-resident flag. The set you'll see on virtually every record:</p>
+    </div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Type</th><th>Attribute</th><th>What it carries</th><th>Forensic significance</th></tr></thead>
+      <tbody>
+        <tr><td>0x10</td><td><code>$STANDARD_INFORMATION</code></td><td>MACB timestamps, DOS flags, owner / quota ID</td><td>Always present. Resident. <em>User-writable</em> via <code>SetFileTime</code> — the timestomping target</td></tr>
+        <tr><td>0x20</td><td><code>$ATTRIBUTE_LIST</code></td><td>Pointer list when attributes overflow the base record</td><td>Indicates a heavily-fragmented or many-streamed file; follow the pointers</td></tr>
+        <tr><td>0x30</td><td><code>$FILE_NAME</code></td><td>The name + a <em>second</em> MACB set, parent FRN, namespace tag</td><td>One per namespace (DOS / Win32 / POSIX). MACB only updates on create / rename / move — <em>the key timestomping witness</em></td></tr>
+        <tr><td>0x40</td><td><code>$OBJECT_ID</code></td><td>16-byte GUID assigned by Distributed Link Tracking</td><td>Cross-refs with LNK <code>TrackerDataBlock</code> (§12) — links a shortcut to the actual file even after rename</td></tr>
+        <tr><td>0x50</td><td><code>$SECURITY_DESCRIPTOR</code></td><td>Legacy: full ACL inline. Modern: ID into <code>$Secure</code></td><td>Owner / DACL / SACL — proves who could touch what</td></tr>
+        <tr><td>0x80</td><td><code>$DATA</code></td><td>File contents. Resident (≤ ~700 B) or non-resident (data runs)</td><td>Multiple <code>$DATA</code> streams = <em>Alternate Data Streams</em>. Default stream is unnamed</td></tr>
+        <tr><td>0x90</td><td><code>$INDEX_ROOT</code></td><td>Root of a B+ tree of children (directory entries)</td><td>Directories are files whose payload is this index — small dirs fit entirely here</td></tr>
+        <tr><td>0xA0</td><td><code>$INDEX_ALLOCATION</code></td><td>Non-resident index nodes when a directory outgrows <code>$INDEX_ROOT</code></td><td>Slack inside index nodes can retain deleted filenames</td></tr>
+        <tr><td>0xB0</td><td><code>$BITMAP</code></td><td>Allocation map for the index nodes</td><td>Tracks which index-buffer slots are in use</td></tr>
+        <tr><td>0xC0</td><td><code>$REPARSE_POINT</code></td><td>Symlinks, junctions, mount points, OneDrive placeholders</td><td>Microsoft <em>tag IDs</em> identify the kind (<code>0xA000000C</code> = symlink, <code>0xA0000003</code> = mount point)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">Resident vs non-resident $DATA</span></div>
+    <div class="prose">
+      <p>NTFS stores file contents in the <code>$DATA</code> attribute. Where it lives depends on size:</p>
+      <ul>
+        <li><strong>Resident</strong> — payload fits inside the MFT record itself (practically <code>≤ ~700 B</code>). <em>No clusters allocated.</em> The file <strong>is</strong> the MFT entry.</li>
+        <li><strong>Non-resident</strong> — header stays in the record; payload lives in clusters described by compact <em>data runs</em> (<code>LCN, length</code> pairs). The MFT entry is a map, not the data.</li>
+      </ul>
+      <p><em>Why this matters:</em> when a tiny file is deleted, its record is flagged unused but the bytes <strong>persist verbatim inside <code>$MFT</code></strong> until that slot is recycled. Run MFTECmd on a fresh <code>$MFT</code> dump and you will routinely recover small ransom notes, scripts, config snippets and credential blobs in full — no carving required.</p>
+      <p>Conversely, a non-resident file's clusters can be overwritten while the MFT record still describes them — <em>cross-check <code>$Bitmap</code></em> before trusting recovered data runs.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🕒</span><span class="ct">MACB &amp; timestomping detection</span></div>
+    <div class="prose">
+      <p>NTFS carries <strong>two</strong> sets of four timestamps per file:</p>
+      <ul>
+        <li><strong>M</strong>odified — last content change</li>
+        <li><strong>A</strong>ccessed — last open / read (often disabled on modern Windows)</li>
+        <li><strong>C</strong>hanged — last MFT-record metadata change</li>
+        <li><strong>B</strong>orn — file creation time</li>
+      </ul>
+      <p>The <em>visible</em> set lives in <code>$STANDARD_INFORMATION</code> (<code>$SI</code>). The <em>hidden</em> set lives in <code>$FILE_NAME</code> (<code>$FN</code>) and <strong>only updates on file create / rename / move</strong>.</p>
+      <p><strong>Timestomping</strong> tools call <code>SetFileTime</code> to rewrite <code>$SI</code> — making malware look weeks old. They almost never touch <code>$FN</code>. The asymmetry <em>is the detection</em>.</p>
+    </div>
+    <div class="al r"><span class="ali">🎯</span><span><strong>Timestomping rule of thumb:</strong> flag any file where <code>$SI.Born &gt; $FN.Born</code>, or where <code>$SI</code> sub-second component is <code>.0000000</code> while <code>$FN</code> shows microsecond precision. <code>SetFileTime</code> rounds; the kernel doesn't.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🪞</span><span class="ct">Alternate Data Streams (ADS)</span></div>
+    <div class="prose">
+      <p>An ADS is simply a second (or third, or fourth) <code>$DATA</code> attribute on the same MFT record, distinguished by a <em>stream name</em>. Reference syntax: <code>filename:streamname:$DATA</code>.</p>
+      <ul>
+        <li><strong>Legitimate:</strong> <code>:Zone.Identifier</code> — <em>Mark-of-the-Web</em>. Written by browsers / mail clients on downloaded files; SmartScreen reads it.</li>
+        <li><strong>Abused:</strong> hiding executables, scripts, exfil archives behind innocuous host files. <code>notepad.exe c:\tmp\cover.txt:payload.ps1</code> works; <code>dir</code> shows nothing.</li>
+        <li><strong>Discovery:</strong> live host → <code>dir /R</code>, <code>Get-Item -Stream *</code>. Image → MFTECmd dumps every named stream with size and resident/non-resident flag.</li>
+        <li>An ADS has <em>its own</em> resident/non-resident behaviour but <em>shares</em> the host file's <code>$SI</code> MACB — the host's timestamp covers the hidden payload.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🧊</span><span class="ct">Volume Shadow Copies (VSS)</span></div>
+    <div class="prose">
+      <p><strong>VSS</strong> are point-in-time snapshots stored at <code>\System Volume Information\</code>. Each snapshot is a copy-on-write delta — together they expose the past state of <em>every</em> file on the volume, often weeks back.</p>
+      <ul>
+        <li>Live host: <code>vssadmin list shadows</code> then <code>mklink /D C:\vss1 \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\</code> to walk it as a folder.</li>
+        <li>Image: mount with AIM, or feed KAPE the <code>--vss</code> switch (§03) — KAPE re-runs every target against each snapshot.</li>
+        <li>Each snapshot has its own <code>$MFT</code>; diff today's MFTECmd output against a snapshot's to spot files <em>that existed and were then wiped</em>.</li>
+      </ul>
+      <p>VSS is the bridge between this section and <em>file carving</em> (§05): when the live FS has nothing left, the snapshot often still does.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">⚙️</span><span class="ct">MFTECmd — the canonical workflow</span></div>
+    <div class="prose">
+      <p><strong>MFTECmd</strong> (Eric Zimmerman) parses <code>$MFT</code>, <code>$LogFile</code>, <code>$Boot</code>, <code>$SDS</code> and <code>$UsnJrnl:$J</code> into clean CSV / JSON. It is the taught tool and the de-facto standard. Run it against extracted files — never against a mounted live drive.</p>
+      <ul>
+        <li><em>Output columns of interest:</em> <code>EntryNumber</code>, <code>SequenceNumber</code>, <code>ParentEntryNumber</code>, <code>InUse</code>, <code>IsDirectory</code>, <code>HasAds</code>, all four <code>$SI</code> + all four <code>$FN</code> timestamps, <code>FileSize</code>, <code>ZoneIdContents</code>.</li>
+        <li>Pipe the CSV into <em>Timeline Explorer</em> for a sortable, filterable view; export to <em>plaso/log2timeline</em> for super-timeline merging (§13).</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Full $MFT extraction → CSV (the canonical run)</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">F:\$MFT</span> <span class="kw">--csv</span> <span class="val">C:\out</span> <span class="kw">--csvf</span> <span class="val">mft.csv</span></div></div>
+      <div class="cmd"><div class="lbl">Decode a single MFT entry (record-seq)</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">F:\$MFT</span> <span class="kw">--de</span> <span class="val">12345-1</span> <span class="cmt"># entry 12345, sequence 1</span></div></div>
+      <div class="cmd"><div class="lbl">Parse the $LogFile transactional journal</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">F:\$LogFile</span> <span class="kw">--csv</span> <span class="val">C:\out</span></div></div>
+      <div class="cmd"><div class="lbl">Parse the USN change journal (rename / create / delete history)</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">F:\$Extend\$UsnJrnl:$J</span> <span class="kw">--csv</span> <span class="val">C:\out</span></div></div>
+      <div class="cmd"><div class="lbl">Walk a VSS snapshot's $MFT</div><div class="cc">MFTECmd.exe <span class="kw">-f</span> <span class="val">\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\$MFT</span> <span class="kw">--csv</span> <span class="val">C:\out</span> <span class="kw">--csvf</span> <span class="val">mft_vss1.csv</span></div></div>
+    </div>
+    <div class="al g"><span class="ali">✅</span><span><strong>Why it matters:</strong> the <code>$MFT</code> is the index of everything. Combined with <code>$LogFile</code> and <code>$UsnJrnl</code>, you get a <em>recent-operations timeline that nothing on the live FS exposes</em> — including deletes the user thought were permanent.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>NTFS artefacts rarely stand alone — they corroborate (or contradict) every other source on the disk:</p>
+    <ul>
+      <li><strong>Timestomping detection</strong> — <code>$SI</code> MACB vs <code>$FN</code> MACB on the same record, plus the corresponding <code>$UsnJrnl</code> entry. If <code>$SI</code> says "born 2019" but USN shows <em>FILE_CREATE</em> last week, it's stomped.</li>
+      <li><strong>VSS-mounted older <code>$MFT</code> vs current <code>$MFT</code></strong> — diff entry sets to surface files that existed in a snapshot and were later wiped from the live volume.</li>
+      <li><strong>Prefetch / AmCache (§10)</strong> — the executable's last-run time should align with its <code>$SI.Modified</code>; a Prefetch entry for a binary missing from the MFT means it was deleted post-execution.</li>
+      <li><strong>LNK <code>TrackerDataBlock</code> (§12)</strong> — the GUID embedded there must match the target file's <code>$OBJECT_ID</code> attribute, even if the target was renamed.</li>
+      <li><strong>Registry hive <code>LastWriteTime</code> (§06)</strong> — for a hive file like <code>SYSTEM</code>, the key's <code>LastWriteTime</code> should be ≤ the file's <code>$SI.Modified</code>; mismatch suggests tampering with the on-disk hive.</li>
+      <li><strong>Mark-of-the-Web</strong> — <code>:Zone.Identifier</code> ADS on a dropped binary places it on a downloaded path; absence on a "downloaded" file is itself suspicious.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V2 · §04 Windows Filesystem / NTFS</span>
+  <span>Next → §05 File Carving</span>
+</div>
+
+</div></body></html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Evidence Collection · CCDCOE IDFC V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--red);--accent-dim:var(--red-dim);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.6;padding:16px 16px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.crumb{font-size:9.5px;color:var(--dm2);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:4px}
+.crumb .acc{color:var(--accent)}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:3px}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:11px;line-height:1.55}
+.tor .sl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:6px}
+.tor .tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;margin:0 3px 3px 0;font-size:10px;color:#9CDCFE}
+.tor .row{margin-bottom:2px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:14px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;line-height:1.15}
+
+.prose{font-size:11.5px;color:var(--tx);line-height:1.65}
+.prose p{margin-bottom:6px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10.5px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:11px;line-height:1.55}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:9px;top:3px}
+
+.cmds{display:flex;flex-direction:column;gap:5px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10.5px;color:#C8E6FF;word-break:break-all;line-height:1.45}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.path{font-family:var(--mono);font-size:10px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.45;margin:3px 0}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:7px 10px;border-radius:5px;font-size:11px;line-height:1.5;margin-top:4px}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:13px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10.5px;min-width:260px}
+.et th{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:5px 7px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.45}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:8px;padding:10px 13px;margin-top:12px}
+.xref .sl{color:var(--accent);margin-bottom:5px}
+.xref .prose{font-size:11px}
+
+.ft{margin-top:18px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">📥</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V2 / <span class="acc">01 — Evidence Collection</span></div>
+      <div class="t1">Evidence Collection &amp; Acquisition</div>
+      <div class="t2">Image first, analyse later — the integrity of every later finding starts here</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">Acquisition</span>
+    <span class="b b-a">Hashing</span>
+    <span class="b b-b">Chain of Custody</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">FTK Imager</span><span class="tag">Tableau write-blocker</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">E01 images</span><span class="tag">DD / raw</span><span class="tag">AFF4</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Bit-for-bit copy</span><span class="tag">Hash verification</span><span class="tag">Write blocking</span><span class="tag">Order of volatility</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Why acquisition matters</span></div>
+    <div class="prose">
+      <p><strong>Acquisition</strong> is the act of producing a forensically sound copy of digital media so the original can be set aside untouched. Everything that follows in the case is built on this copy; if it is contaminated, every later finding becomes challengeable in court.</p>
+      <ul>
+        <li><strong>Bit-for-bit</strong> — every sector, including unallocated space and slack, not just live files. Carving (Section 05) depends on this.</li>
+        <li><strong>Hash before &amp; after</strong> — MD5 + SHA-256 of source and image. Identical hashes prove the image was not altered.</li>
+        <li><strong>Work on copies</strong> — analyse a working copy; keep the master image read-only.</li>
+        <li><strong>Chain of custody</strong> — log every transfer, action, examiner, and tool version against the evidence ID.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">💾</span><span class="ct">E01 vs raw (dd) — the artefact itself</span></div>
+    <div class="prose">
+      <p><strong>raw / dd</strong> is a flat sector-by-sector copy. No compression, no metadata — biggest, simplest, universally readable. Mount it with anything (AIM, <code>losetup</code>, <code>xmount</code>).</p>
+      <p><strong>E01 (EnCase Evidence File / Expert Witness Format)</strong> is the de-facto forensic container. It stores the bitstream <em>plus</em> embedded metadata, splits into segments (<code>.E01, .E02, …</code>), compresses, and writes per-chunk CRCs.</p>
+      <ul>
+        <li>Header carries <em>case number, examiner, evidence ID, acquisition notes</em>.</li>
+        <li>Embedded <em>MD5 / SHA-1</em> let the format self-verify on every read.</li>
+        <li>CRC per 32 KB chunk localises corruption instead of trashing the whole image.</li>
+        <li>Compression typical 1.3–3× depending on data entropy.</li>
+        <li>Read by every forensic suite (FTK, EnCase, Autopsy, X-Ways, libewf).</li>
+      </ul>
+      <p><strong>AFF4</strong> (modern, used by WinPmem) can bundle memory, pagefile and disk into one container — common in IR work.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🛠</span><span class="ct">FTK Imager — finding &amp; producing the artefact</span></div>
+    <div class="prose">
+      <p><strong>FTK Imager</strong> (Exterro / AccessData) is free, runs on Windows, runs portable from a USB stick. The standard taught-course tool. It can:</p>
+      <ul>
+        <li>Image a physical drive, logical volume, single folder, or memory.</li>
+        <li>Write output as raw <code>dd</code>, <code>E01</code>, <code>SMART</code>, or AFF.</li>
+        <li>Preview a mounted image — file tree, hex view, registry hives — before doing a full acquisition.</li>
+        <li>Mount an image read-only as a Windows volume (helpful for quickly browsing without AIM).</li>
+        <li>Capture <em>memory</em> and <em>protected system files</em> (SAM, SYSTEM, SOFTWARE, $MFT) from a live host where Windows file locks would normally block you.</li>
+      </ul>
+      <p><em>Capture flow</em> → File → Create Disk Image → Physical/Logical → choose format → fill case metadata → set destination on a <strong>different drive</strong> → verify hashes after.</p>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">FTK Imager CLI — E01 of a physical drive</div><div class="cc">ftkimager <span class="val">\\.\PHYSICALDRIVE1 case01</span> --e01 --compress 6 --case-number <span class="val">001</span> --examiner <span class="val">"U.G."</span></div></div>
+      <div class="cmd"><div class="lbl">Live protected-files capture (locked by Windows)</div><div class="cc"><span class="cmt"># File → Obtain Protected Files → grabs SAM, SYSTEM, SOFTWARE, SECURITY, $MFT, $LogFile from running host</span></div></div>
+      <div class="cmd"><div class="lbl">Verify image post-acquisition</div><div class="cc"><span class="cmt"># Imager auto-hashes; double-check externally</span> sha256sum case01.E01</div></div>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🚧</span><span class="ct">Tableau &amp; write blockers — preventing artefact contamination</span></div>
+    <div class="prose">
+      <p>A <strong>write blocker</strong> sits between your workstation and the suspect drive, passing reads through but silently dropping every write at the protocol layer. Without one, just attaching the disk lets Windows update last-access times, mount the journal, and break the source hash <em>before you even open FTK Imager</em>.</p>
+      <ul>
+        <li><strong>Hardware (Tableau, WiebeTech, CRU)</strong> — physical bridges for SATA / SAS / USB / NVMe. Forensically validated, court-accepted. Tableau is the orange brick you see in every classroom.</li>
+        <li><strong>Software</strong> — Linux <code>blockdev --setro</code>, Windows USB write-protect registry flag, or boot a forensic distro (CAINE, SIFT, Tsurugi) that mounts every disk read-only.</li>
+        <li><strong>Always test</strong> — hash the source, mount, attempt a write, hash again. Record the model and firmware on the chain-of-custody form.</li>
+      </ul>
+      <p>Pair Tableau on the wire with FTK Imager on the workstation side for the textbook evidence-sound workflow.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📋</span><span class="ct">Acquisition workflow — at-the-scene checklist</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Phase</th><th>Action</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>Before touching</td><td>Photograph scene, serials, screen state</td><td>Locks the physical context — useful in court &amp; later in the report</td></tr>
+        <tr><td>Before touching</td><td>Decide pull-plug vs. graceful shutdown</td><td>Pulling preserves disk state but loses RAM; graceful loses some memory and triggers shutdown artefacts</td></tr>
+        <tr><td>Before touching</td><td>Open the chain-of-custody log</td><td>Every subsequent action must be timestamped against this log</td></tr>
+        <tr><td>During</td><td>Engage Tableau, verify with a test write</td><td>Confirms the blocker is actually blocking</td></tr>
+        <tr><td>During</td><td>Hash source (MD5 + SHA-256)</td><td>Anchors the "this is what we found" baseline</td></tr>
+        <tr><td>During</td><td>Image to a <em>different physical drive</em> than the source</td><td>Avoids accidental overwrite; speeds the read</td></tr>
+        <tr><td>During</td><td>E01 with compression 5–6, embed case metadata</td><td>Compact, self-describing, self-verifying container</td></tr>
+        <tr><td>After</td><td>Verify image hash matches source</td><td>Proves zero bits drifted during acquisition</td></tr>
+        <tr><td>After</td><td>Make a working copy — analyse the copy only</td><td>The master image is your golden source</td></tr>
+        <tr><td>After</td><td>Seal original in tamper-evident bag, record tool versions</td><td>Reproducibility &amp; admissibility</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong>Order of volatility:</strong> if the system is live, capture RAM (Section 02) <em>before</em> pulling the plug. Disk survives a power-off; RAM doesn't.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>The E01 itself isn't an evidence finding — it is the substrate that <em>every other artefact in this cheat sheet is parsed from</em>. So "corroboration" here means making the acquisition itself defensible:</p>
+    <ul>
+      <li><strong>Hash chain</strong> — source-hash on the chain-of-custody log must match the hash FTK Imager embedded in the E01, must match a fresh hash of the working copy. Three independent values, all equal.</li>
+      <li><strong>E01 metadata vs. CoC log</strong> — examiner name, case number and timestamps embedded in the E01 header must match the paper log. Mismatch is a serious red flag in court.</li>
+      <li><strong>Tableau LEDs / logs</strong> — write-blocker status (green = read-only) photographed during acquisition.</li>
+      <li><strong>Memory dump (Section 02)</strong> — if RAM was captured first, its acquisition timestamp should precede the disk image's.</li>
+      <li><strong>Windows shutdown timestamp (Section 08, SYSTEM hive)</strong> — once the image is parsed, the last shutdown time in SYSTEM should align with when you pulled the plug.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V2 · §01 Evidence Collection</span>
+  <span>Next → §02 Memory Forensics</span>
+</div>
+
+</div></body></html>

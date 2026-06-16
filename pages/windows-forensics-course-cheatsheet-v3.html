@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCDCOE IDFC V3 — Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--purple-dim);border:2px solid var(--purple-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.15}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.badges{display:flex;gap:7px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 10px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,255,225,.7)}
+
+.intro{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:20px 24px;margin-bottom:22px;color:var(--tx);font-size:13px;line-height:1.75}
+.intro p{margin-bottom:10px}
+.intro p:last-child{margin-bottom:0}
+.intro strong{color:var(--hi)}
+.intro em{color:var(--purple-deep);font-style:normal;font-weight:600}
+
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
+.lc{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd)}
+.lc.k-time{color:var(--blue-deep);background:var(--blue-dim);border-color:rgba(186,225,255,.7)}
+.lc.k-user{color:var(--green-deep);background:var(--green-dim);border-color:rgba(186,255,201,.7)}
+.lc.k-recover{color:var(--amber-deep);background:var(--amber-dim);border-color:rgba(255,223,186,.7)}
+.lc.k-integrity{color:var(--red-deep);background:var(--red-dim);border-color:rgba(255,179,186,.7)}
+.lc.k-pivot{color:var(--purple-deep);background:var(--purple-dim);border-color:rgba(224,186,255,.7)}
+.lc.k-execution{color:var(--teal-deep);background:var(--teal-dim);border-color:rgba(186,255,225,.7)}
+.lc.k-creds{color:var(--red-deep);background:var(--red-dim);border-color:rgba(255,179,186,.7)}
+.lc.k-persist{color:var(--red-deep);background:var(--red-dim);border-color:rgba(255,179,186,.7)}
+.lc.k-hidden{color:var(--amber-deep);background:var(--amber-dim);border-color:rgba(255,223,186,.7)}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.tile{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:20px 22px 22px;border-left:4px solid var(--accent-deep,var(--purple-deep));display:flex;flex-direction:column;gap:10px;text-decoration:none;color:var(--tx);transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--bdhi);transform:translateY(-1px)}
+.tile.t-1{--accent:var(--red);--accent-deep:var(--red-deep)}
+.tile.t-2{--accent:var(--teal);--accent-deep:var(--teal-deep)}
+.tile.t-3{--accent:var(--amber);--accent-deep:var(--amber-deep)}
+.tile.t-4{--accent:var(--purple);--accent-deep:var(--purple-deep)}
+.tile .n{font-family:var(--sans);font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--accent-deep,var(--purple-deep))}
+.tile .t{font-family:var(--sans);font-size:16px;font-weight:800;color:var(--hi);line-height:1.2}
+.tile .d{font-size:12.5px;color:var(--dm);line-height:1.65}
+.tile .arts{font-size:12px;color:var(--tx);line-height:1.65;margin-top:4px}
+.tile .arts strong{color:var(--hi);font-weight:600}
+.tile .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tile .chips .lc{font-size:9.5px;padding:3px 7px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🧩</div>
+    <div>
+      <div class="t1">CCDCOE IDFC — V3</div>
+      <div class="t2">Same syllabus, artefact-first lens — what each artefact <em>is</em>, where it lives, and what forensic value it yields</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">Acquisition</span>
+    <span class="b b-t">Memory</span>
+    <span class="b b-a">Triage</span>
+    <span class="b b-p">NTFS</span>
+  </div>
+</div>
+
+<div class="intro">
+  <p>V3 reframes the course as an <em>artefact catalogue</em>. V2 walked through tools; V3 walks through evidence — every section opens with an <strong>Artefact Ledger</strong> that lists the concrete objects you can pull off a system, where they live, and which forensic questions they actually answer.</p>
+  <p>Each artefact is tagged with the kind of value it provides — timeline, user attribution, recovery, integrity, pivot, execution, credentials, persistence, or hidden-data exposure. The same chips repeat across sections so you can mentally connect findings across layers.</p>
+  <p>Open any tile below to dive into a section. The first four are live; the remaining sections from V2 still apply unchanged for now.</p>
+</div>
+
+<div class="legend">
+  <span class="lc k-time">Timeline</span>
+  <span class="lc k-user">User attrib.</span>
+  <span class="lc k-recover">Recovery</span>
+  <span class="lc k-integrity">Integrity</span>
+  <span class="lc k-pivot">Pivot</span>
+  <span class="lc k-execution">Execution</span>
+  <span class="lc k-creds">Credentials</span>
+  <span class="lc k-persist">Persistence</span>
+  <span class="lc k-hidden">Hidden data</span>
+</div>
+
+<div class="grid">
+  <a class="tile t-1" href="#/v3-01-evidence-collection">
+    <div class="n">01</div>
+    <div class="t">Evidence Collection</div>
+    <div class="d">The image isn't a finding — it's the substrate every later finding rests on. Acquisition artefacts, hashes, custody.</div>
+    <div class="arts"><strong>Artefacts:</strong> E01 / raw / AFF4 images, hash digests, custody log, write-blocker evidence</div>
+    <div class="chips">
+      <span class="lc k-integrity">Integrity</span>
+      <span class="lc k-recover">Recovery</span>
+    </div>
+  </a>
+  <a class="tile t-2" href="#/v3-02-memory-forensics">
+    <div class="n">02</div>
+    <div class="t">Memory Forensics</div>
+    <div class="d">Five places where RAM (or what used to be RAM) is still recoverable — live memory, hiberfil, pagefile, swapfile, crash dumps.</div>
+    <div class="arts"><strong>Artefacts:</strong> RAM image, hiberfil.sys, pagefile.sys, swapfile.sys, MEMORY.DMP</div>
+    <div class="chips">
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-execution">Execution</span>
+      <span class="lc k-creds">Credentials</span>
+    </div>
+  </a>
+  <a class="tile t-3" href="#/v3-03-kape-aim">
+    <div class="n">03</div>
+    <div class="t">KAPE &amp; AIM — Artefact Catalogue</div>
+    <div class="d">16 artefact families, one collection sweep — what each one answers, what it cannot. The collected-vs-not matrix.</div>
+    <div class="arts"><strong>Artefacts:</strong> Registry hives, $MFT, $LogFile, $UsnJrnl, Prefetch, Event Logs, Browser DBs, LNK, Jump Lists…</div>
+    <div class="chips">
+      <span class="lc k-execution">Execution</span>
+      <span class="lc k-persist">Persistence</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+  <a class="tile t-4" href="#/v3-04-ntfs">
+    <div class="n">04</div>
+    <div class="t">Windows Filesystem / NTFS</div>
+    <div class="d">Everything is a file — and every <code style="font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:1px 5px;border-radius:3px;border:1px solid rgba(186,225,255,.6)">$</code>file answers a different question. The metadata layer itself as evidence.</div>
+    <div class="arts"><strong>Artefacts:</strong> $MFT, $LogFile, $UsnJrnl:$J, $Boot, $Bitmap, ADS, VSS snapshots, resident-data leftovers</div>
+    <div class="chips">
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-recover">Recovery</span>
+      <span class="lc k-hidden">Hidden data</span>
+    </div>
+  </a>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC — V3 · artefact-first cheat sheet</span>
+  <span>Sections 01–04 live · 05+ inherits from V2.</span>
+</div>
+
+</div></body></html>

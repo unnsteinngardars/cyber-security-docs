@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 — Registries Overview · CCDCOE IDFC V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--blue);--accent-dim:var(--blue-dim);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.6;padding:16px 16px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.crumb{font-size:9.5px;color:var(--dm2);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:4px}
+.crumb .acc{color:var(--accent)}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:3px}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:11px;line-height:1.55}
+.tor .sl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:6px}
+.tor .tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;margin:0 3px 3px 0;font-size:10px;color:#9CDCFE}
+.tor .row{margin-bottom:2px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:14px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;line-height:1.15}
+
+.prose{font-size:11.5px;color:var(--tx);line-height:1.65}
+.prose p{margin-bottom:6px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10.5px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:11px;line-height:1.55}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:9px;top:3px}
+
+.cmds{display:flex;flex-direction:column;gap:5px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10.5px;color:#C8E6FF;word-break:break-all;line-height:1.45}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.path{font-family:var(--mono);font-size:10px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.45;margin:3px 0}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:7px 10px;border-radius:5px;font-size:11px;line-height:1.5;margin-top:4px}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:13px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10.5px;min-width:260px}
+.et th{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:5px 7px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.45}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:8px;padding:10px 13px;margin-top:12px}
+.xref .sl{color:var(--accent);margin-bottom:5px}
+.xref .prose{font-size:11px}
+
+.ft{margin-top:18px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🗝</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V2 / <span class="acc">06 — Registries Overview</span></div>
+      <div class="t1">Windows Registry — Overview</div>
+      <div class="t2">Hives, keys, values — and the deleted ones you can still recover</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-b">Registry</span>
+    <span class="b b-t">Hives</span>
+    <span class="b b-a">Tools</span>
+    <span class="b b-r">Deleted Keys</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">Registry Explorer (EZ)</span><span class="tag">RECmd (EZ)</span><span class="tag">RegRipper (Carvey)</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">NTUSER.DAT</span><span class="tag">UsrClass.dat</span><span class="tag">LastWriteTime</span><span class="tag">MRUList / MRUListEx</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Hives · keys · values</span><span class="tag">Deleted keys</span><span class="tag">Dirty hives</span><span class="tag">Transaction logs</span><span class="tag">regf cells</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🌲</span><span class="ct">The registry as a hierarchical database</span></div>
+    <div class="prose">
+      <p>The registry is a tree of <strong>keys</strong> (folder-like nodes) containing <strong>values</strong> (name + type + data). Keys can have <strong>subkeys</strong>. The whole structure is a single hierarchical database fragmented across several on-disk hives.</p>
+      <ul>
+        <li><strong>HKLM</strong> — machine-wide config (hardware, OS, installed software, services).</li>
+        <li><strong>HKU</strong> — one subtree per loaded user profile, keyed by SID.</li>
+        <li><strong>HKCU / HKCR / HKCC</strong> — <em>virtual views</em>. HKCU is a pointer at <code>HKU\&lt;current-SID&gt;</code>; HKCR is a merge of <code>HKLM\Software\Classes</code> + <code>HKU\&lt;SID&gt;_Classes</code>; HKCC mirrors a SYSTEM subkey. Nothing lives on disk under these names.</li>
+        <li>Value types you will see: <code>REG_SZ</code>, <code>REG_EXPAND_SZ</code>, <code>REG_MULTI_SZ</code>, <code>REG_DWORD</code>, <code>REG_QWORD</code>, <code>REG_BINARY</code>, <code>REG_NONE</code>.</li>
+      </ul>
+      <p><strong>LastWriteTime</strong> — every key carries a single 64-bit FILETIME, updated whenever <em>any</em> value inside it changes. Individual values have no timestamp of their own. This is the only built-in temporal anchor the registry gives you — treat it as gold and use the surrounding key context to scope what actually fired.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🧱</span><span class="ct">regf — what a hive file actually is</span></div>
+    <div class="prose">
+      <p>Each hive is a self-contained <strong>regf</strong> container with a fixed layout. Knowing this matters when the parser chokes or you need to carve.</p>
+      <ul>
+        <li><strong>Header (4 KB)</strong> — <code>regf</code> magic, sequence numbers, root cell offset, last-written timestamp, checksum.</li>
+        <li><strong>hbins</strong> — 4 KB allocation blocks, each prefixed with <code>hbin</code>.</li>
+        <li><strong>Cells</strong> inside hbins, signed length (negative = allocated, positive = free):
+          <ul style="margin-left:8px">
+            <li><code>nk</code> = key node (carries LastWriteTime, parent/child pointers, security ref).</li>
+            <li><code>vk</code> = value (name, type, data offset).</li>
+            <li><code>sk</code> = security descriptor (shared between keys).</li>
+            <li><code>lh / lf / ri / li</code> = subkey list indexes.</li>
+            <li><code>db</code> = big-data, for values &gt; 16 KB.</li>
+          </ul>
+        </li>
+      </ul>
+      <p>Free / unallocated cells are the source of <em>deleted-key recovery</em> — they sit in the hbin's free list until the allocator overwrites them.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">💾</span><span class="ct">Hive → on-disk file mapping</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Registry path</th><th>On-disk file</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>HKLM\SAM</td><td><code>C:\Windows\System32\config\SAM</code></td><td>Local accounts &amp; password hashes — §07</td></tr>
+        <tr><td>HKLM\SYSTEM</td><td><code>C:\Windows\System32\config\SYSTEM</code></td><td>Services, devices, mounted volumes, ControlSets — §08</td></tr>
+        <tr><td>HKLM\SOFTWARE</td><td><code>C:\Windows\System32\config\SOFTWARE</code></td><td>Installed apps, OS version, Run keys — §08</td></tr>
+        <tr><td>HKLM\SECURITY</td><td><code>C:\Windows\System32\config\SECURITY</code></td><td>LSA policy, cached secrets</td></tr>
+        <tr><td>HKLM\DEFAULT</td><td><code>C:\Windows\System32\config\DEFAULT</code></td><td>Default user profile template</td></tr>
+        <tr><td>HKU\&lt;SID&gt;</td><td><code>C:\Users\&lt;user&gt;\NTUSER.DAT</code></td><td>Per-user settings, MRUs, UserAssist — §09</td></tr>
+        <tr><td>HKU\&lt;SID&gt;_Classes</td><td><code>C:\Users\&lt;user&gt;\AppData\Local\Microsoft\Windows\UsrClass.dat</code></td><td>Per-user COM / ShellBags — §13</td></tr>
+        <tr><td>HKLM\BCD00000000</td><td><code>\Boot\BCD</code> (system partition)</td><td>Boot configuration data</td></tr>
+        <tr><td>HKLM\COMPONENTS</td><td><code>C:\Windows\System32\config\COMPONENTS</code></td><td>CBS / servicing stack state</td></tr>
+        <tr><td>HKLM\HARDWARE</td><td><em>in-memory only</em></td><td>Regenerated each boot — <strong>not</strong> on disk, not recoverable from the image</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al b"><span class="ali">ℹ️</span><span>The <code>C:\Users\&lt;user&gt;</code> folder name is <em>not</em> the SID — match users to SIDs via SAM (§07) or <code>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList</code>.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">📝</span><span class="ct">Transaction logs &amp; dirty hives</span></div>
+    <div class="prose">
+      <p>Every hive ships with sibling transaction logs: <code>SYSTEM</code>, <code>SYSTEM.LOG1</code>, <code>SYSTEM.LOG2</code> (and historically <code>.LOG</code>). Windows writes pending changes to the logs first, then folds them into the hive at flush time.</p>
+      <p>A <strong>dirty hive</strong> is one whose in-memory transactions were not yet flushed to the primary file — typical when you image a <em>running</em> box, when the OS crashed, or when you pulled the plug. Reading the primary file alone gives you a <em>stale</em> snapshot.</p>
+      <ul>
+        <li>Registry Explorer / RECmd auto-detect and replay <code>.LOG1</code> / <code>.LOG2</code> on load.</li>
+        <li>The hive header's primary &amp; secondary sequence numbers being unequal is the dirty-bit signal.</li>
+        <li>Always export the hive <em>and</em> both logs from KAPE / FTK Imager — they are useless on their own but mandatory when combined.</li>
+      </ul>
+    </div>
+    <div class="al r"><span class="ali">⚠️</span><span><strong>Stale-hive trap:</strong> dropping a dirty <code>NTUSER.DAT</code> into a parser without its <code>.LOG1</code> / <code>.LOG2</code> can cost you the last several hours of user activity — exactly the window an examiner usually cares about. Always grab the logs.</span></div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🗑</span><span class="ct">Deleted keys, unallocated cells, slack</span></div>
+    <div class="prose">
+      <p>When a key or value is deleted, its cell length is flipped positive and the cell is linked into the hbin's free list. The cell <em>contents typically remain intact</em> until the allocator hands the space to a new write — directly analogous to NTFS file deletion (§04).</p>
+      <ul>
+        <li><strong>Registry Explorer</strong> surfaces orphaned cells in the <em>Deleted Keys</em> / <em>Deleted Values</em> view (rebuilds parent chains from <code>nk</code> back-pointers where possible).</li>
+        <li><strong>RECmd</strong> exposes the same via <code>--Recover True</code>.</li>
+        <li>Recovered names &amp; data are usually verbatim; <strong>recovered LastWriteTime is unreliable</strong> — it is the parent key's stale value, not the moment of deletion.</li>
+        <li>Slack at end of hbins occasionally yields fragments of older value data — useful for keyword carving, not for whole-key reconstruction.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🔤</span><span class="ct">MRUList &amp; MRUListEx — ordering</span></div>
+    <div class="prose">
+      <p>Many Explorer / Office / dialog artefacts store an ordered "Most Recently Used" list as a bag of letter-named values plus one special ordering value:</p>
+      <ul>
+        <li><strong>Values</strong> <code>a</code>, <code>b</code>, <code>c</code>, … each carry one entry (a path, a typed string, a binary PIDL).</li>
+        <li><strong>MRUList</strong> (legacy, REG_SZ) — a string like <code>cab</code> meaning <em>most recent first</em>: c then a then b.</li>
+        <li><strong>MRUListEx</strong> (Vista+, REG_BINARY) — sequence of little-endian DWORD indexes, terminated by <code>FFFFFFFF</code>, most recent first.</li>
+      </ul>
+      <p>Without the MRUList value the rest is just an <em>unordered bag</em>. The ordering value is what turns a list of files into a timeline of usage. Registry Explorer plugins decode MRUListEx automatically; raw <code>reg query</code> does not.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">Value types — quick reference</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Type</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>REG_SZ</td><td>Null-terminated UTF-16 string</td></tr>
+        <tr><td>REG_EXPAND_SZ</td><td>String with <code>%VAR%</code> environment placeholders</td></tr>
+        <tr><td>REG_MULTI_SZ</td><td>Double-null-terminated list of strings</td></tr>
+        <tr><td>REG_DWORD</td><td>32-bit little-endian integer</td></tr>
+        <tr><td>REG_QWORD</td><td>64-bit little-endian integer (often FILETIME)</td></tr>
+        <tr><td>REG_BINARY</td><td>Opaque blob — shellbags, MRUListEx, UserAssist live here</td></tr>
+        <tr><td>REG_NONE</td><td>Typeless blob — Windows tools treat as binary</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">🛠</span><span class="ct">The toolchain — what each does</span></div>
+    <div class="prose">
+      <p><strong>Registry Explorer</strong> (RegistryExplorer.exe, Eric Zimmerman) — GUI. Drag in a hive; it auto-locates <code>.LOG1</code> / <code>.LOG2</code> siblings and replays them. <em>Plugins</em> normalise common artefacts (UserAssist ROT13-decoded, ShellBags parsed, TypedURLs sorted) into a flat table view. Use <em>Find</em> for value-name keyword sweeps, <em>Bookmarks</em> for case notes. Best for interactive exploration.</p>
+      <p><strong>RECmd</strong> (RECmd.exe, Eric Zimmerman) — the CLI sibling. Batch-driven via <code>.reb</code> files in <code>RECmd\BatchExamples\</code>. <code>Kroll_Batch.reb</code> is the canonical do-everything sweep; <code>SYSTEM_Batch.reb</code> / <code>SAM_Batch.reb</code> / <code>NTUSER_Batch.reb</code> are hive-targeted. Drops cleanly into <strong>KAPE</strong> (§03) as the <code>RECmd_*</code> module set.</p>
+      <p><strong>RegRipper</strong> (rip.exe / rr.exe, Harlan Carvey) — older Perl plugin runner. One plugin per artefact: <code>samparse</code>, <code>userassist</code>, <code>services</code>, <code>appcompatcache</code>, <code>compname</code>, <code>shellbags</code>, etc. Slower, but invaluable as a <em>second opinion</em> and for niche plugins the EZ tools don't ship.</p>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">RECmd — Kroll batch sweep across whole config dir</div><div class="cc"><span class="kw">RECmd.exe</span> -d <span class="val">F:\Windows\System32\config</span> --bn <span class="val">RECmd\BatchExamples\Kroll_Batch.reb</span> --csv <span class="val">C:\out</span></div></div>
+      <div class="cmd"><div class="lbl">RECmd — single hive, targeted batch</div><div class="cc"><span class="kw">RECmd.exe</span> --hive <span class="val">F:\Windows\System32\config\SYSTEM</span> --bn <span class="val">RECmd\BatchExamples\SYSTEM_Batch.reb</span> --csv <span class="val">C:\out</span></div></div>
+      <div class="cmd"><div class="lbl">RECmd — include deleted keys / values in output</div><div class="cc"><span class="kw">RECmd.exe</span> --hive <span class="val">F:\Users\bob\NTUSER.DAT</span> --bn <span class="val">RECmd\BatchExamples\NTUSER_Batch.reb</span> --csv <span class="val">C:\out</span> <span class="kw">--Recover</span> <span class="val">True</span></div></div>
+      <div class="cmd"><div class="lbl">RegRipper — UserAssist from NTUSER</div><div class="cc"><span class="kw">rip.exe</span> -r <span class="val">F:\Users\bob\NTUSER.DAT</span> -p <span class="val">userassist</span></div></div>
+      <div class="cmd"><div class="lbl">RegRipper — run every plugin auto-mapped to hive type</div><div class="cc"><span class="kw">rip.exe</span> -r <span class="val">F:\Windows\System32\config\SOFTWARE</span> -a &gt; <span class="val">software.txt</span></div></div>
+      <div class="cmd"><div class="lbl">Registry Explorer — interactive workflow</div><div class="cc"><span class="cmt"># File → Load hive → SYSTEM   (auto-loads SYSTEM.LOG1 / .LOG2)</span><br><span class="cmt"># Tools → Find → value name "TypedPaths"   ·   right-click key → Bookmark</span><br><span class="cmt"># View → Deleted Keys / Deleted Values for unallocated cells</span></div></div>
+    </div>
+    <div class="al g"><span class="ali">✓</span><span><strong>Plugins, briefly:</strong> a plugin is a normalised viewer — it reads the raw key/value bytes and renders them as a table with derived columns (ROT13-decoded names, FILETIME-decoded run counts, parsed shellbag PIDLs). Without the plugin you stare at a binary blob; with it, you read a row.</span></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>The registry never stands alone — its findings must be anchored against the filesystem and against the rest of the hive ecosystem:</p>
+    <ul>
+      <li><strong>NTFS <code>$STANDARD_INFORMATION</code> (§04)</strong> — the hive file's MFT timestamps should bracket the hive header's <em>last-flush</em> timestamp. A wildly newer <code>$SI</code> mtime than the internal flush time means somebody touched the hive offline.</li>
+      <li><strong>User folder ↔ SID (§07 SAM)</strong> — match <code>C:\Users\&lt;user&gt;</code> to the SID owning the <code>NTUSER.DAT</code> via SAM's <code>F</code>/<code>V</code> values or <code>SOFTWARE\…\ProfileList</code>.</li>
+      <li><strong>Deleted-key recovery here ↔ <code>$MFT</code> deleted-file recovery (§04 / §05)</strong> — same allocator-reuse logic, same "name &amp; data survive, timestamps don't" caveat.</li>
+      <li><strong>Application Execution (§10)</strong> — BAM lives in SYSTEM, UserAssist &amp; RunMRU in NTUSER.DAT; cross-check a single execution event across both for confidence.</li>
+      <li><strong>Cloud storage (§11) &amp; ShellBags (§13)</strong> — both are pure registry artefacts (OneDrive/Dropbox keys in SOFTWARE + NTUSER; shellbags in <code>UsrClass.dat</code>) — they ride on the same hive-loading workflow taught here.</li>
+      <li><strong>Memory image (§02)</strong> — Volatility's <code>registry</code> plugins can pull hives out of RAM and may surface keys that were written but never flushed to disk.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V2 · §06 Registries Overview</span>
+  <span>Next → §07 SAM Hive</span>
+</div>
+
+</div></body></html>

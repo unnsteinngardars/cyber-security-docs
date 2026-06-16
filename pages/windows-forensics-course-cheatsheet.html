@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows Forensics — Course Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.55;padding:14px 14px 40px}
+.page{max-width:1280px;margin:0 auto}
+
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.skull{width:42px;height:42px;flex-shrink:0;background:var(--blue-dim);border:1px solid var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:21px}
+.t1{font-family:var(--sans);font-size:clamp(14px,2.8vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:10.5px;color:var(--dm);margin-top:3px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.sec{margin-bottom:18px;page-break-inside:avoid}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:8px 12px;background:linear-gradient(90deg,var(--sf) 0%,transparent 100%);border-left:3px solid var(--accent,var(--blue));border-radius:6px}
+.sec-num{font-family:var(--sans);font-size:11px;font-weight:800;color:var(--accent,var(--blue));letter-spacing:.1em}
+.sec-t{font-family:var(--sans);font-size:15px;font-weight:800;color:#fff;letter-spacing:.01em}
+.sec-d{font-size:10.5px;color:var(--dm);margin-left:auto;font-style:italic}
+
+.sec.s-1{--accent:var(--red)}
+.sec.s-2{--accent:var(--teal)}
+.sec.s-3{--accent:var(--amber)}
+.sec.s-4{--accent:var(--purple)}
+.sec.s-5{--accent:var(--green)}
+.sec.s-6{--accent:var(--blue)}
+.sec.s-7{--accent:var(--red)}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){
+  .g{grid-template-columns:repeat(2,1fr)}
+  .s2,.s3,.s4{grid-column:span 2!important}
+}
+@media(max-width:500px){
+  .g{grid-template-columns:1fr}
+  .s2,.s3,.s4{grid-column:1!important}
+}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:8px;page-break-inside:avoid}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:13px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:11.5px;font-weight:700;color:#fff;line-height:1.1}
+
+.prose{font-size:11px;color:var(--tx);line-height:1.6}
+.prose p{margin-bottom:6px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent,var(--blue));font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:10.5px;line-height:1.5}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent,var(--blue));font-size:9px;top:2px}
+
+.cmds{display:flex;flex-direction:column;gap:4px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:5px 8px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10px;color:#C8E6FF;word-break:break-all;line-height:1.4}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.sl{font-family:var(--sans);font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.tc2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tc3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:640px){.tc2,.tc3{grid-template-columns:1fr}}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:6px 9px;border-radius:5px;font-size:10.5px;line-height:1.45}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:12px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10px;min-width:260px}
+.et th{font-family:var(--sans);font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:4px 6px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.35}
+.et tr:last-child td{border-bottom:none}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+.et tr.cr td:first-child{color:var(--red)}.et tr.wa td:first-child{color:var(--amber)}.et tr.in td:first-child{color:var(--blue)}.et tr.gr td:first-child{color:var(--green)}.et tr.pu td:first-child{color:var(--purple)}
+
+.path{font-family:var(--mono);font-size:9.5px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.4}
+
+.ft{margin-top:16px;padding-top:10px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;font-size:9px;color:var(--dm2)}
+
+.toc{background:var(--sf);border:1px solid var(--bdhi);border-radius:10px;padding:11px 14px;margin-bottom:16px}
+.toc-h{font-family:var(--sans);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--dm);margin-bottom:7px}
+.toc-l{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+@media(max-width:860px){.toc-l{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.toc-l{grid-template-columns:1fr}}
+.toc-i{font-size:10.5px;color:var(--tx);display:flex;gap:6px;align-items:baseline}
+.toc-i .n{font-family:var(--sans);font-weight:800;font-size:10px}
+.toc-i.t-1 .n{color:var(--red)}.toc-i.t-2 .n{color:var(--teal)}.toc-i.t-3 .n{color:var(--amber)}.toc-i.t-4 .n{color:var(--purple)}.toc-i.t-5 .n{color:var(--green)}.toc-i.t-6 .n{color:var(--blue)}.toc-i.t-7 .n{color:var(--red)}
+
+@media print{
+  body{background:#fff;color:#111;font-size:9.5px;padding:6mm 5mm}
+  .page{max-width:none}
+  .c,.toc,.sec-h{background:#fff;border-color:#bbb!important;box-shadow:none}
+  .c{break-inside:avoid;page-break-inside:avoid}
+  .sec{break-inside:auto}
+  .ct,.t1,.sec-t,.toc-h,.sl,.lbl{color:#000}
+  .prose,.prose ul li,.al,.et td{color:#222}
+  .prose strong{color:#000}
+  .prose code,.cc,.path{color:#0a3b73;background:#f3f6fb}
+  .cmd{background:#f7f7f8;border-color:#ccc}
+  .et th{color:#444;border-color:#ccc}
+  .et td{border-color:#eee}
+  .al.r{background:#fdecec;color:#7a1a1a;border-color:#e9b9b9}
+  .al.a{background:#fdf3e0;color:#7a4a0a;border-color:#e9cf99}
+  .al.g{background:#e9f7ee;color:#114b25;border-color:#b8dec5}
+  .al.b{background:#e8f0fa;color:#0e3a66;border-color:#bcd2ed}
+  .cc .kw{color:#0a4275}.cc .val{color:#7a2a0c}.cc .cmt{color:#777}
+  .sec.s-1 .sec-h{border-left-color:#b32f2f}
+  .sec.s-2 .sec-h{border-left-color:#117a6b}
+  .sec.s-3 .sec-h{border-left-color:#a86617}
+  .sec.s-4 .sec-h{border-left-color:#5b3fa0}
+  .sec.s-5 .sec-h{border-left-color:#1f7c4f}
+  .sec.s-6 .sec-h{border-left-color:#23618d}
+  .sec.s-7 .sec-h{border-left-color:#b32f2f}
+  .skull{background:#eef4fb;border-color:#23618d;color:#23618d}
+  .b{border-width:1px}
+  .b-r{background:#fdecec;color:#7a1a1a;border-color:#e9b9b9}
+  .b-a{background:#fdf3e0;color:#7a4a0a;border-color:#e9cf99}
+  .b-g{background:#e9f7ee;color:#114b25;border-color:#b8dec5}
+  .b-b{background:#e8f0fa;color:#0e3a66;border-color:#bcd2ed}
+  .b-p{background:#efe9fa;color:#3b2666;border-color:#cdbded}
+  .b-t{background:#e2f3f0;color:#0d4f44;border-color:#a8d6ce}
+}
+
+@page{size:A4;margin:8mm 8mm}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🔬</div>
+    <div>
+      <div class="t1">Windows Forensics — Course Cheat Sheet</div>
+      <div class="t2">Evidence Collection · Memory · KAPE &amp; AIM · NTFS · File Carving · Registry · App Execution</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">Acquisition</span>
+    <span class="b b-t">Memory</span>
+    <span class="b b-a">KAPE</span>
+    <span class="b b-p">NTFS</span>
+    <span class="b b-g">Carving</span>
+    <span class="b b-b">Registry</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-h">Sections</div>
+  <div class="toc-l">
+    <div class="toc-i t-1"><span class="n">01</span><span>Evidence Collection</span></div>
+    <div class="toc-i t-2"><span class="n">02</span><span>Memory Forensics</span></div>
+    <div class="toc-i t-3"><span class="n">03</span><span>KAPE &amp; Arsenal Image Mounter</span></div>
+    <div class="toc-i t-4"><span class="n">04</span><span>Windows Filesystem / NTFS</span></div>
+    <div class="toc-i t-5"><span class="n">05</span><span>File Carving</span></div>
+    <div class="toc-i t-6"><span class="n">06</span><span>Registry Hives</span></div>
+    <div class="toc-i t-7"><span class="n">07</span><span>Application Execution</span></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1 — EVIDENCE COLLECTION                                -->
+<!-- ============================================================ -->
+<div class="sec s-1">
+  <div class="sec-h">
+    <span class="sec-num">01</span>
+    <span class="sec-t">Evidence Collection &amp; Disk Acquisition</span>
+    <span class="sec-d">Image first, analyse later — preserve the original</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">📐</span><span class="ct">Core principles</span></div>
+      <div class="prose">
+        <p><strong>Acquisition</strong> is the act of producing a forensically sound copy of digital media so that the original can be set aside untouched. Everything that follows in the case is built on this copy; if it is contaminated, every later finding is suspect.</p>
+        <ul>
+          <li><strong>Bit-for-bit copy</strong> — every sector, including unallocated space and slack, not just the live files.</li>
+          <li><strong>Hash before and after</strong> — MD5 + SHA-256 of the source and the image. Identical hashes prove the image was not altered.</li>
+          <li><strong>Work on copies</strong> — analyse a working copy of the image; keep the master image read-only.</li>
+          <li><strong>Chain of custody</strong> — log every transfer, action, and tool version against the evidence ID.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-a s2">
+      <div class="ch"><span class="ci">💾</span><span class="ct">Image formats — E01 vs raw (dd)</span></div>
+      <div class="prose">
+        <p><strong>raw / dd</strong> is a flat sector-by-sector copy. Identical to the source on the wire, no compression, no metadata — biggest, simplest, universally readable.</p>
+        <p><strong>E01 (EnCase Evidence File / Expert Witness Format)</strong> is the de-facto forensic container. It stores the bitstream <em>plus</em> embedded metadata, splits into segments (<code>.E01, .E02, …</code>), compresses, and writes per-chunk CRCs.</p>
+        <ul>
+          <li>Header carries <em>case number, examiner, evidence ID, acquisition notes</em>.</li>
+          <li>Embedded <em>MD5 / SHA-1</em> let the format self-verify on every read.</li>
+          <li>CRC per 32 KB chunk localises corruption instead of trashing the whole image.</li>
+          <li>Compression typical 1.3–3× depending on data entropy.</li>
+          <li>Read by virtually every forensic suite (FTK, EnCase, Autopsy, X-Ways, libewf).</li>
+        </ul>
+        <p>Other formats you'll meet: <strong>AFF4</strong> (WinPmem, modern, supports memory + disk in one container) and <strong>VHD/VHDX/VMDK</strong> for VM-image style acquisition.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-b s2">
+      <div class="ch"><span class="ci">🛠</span><span class="ct">FTK Imager — the workhorse</span></div>
+      <div class="prose">
+        <p><strong>FTK Imager</strong> (AccessData / Exterro) is free, runs on Windows and from a USB stick, and is the standard tool for taught courses. It can:</p>
+        <ul>
+          <li>Image a physical drive, logical volume, or single folder.</li>
+          <li>Write the output as raw <code>dd</code>, <code>E01</code>, <code>SMART</code>, or AFF.</li>
+          <li>Preview a mounted image — file tree, hex view, properties, even Registry hives — before doing a full acquisition.</li>
+          <li>Mount an image read-only as a Windows volume.</li>
+          <li>Capture <em>memory</em> and <em>protected system files</em> (Registry, $MFT) from a live host.</li>
+        </ul>
+        <p class="prose"><em>Capture flow</em> → File → Create Disk Image → Physical/Logical → choose format → fill case metadata → set destination (always a different drive!) → verify hashes after.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">FTK Imager CLI (E01)</div><div class="cc">ftkimager <span class="val">\\.\PHYSICALDRIVE1 case01</span> --e01 --compress 6 --case-number <span class="val">001</span> --examiner <span class="val">"U.G."</span></div></div>
+        <div class="cmd"><div class="lbl">Live protected-files capture</div><div class="cc"><span class="cmt"># File → Obtain Protected Files → grabs SAM, SYSTEM, SOFTWARE, SECURITY from running host</span></div></div>
+        <div class="cmd"><div class="lbl">Verify image</div><div class="cc"><span class="cmt"># After acquisition, FTK Imager auto-hashes; cross-check with</span> sha256sum case01.E01</div></div>
+      </div>
+    </div>
+
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">🚧</span><span class="ct">Write blockers — Tableau &amp; co.</span></div>
+      <div class="prose">
+        <p>A <strong>write blocker</strong> sits between your workstation and the suspect drive, passing reads through but silently dropping every write at the protocol layer. Without one, just attaching the disk lets Windows update last-access times, mount the journal, and break the source hash.</p>
+        <ul>
+          <li><strong>Hardware (Tableau, WiebeTech, CRU)</strong> — physical bridge for SATA / SAS / USB / NVMe. Forensically validated, court-accepted.</li>
+          <li><strong>Software</strong> — Linux <code>blockdev --setro</code>, Windows registry USB-read-only flag, or imaging from a forensic distro (CAINE, SIFT, Tsurugi).</li>
+          <li><strong>Always test</strong> — hash the source, mount, attempt a write, hash again. Record the model and firmware on the chain-of-custody form.</li>
+        </ul>
+        <p><strong>Tableau</strong> is the most common in classrooms — distinctive orange bridges with status LEDs that light when a write is blocked. Pair the bridge with FTK Imager on the workstation side for the full evidence-sound workflow.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s4">
+      <div class="ch"><span class="ci">📋</span><span class="ct">Acquisition workflow — quick reference</span></div>
+      <div class="tc3">
+        <div>
+          <div class="sl">Before touching the disk</div>
+          <div class="prose"><ul>
+            <li>Photograph the scene + serials.</li>
+            <li>Power-state decision — pull plug vs. graceful (volatile-data trade-off).</li>
+            <li>Document examiner, witness, timezone, UTC time.</li>
+            <li>Open the chain-of-custody log.</li>
+          </ul></div>
+        </div>
+        <div>
+          <div class="sl">During acquisition</div>
+          <div class="prose"><ul>
+            <li>Engage write blocker; verify with a test write.</li>
+            <li>Hash source (MD5 + SHA-256).</li>
+            <li>Image to a different physical drive than the source.</li>
+            <li>Choose E01 with compression 5–6 for storage efficiency.</li>
+            <li>Embed case metadata in the E01 header.</li>
+          </ul></div>
+        </div>
+        <div>
+          <div class="sl">After acquisition</div>
+          <div class="prose"><ul>
+            <li>Verify image hash matches source.</li>
+            <li>Make a working copy — analyse only the copy.</li>
+            <li>Seal original in tamper-evident bag.</li>
+            <li>Record tool versions and command lines.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2 — MEMORY FORENSICS                                  -->
+<!-- ============================================================ -->
+<div class="sec s-2">
+  <div class="sec-h">
+    <span class="sec-num">02</span>
+    <span class="sec-t">Memory Forensics</span>
+    <span class="sec-d">Volatile evidence — capture before reboot</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-t s2">
+      <div class="ch"><span class="ci">🧠</span><span class="ct">Why memory matters</span></div>
+      <div class="prose">
+        <p>Once the machine is powered off, RAM is gone. Memory holds the only copies of running processes, open sockets, decrypted data, command-line arguments, in-memory-only malware, loaded DLLs, clipboard contents, BitLocker / LUKS keys, and Kerberos tickets.</p>
+        <p>Order of volatility says: <em>RAM first, pagefile/hibernation second, disk last.</em> If you reboot before capture you destroy ~80 % of what an IR memory analyst would have found.</p>
+      </div>
+    </div>
+
+    <div class="c c-t s2">
+      <div class="ch"><span class="ci">📦</span><span class="ct">What you can recover from RAM</span></div>
+      <div class="prose">
+        <ul>
+          <li><strong>Process tree</strong> — running, hidden (unlinked), and recently exited.</li>
+          <li><strong>Command-line arguments</strong> — full <code>powershell -enc …</code> blobs.</li>
+          <li><strong>Network sockets</strong> — listening ports and live C2 connections.</li>
+          <li><strong>Loaded modules / DLLs</strong>, handles, mutexes.</li>
+          <li><strong>Injected / hollowed code</strong> in legitimate processes.</li>
+          <li><strong>Registry hives</strong> mapped in memory (often more up-to-date than on-disk).</li>
+          <li><strong>Credentials</strong> — NTLM hashes, Kerberos tickets, plaintext passwords in LSASS.</li>
+          <li><strong>Clipboard</strong>, console history, encryption keys.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-b">
+      <div class="ch"><span class="ci">⚡</span><span class="ct">Magnet RAM Capture</span></div>
+      <div class="prose">
+        <p>Free GUI tool from Magnet Forensics. Tiny footprint — designed to perturb the system as little as possible. Outputs a raw <code>.raw</code>/<code>.dmp</code> ready for Volatility.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Flow</div><div class="cc"><span class="cmt"># Run as Admin → choose segment size → output path → Start. Single button.</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">⚡</span><span class="ct">DumpIt</span></div>
+      <div class="prose">
+        <p>Single self-contained executable from Comae / MoonSols. Double-click and say yes — produces <code>HOSTNAME-DATETIME.raw</code> beside the binary. Newer Comae builds output the Microsoft crash-dump format directly so the file is usable in WinDbg as well.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">CLI use</div><div class="cc">DumpIt.exe /OUTPUT <span class="val">E:\mem\host.raw</span> /Q <span class="cmt"># quiet, no prompts</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">⚡</span><span class="ct">WinPmem</span></div>
+      <div class="prose">
+        <p>Open-source acquirer from the Rekall / Velociraptor team. Loads a signed kernel driver to walk the physical-address map directly. Writes the modern <strong>AFF4</strong> container (compressed, indexed, can bundle the pagefile and drivers alongside RAM).</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Quick capture</div><div class="cc">winpmem_mini_x64.exe <span class="val">mem.aff4</span></div></div>
+        <div class="cmd"><div class="lbl">Convert to raw for Volatility</div><div class="cc">winpmem_mini_x64.exe <span class="val">mem.aff4</span> --export PhysicalMemory --output <span class="val">mem.raw</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">📝</span><span class="ct">Acquisition gotchas</span></div>
+      <div class="prose">
+        <ul>
+          <li>Write the dump to <em>external</em> media — never to the system disk you may want to image later.</li>
+          <li>Hash the dump immediately after capture.</li>
+          <li>Run as Administrator/SYSTEM, EDR allowing.</li>
+          <li>Expect the dump to be the size of physical RAM (8 GB host → ~8 GB file).</li>
+          <li>Snapshots from VMs (<code>.vmem</code>, <code>.vmsn</code>) are an equivalent, zero-touch alternative.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-a s2">
+      <div class="ch"><span class="ci">💤</span><span class="ct">hiberfil.sys — frozen RAM on disk</span></div>
+      <div class="prose">
+        <p><code>C:\hiberfil.sys</code> is created when the system hibernates (S4). Windows compresses RAM and writes it to this file so the next boot can restore the session. From a forensic standpoint it is a <em>past snapshot of RAM</em> — sometimes weeks or months old.</p>
+        <ul>
+          <li>Format: Xpress-Huffman compressed pages with a small header (<code>HIBR</code> / <code>RSTR</code> magic). Windows 8+ uses a newer slot-based layout.</li>
+          <li><strong>hibr2bin</strong> (Comae) or Volatility's <code>imagecopy</code> converts to a flat raw memory image that Volatility can ingest.</li>
+          <li>Even on systems that never visibly hibernate, hybrid-sleep and Fast Startup write a partial hiberfil — useful pre-incident forensic value.</li>
+          <li>Disabled by <code>powercfg /h off</code>; absence ≠ system was never powered down.</li>
+        </ul>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Convert to raw</div><div class="cc">hibr2bin.exe /PLATFORM X64 /MAJOR 10 /MINOR 0 <span class="val">hiberfil.sys mem.raw</span></div></div>
+        <div class="cmd"><div class="lbl">Volatility direct read</div><div class="cc">vol -f <span class="val">hiberfil.sys</span> windows.info <span class="cmt"># auto-detects compression</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-a s2">
+      <div class="ch"><span class="ci">📄</span><span class="ct">pagefile.sys / swapfile.sys</span></div>
+      <div class="prose">
+        <p><code>C:\pagefile.sys</code> is virtual-memory backing store — pages the kernel evicted from RAM. <code>swapfile.sys</code> is the Windows 8+ companion that holds suspended Modern (UWP) apps. Together they are a <em>messy, unstructured second tier of RAM</em>.</p>
+        <ul>
+          <li>No file system, no allocation map — pages may be from any process and may be partial.</li>
+          <li>Parse with <strong>bulk_extractor</strong>, <strong>strings</strong>, <strong>YARA</strong>, or <strong>Volatility</strong> running over a combined raw image.</li>
+          <li>Recoverable: URL fragments, IM messages, plaintext passwords, malware strings, command-line fragments, BitLocker recovery markers.</li>
+          <li>Without a memory tool: <code>strings -n 8 pagefile.sys | grep -E "https?://|@|cmd.exe"</code> still surfaces useful leads.</li>
+        </ul>
+        <p>Always grab <em>pagefile.sys, swapfile.sys, and hiberfil.sys together with the RAM dump</em> — they're protected files, so use FTK Imager's Obtain Protected Files or KAPE's <code>!SANS_Triage</code> target.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s4">
+      <div class="ch"><span class="ci">🔍</span><span class="ct">Memory artefacts without a memory tool</span></div>
+      <div class="prose">
+        <p>If you have nothing but the raw <code>.raw</code> / <code>.mem</code> / pagefile, you can still do meaningful work with general-purpose tools — useful when Volatility lacks a profile for the OS build.</p>
+      </div>
+      <div class="tc3">
+        <div>
+          <div class="sl">strings + grep</div>
+          <div class="cmds"><div class="cmd"><div class="cc">strings -el <span class="val">mem.raw</span> | grep -iE <span class="val">"powershell|http://|@\w+\.com|password"</span></div></div></div>
+        </div>
+        <div>
+          <div class="sl">bulk_extractor</div>
+          <div class="cmds"><div class="cmd"><div class="cc">bulk_extractor -o <span class="val">out/</span> <span class="val">mem.raw</span> <span class="cmt"># emails, URLs, CCNs, IPs, AES keys</span></div></div></div>
+        </div>
+        <div>
+          <div class="sl">YARA scan</div>
+          <div class="cmds"><div class="cmd"><div class="cc">yara -r <span class="val">rules/ mem.raw</span> <span class="cmt"># malware family identification</span></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3 — KAPE & AIM                                        -->
+<!-- ============================================================ -->
+<div class="sec s-3">
+  <div class="sec-h">
+    <span class="sec-num">03</span>
+    <span class="sec-t">KAPE &amp; Arsenal Image Mounter</span>
+    <span class="sec-d">Fast triage and read-write-safe image mounting</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-a s2">
+      <div class="ch"><span class="ci">🗜</span><span class="ct">Arsenal Image Mounter (AIM)</span></div>
+      <div class="prose">
+        <p><strong>Arsenal Image Mounter</strong> takes a disk image (E01, raw, VHD/VHDX, VMDK) and presents it to Windows as a <em>real disk</em> — not just a logical volume. Because Windows sees a full disk, you can:</p>
+        <ul>
+          <li>Mount and explore the file system natively in Explorer.</li>
+          <li>Run anti-virus and EDR scanners against the image.</li>
+          <li>Boot the image as a VM with <em>BIOS / UEFI launch</em> mode — actually start the suspect OS in a VM without modifying the original.</li>
+          <li>Cache writes to a temporary differencing file so the underlying image stays read-only — analyst can poke around without breaking integrity.</li>
+          <li>Mount and decrypt BitLocker volumes given the recovery key / TPM bypass.</li>
+        </ul>
+        <p><em>Why not FTK Imager mount?</em> FTK mounts <em>volumes</em>; AIM mounts <em>disks</em>. Drivers, services, EDR signatures, and offline-Registry tools all expect a real disk and break on a volume-only mount.</p>
+      </div>
+    </div>
+
+    <div class="c c-a s2">
+      <div class="ch"><span class="ci">⚙</span><span class="ct">KAPE — the idea</span></div>
+      <div class="prose">
+        <p><strong>KAPE</strong> = <em>Kroll Artefact Parser &amp; Extractor</em>. Built by Eric Zimmerman. Two-stage triage tool:</p>
+        <ul>
+          <li><strong>Targets</strong> — collect a curated set of forensic artefacts (files / Registry hives) from a live or mounted system. Fast, surgical, doesn't grab the whole disk.</li>
+          <li><strong>Modules</strong> — run third-party parsers (the EZ-Tools, RegRipper, Hayabusa, etc.) over what the Targets gathered, producing CSV/JSON ready for Timeline Explorer.</li>
+        </ul>
+        <p>Typical use: 5–10 minutes of triage on a 1 TB host produces a few GB of parsed CSV instead of a multi-hour full image. Perfect for <em>"is this host worth a full image?"</em> and for environments with hundreds of endpoints.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-b">
+      <div class="ch"><span class="ci">🎯</span><span class="ct">Targets — what gets pulled</span></div>
+      <div class="prose">
+        <p>Targets are <code>.tkape</code> YAML-style files in <code>KAPE\Targets\</code>. Each lists glob patterns to copy verbatim, preserving paths.</p>
+        <ul>
+          <li><strong>!SANS_Triage</strong> — the canonical "grab everything triage" compound target.</li>
+          <li><strong>EvidenceOfExecution</strong> — Prefetch, AmCache, BAM/DAM, UserAssist.</li>
+          <li><strong>FileSystem</strong> — $MFT, $J, $LogFile, $Boot.</li>
+          <li><strong>RegistryHives</strong> + <strong>RegistryHivesUser</strong> — SAM, SYSTEM, SOFTWARE, SECURITY, NTUSER.DAT, UsrClass.dat.</li>
+          <li><strong>EventLogs</strong> — every <code>.evtx</code> under <code>winevt\Logs</code>.</li>
+          <li>Browser, LNK, Jump Lists, Recycle Bin, ScheduledTasks, USB, Volume Shadow Copies.</li>
+        </ul>
+        <p>Targets understand <em>Volume Shadow Copies</em> — set <code>--vss</code> and KAPE will also pull each artefact from every shadow.</p>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">⚙</span><span class="ct">Modules — parsing the haul</span></div>
+      <div class="prose">
+        <p>Modules are <code>.mkape</code> files in <code>KAPE\Modules\</code>. Each is a thin wrapper that runs a parser binary and routes its output.</p>
+        <ul>
+          <li><strong>!EZParser</strong> — the compound module that fires every EZ-Tools parser. The 80 % button.</li>
+          <li>MFTECmd, PECmd, LECmd, JLECmd, SBECmd, RECmd, EvtxECmd, AmcacheParser, AppCompatCacheParser…</li>
+          <li>Hayabusa / Chainsaw modules for Sigma-rule hunting over the collected EVTX.</li>
+          <li>Outputs land in <code>%mdest%\HOSTNAME\</code> as <em>CSV ready for Timeline Explorer</em>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">🖱</span><span class="ct">gkape — the GUI</span></div>
+      <div class="prose">
+        <p><code>gkape.exe</code> is a graphical front-end that builds the CLI command for you.</p>
+        <ul>
+          <li><strong>Target source/dest</strong> on the left, <strong>Module source/dest</strong> on the right. Source for modules is usually the same path as the target destination — chain them.</li>
+          <li>Tick Targets and Modules from filterable lists.</li>
+          <li>Toggles: <em>VSS</em>, <em>Add to Zip</em>, <em>Flush destination</em>, <em>Process VSCs</em>.</li>
+          <li>Bottom panel shows the equivalent <code>kape.exe</code> command line — copy it for scripts and SOAR playbooks.</li>
+        </ul>
+        <p>gkape is the friendliest way to learn KAPE; once the command line is familiar, run <code>kape.exe</code> headless from a USB / network share.</p>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">📁</span><span class="ct">Typical artefacts to extract</span></div>
+      <div class="prose">
+        <ul>
+          <li>$MFT, $UsnJrnl:$J, $LogFile</li>
+          <li>All Registry hives (system + per-user)</li>
+          <li>EVTX — Security, System, PowerShell-Operational, Sysmon</li>
+          <li>Prefetch (<code>*.pf</code>), Amcache.hve</li>
+          <li>LNK files + AutomaticDestinations / CustomDestinations</li>
+          <li>Browser History (Chromium, Firefox, Edge)</li>
+          <li>SRUM database (<code>SRUDB.dat</code>)</li>
+          <li>Scheduled tasks (<code>System32\Tasks\</code>)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s4">
+      <div class="ch"><span class="ci">⌨</span><span class="ct">KAPE one-shot — collect &amp; parse</span></div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Triage collection (Target stage)</div><div class="cc">kape.exe --tsource <span class="val">C:</span> --target <span class="val">!SANS_Triage</span> --tdest <span class="val">E:\Triage\%m</span> --tflush --vss --zip <span class="val">%m</span></div></div>
+        <div class="cmd"><div class="lbl">Parse the collection (Module stage)</div><div class="cc">kape.exe --msource <span class="val">E:\Triage\HOST</span> --module <span class="val">!EZParser</span> --mdest <span class="val">E:\Parsed\%m</span> --mflush</div></div>
+        <div class="cmd"><div class="lbl">Combined (single invocation)</div><div class="cc">kape.exe --tsource <span class="val">C:</span> --tdest <span class="val">E:\Triage</span> --target <span class="val">!SANS_Triage</span> --msource <span class="val">E:\Triage</span> --mdest <span class="val">E:\Parsed</span> --module <span class="val">!EZParser</span> --vhdx <span class="val">%m</span></div></div>
+        <div class="cmd"><div class="lbl">Useful flags</div><div class="cc"><span class="cmt"># %m=machine name, %d=date.  --debug for verbose log.  --gui to launch gkape with prefilled values.</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4 — NTFS                                              -->
+<!-- ============================================================ -->
+<div class="sec s-4">
+  <div class="sec-h">
+    <span class="sec-num">04</span>
+    <span class="sec-t">Windows Filesystem &amp; NTFS</span>
+    <span class="sec-d">$MFT · MACB · journals · ADS · VSS</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">🏗</span><span class="ct">Core concepts — sectors, clusters, volumes, files</span></div>
+      <div class="prose">
+        <p><strong>Sector</strong> = the smallest physical IO unit of the disk (typically 512 B, modern drives 4 KB / "Advanced Format"). <strong>Cluster</strong> = the smallest unit NTFS allocates to a file — a power-of-two group of sectors, usually 4 KB on Windows. <strong>Volume</strong> = a logical container formatted with a filesystem (NTFS, ReFS, FAT32, exFAT). <strong>File</strong> = a named collection of cluster runs plus metadata recorded in the MFT.</p>
+        <p>NTFS is a <em>journaling, transactional, attribute-oriented</em> filesystem. Everything — files, directories, even the metadata describing the filesystem itself — is a file with attributes. The "everything is a file" rule is the key insight that makes the rest of NTFS forensics make sense.</p>
+      </div>
+    </div>
+
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">📚</span><span class="ct">$MFT — the Master File Table</span></div>
+      <div class="prose">
+        <p>The <strong>$MFT</strong> is the master index of every file and directory on the volume. One <em>record</em> per file, 1024 bytes by default. The first 16 records are reserved for NTFS metadata files (<code>$MFT</code>, <code>$LogFile</code>, <code>$Volume</code>, <code>$Bitmap</code>, …). Records are referenced by <em>MFT entry number</em>.</p>
+        <p>Each record is a header followed by <strong>attributes</strong>. The forensically critical ones:</p>
+        <ul>
+          <li><strong>$STANDARD_INFORMATION ($SI, type 0x10)</strong> — the four timestamps most tools display (created / modified / MFT-changed / accessed), DOS-style flags. Easily modified by user-mode APIs → <em>spoofable</em>.</li>
+          <li><strong>$FILE_NAME ($FN, type 0x30)</strong> — filename, parent directory reference, <em>and another set of MACB timestamps</em>. Only the kernel updates it during create/rename → much harder to spoof.</li>
+          <li><strong>$DATA (type 0x80)</strong> — the actual file content (resident or non-resident).</li>
+          <li><strong>$INDEX_ROOT / $INDEX_ALLOCATION</strong> — directory contents.</li>
+          <li><strong>$ATTRIBUTE_LIST</strong> — present when a file has so many attributes they spill into other MFT records.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">⏱</span><span class="ct">MACB timestamps</span></div>
+      <div class="prose">
+        <p>Four timestamps per attribute, written as <strong>M·A·C·B</strong>:</p>
+        <ul>
+          <li><strong>M — Modified</strong>: file content last written.</li>
+          <li><strong>A — Accessed</strong>: file last read. Often disabled on modern Windows for performance (<code>NtfsDisableLastAccessUpdate</code>) — don't trust if absent.</li>
+          <li><strong>C — MFT-Changed</strong>: any metadata change to the MFT record (rename, permission change, attribute add).</li>
+          <li><strong>B — Born / Created</strong>: file creation time.</li>
+        </ul>
+        <p>Both <strong>$SI</strong> and <strong>$FN</strong> carry their own MACB set. Tools commonly display the $SI quartet by default; ask for both to spot tampering.</p>
+      </div>
+      <div class="tw"><table class="et">
+        <thead><tr><th>Source</th><th>Updated by</th><th>Tamperable?</th></tr></thead>
+        <tbody>
+          <tr class="cr"><td>$SI MACB</td><td>User-mode + kernel</td><td>Yes (SetFileTime)</td></tr>
+          <tr class="gr"><td>$FN MACB</td><td>Kernel only (create/rename)</td><td>Hard — anti-forensics tell</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">💼</span><span class="ct">Resident vs non-resident data</span></div>
+      <div class="prose">
+        <p>An MFT record is 1024 bytes. If the file's <code>$DATA</code> attribute fits in what's left after the header and other attributes (<em>~700 bytes</em>), NTFS stores the entire file <em>inside the MFT record itself</em> — this is a <strong>resident</strong> file.</p>
+        <p>If the file is larger, <code>$DATA</code> becomes <strong>non-resident</strong>: the MFT record only stores a list of <em>cluster runs</em> (start-cluster + length) pointing into the disk where the data really lives.</p>
+        <ul>
+          <li>Resident files have no on-disk clusters, so file-carving tools miss them — the MFT is the only copy.</li>
+          <li>Deleting a resident file leaves the content in the MFT slack until the record is reused — easy recovery via $MFT alone.</li>
+          <li>Non-resident files leave their clusters in unallocated space when deleted — carving territory.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">🕵</span><span class="ct">Timestomping &amp; how to spot it</span></div>
+      <div class="prose">
+        <p><strong>Timestomping</strong> = an attacker rewrites a file's MACB timestamps to blend with surrounding files or pre-date the incident. Tools: <code>SetMACE</code>, <code>timestomp.exe</code> (Metasploit), PowerShell <code>(Get-Item).CreationTime = …</code>.</p>
+        <p>Detection clues — compare <strong>$SI vs $FN</strong>:</p>
+        <ul>
+          <li><strong>$SI timestamp earlier than $FN</strong> — impossible naturally: $FN is set at create/rename, $SI starts equal and only moves forward.</li>
+          <li><strong>$SI timestamps with whole-second precision</strong> while $FN has 100-ns granularity — most stomping APIs zero the sub-second.</li>
+          <li><strong>Identical M/A/C/B values</strong> on $SI — all four wiped to one moment.</li>
+          <li><strong>$SI timestamp inconsistent with $UsnJrnl / $LogFile entries</strong> for the same file.</li>
+          <li>Cross-check Prefetch, Amcache, Event Logs — if those show execution at a different time, $SI is the liar.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">📜</span><span class="ct">$LogFile &amp; $UsnJrnl</span></div>
+      <div class="prose">
+        <p><strong>$LogFile</strong> — NTFS transaction log used for crash recovery. Records low-level metadata changes as <em>redo/undo</em> entries. Small (~64 MB), so it wraps quickly — useful for recent activity, not long-term history. Parse with <code>LogFileParser</code> or <code>NTFSLogTracker</code>.</p>
+        <p><strong>$UsnJrnl:$J</strong> — Update Sequence Number Journal under <code>\$Extend\$UsnJrnl</code>. A <em>change log</em> of every file create / rename / write / delete / security-change on the volume, with a reason code. Far larger and longer-lived than $LogFile.</p>
+        <ul>
+          <li>Surfaces <em>files that no longer exist</em> — the journal records the create + delete even after the MFT record is reused.</li>
+          <li>Reason codes (<code>FILE_CREATE</code>, <code>RENAME_OLD_NAME</code>, <code>DATA_OVERWRITE</code>, <code>CLOSE</code>) reconstruct the lifecycle.</li>
+          <li>Excellent for detecting ransomware (mass <code>RENAME</code>) and wipers (mass <code>DELETE</code>).</li>
+          <li>Parse with <code>MFTECmd -f $J --csv …</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-t s2">
+      <div class="ch"><span class="ci">🎭</span><span class="ct">Alternate Data Streams (ADS)</span></div>
+      <div class="prose">
+        <p>NTFS lets a single file have multiple <code>$DATA</code> attributes, each with a name. The unnamed default stream is the "normal" content; named streams (<code>file.txt:hidden.exe</code>) are <strong>Alternate Data Streams</strong>. Invisible to <code>dir</code>, <code>type</code>, and most file browsers — used by attackers to hide payloads, and by Windows itself for benign purposes.</p>
+        <ul>
+          <li><strong>Zone.Identifier</strong> ADS — Mark-of-the-Web. Set by browsers / email clients on downloaded files: <code>[ZoneTransfer] ZoneId=3</code>. Goldmine for proving "this file came from the internet on this date".</li>
+          <li>Attackers stash EXE/PS1 in ADS, then launch via <code>wmic process call create</code> or <code>powershell -</code>.</li>
+          <li>Enumerate: <code>dir /r</code>, <code>Get-Item file -Stream *</code>, <code>streams.exe</code> (Sysinternals).</li>
+          <li>Forensic tools list them automatically — MFTECmd, FTK, Autopsy.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-t s2">
+      <div class="ch"><span class="ci">🌑</span><span class="ct">Volume Shadow Copies (VSS)</span></div>
+      <div class="prose">
+        <p><strong>VSS</strong> is the Windows snapshot framework. The Volume Shadow Service periodically (and at restore-point / backup events) captures a point-in-time copy of changed blocks. Forensically: <em>multiple historical versions of the entire volume</em> sitting on disk.</p>
+        <ul>
+          <li>List snapshots: <code>vssadmin list shadows</code>.</li>
+          <li>Access via <code>\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyN\</code>.</li>
+          <li>Mount with <code>vshadowmount</code> (libvshadow, Linux) or expose to KAPE with <code>--vss</code>.</li>
+          <li>Recover deleted files, prior Registry hives (great for spotting clean-up), pre-ransomware originals.</li>
+          <li>Attacker counter-move: <code>vssadmin delete shadows /all</code> — flag in System log + Sysmon.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s2">
+      <div class="ch"><span class="ci">🔧</span><span class="ct">Parsing with MFTECmd + Timeline Explorer</span></div>
+      <div class="prose">
+        <p><strong>MFTECmd</strong> (Eric Zimmerman) parses $MFT, $J, $LogFile, $Boot, $SDS to CSV. <strong>Timeline Explorer</strong> is his interactive CSV viewer with Excel-style filters, grouping, highlight rules, and bookmarks. The pair is the day-to-day NTFS workflow.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Parse the MFT</div><div class="cc">MFTECmd.exe -f <span class="val">$MFT</span> --csv <span class="val">out</span> --csvf <span class="val">mft.csv</span></div></div>
+        <div class="cmd"><div class="lbl">Parse the UsnJrnl</div><div class="cc">MFTECmd.exe -f <span class="val">$J</span> --csv <span class="val">out</span> --csvf <span class="val">usnjrnl.csv</span></div></div>
+        <div class="cmd"><div class="lbl">Parse $LogFile</div><div class="cc">MFTECmd.exe -f <span class="val">$LogFile</span> --csv <span class="val">out</span></div></div>
+        <div class="cmd"><div class="lbl">Open in Timeline Explorer</div><div class="cc">TimelineExplorer.exe <span class="val">out\mft.csv</span> <span class="cmt"># filter columns, colour rules, pivot on entry number</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-g s2">
+      <div class="ch"><span class="ci">📌</span><span class="ct">Forensic value at a glance</span></div>
+      <div class="tw"><table class="et">
+        <thead><tr><th>Artefact</th><th>What it tells you</th></tr></thead>
+        <tbody>
+          <tr class="cr"><td>$MFT</td><td>Every file that exists or recently existed — names, paths, sizes, MACBs, resident content</td></tr>
+          <tr class="wa"><td>$LogFile</td><td>Recent metadata transactions — fine-grained but short window</td></tr>
+          <tr class="wa"><td>$UsnJrnl:$J</td><td>Long-window change log — file lifecycle, ransomware, mass delete</td></tr>
+          <tr class="in"><td>$SI vs $FN</td><td>Timestomping detection</td></tr>
+          <tr class="pu"><td>ADS</td><td>Hidden payloads, MOTW provenance</td></tr>
+          <tr class="gr"><td>VSS</td><td>Time-travel — prior versions of any file</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5 — FILE CARVING                                      -->
+<!-- ============================================================ -->
+<div class="sec s-5">
+  <div class="sec-h">
+    <span class="sec-num">05</span>
+    <span class="sec-t">File Carving &amp; Deleted Data</span>
+    <span class="sec-d">When the MFT says gone, the bytes often aren't</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s2">
+      <div class="ch"><span class="ci">🗑</span><span class="ct">What "deleted" really means on NTFS</span></div>
+      <div class="prose">
+        <p>Deleting a file on NTFS is a metadata bookkeeping change, not data destruction:</p>
+        <ul>
+          <li>The MFT record's <em>in-use flag</em> (header byte at offset 0x16) is cleared — the record is now eligible for reuse.</li>
+          <li>The clusters listed in the file's $DATA cluster runs are marked free in <code>$Bitmap</code> — eligible to be overwritten.</li>
+          <li>The filename + parent reference + MACB times stay in the record until something reuses it.</li>
+          <li>The cluster contents stay on disk until something else writes there.</li>
+        </ul>
+        <p>So <em>"recently deleted"</em> usually means <em>"still entirely intact"</em>. The window shrinks every time the volume is written to.</p>
+      </div>
+    </div>
+
+    <div class="c c-g s2">
+      <div class="ch"><span class="ci">🕳</span><span class="ct">Where deleted &amp; hidden data live</span></div>
+      <div class="prose">
+        <ul>
+          <li><strong>Unallocated clusters</strong> — old file content, full or partial.</li>
+          <li><strong>Slack space</strong> — the unused tail of the last cluster of a smaller file; data from a previous, larger occupant.</li>
+          <li><strong>MFT entry slack</strong> — leftover bytes inside a reused MFT record.</li>
+          <li><strong>$Recycle.Bin</strong> — per-SID folder; <code>$I…</code> = metadata (original path, size, deletion time), <code>$R…</code> = content. User-emptied bin → still in unallocated until overwritten.</li>
+          <li><strong>Volume Shadow Copies</strong> — historical snapshots may still have the file.</li>
+          <li><strong>Alternate Data Streams</strong> — hidden, not deleted.</li>
+          <li><strong>Pagefile / hiberfil</strong> — fragments paged out from RAM.</li>
+          <li><strong>System Volume Information, $Extend</strong> — system files that don't show in Explorer.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-b">
+      <div class="ch"><span class="ci">📚</span><span class="ct">Recover via $MFT</span></div>
+      <div class="prose">
+        <p>If the MFT record hasn't been reused, the original filename, MACB and cluster runs are still there. Tools follow the cluster runs back into unallocated space and rebuild the file. <em>Best fidelity</em> — you get the original name and metadata, not just bytes.</p>
+        <ul>
+          <li>MFTECmd / Autopsy / FTK do this automatically — "deleted" files show in the listing.</li>
+          <li>Resident files recover 100 % from the MFT record itself.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">🌑</span><span class="ct">Recover via VSS</span></div>
+      <div class="prose">
+        <p>If a Volume Shadow Copy exists from before the deletion, just pull the file out of the snapshot. Best-case recovery — original file, original timestamps, full provenance.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="cc">vssadmin list shadows <span class="cmt"># then</span> robocopy \\?\GLOBALROOT\...VolumeShadowCopy3\Users\u\Documents <span class="val">out\</span> /E</div></div>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">🧰</span><span class="ct">Autopsy / Autorec</span></div>
+      <div class="prose">
+        <p><strong>Autopsy</strong> (Sleuth Kit GUI) parses NTFS, surfaces deleted files via MFT + carving, and indexes content for keyword search. The IngestModule "PhotoRec Carver" runs <strong>PhotoRec</strong> over unallocated. <strong>Autorec</strong> automates running Autopsy / EZ-Tools against a triage collection.</p>
+      </div>
+    </div>
+
+    <div class="c c-b">
+      <div class="ch"><span class="ci">🔬</span><span class="ct">Hex editor — last resort</span></div>
+      <div class="prose">
+        <p>When tools fail or you need to verify a structure by hand, open the image in HxD / 010 Editor / wxHexEditor, jump to the cluster offset (<code>cluster × cluster_size</code>) and read raw bytes. Useful for partial recovery, malformed files, and proving exactly what's on disk.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">✂</span><span class="ct">File carving — the concept</span></div>
+      <div class="prose">
+        <p><strong>File carving</strong> recovers files based on their <em>internal structure</em>, ignoring the filesystem entirely. The carver scans raw bytes for known <strong>magic numbers / file signatures</strong> (file <em>headers</em>) and known footers, then extracts everything in between.</p>
+        <ul>
+          <li><strong>JPEG</strong> — header <code>FF D8 FF E0</code> / <code>FF D8 FF E1</code>, footer <code>FF D9</code>.</li>
+          <li><strong>PNG</strong> — header <code>89 50 4E 47 0D 0A 1A 0A</code>, footer <code>49 45 4E 44 AE 42 60 82</code>.</li>
+          <li><strong>PDF</strong> — header <code>25 50 44 46</code> (<code>%PDF</code>), footer <code>%%EOF</code>.</li>
+          <li><strong>ZIP / Office (docx/xlsx)</strong> — header <code>50 4B 03 04</code>.</li>
+          <li><strong>PE / EXE</strong> — header <code>4D 5A</code> (<code>MZ</code>).</li>
+          <li><strong>SQLite</strong> — header <code>53 51 4C 69 74 65 20 66 6F 72 6D 61 74 20 33 00</code>.</li>
+        </ul>
+        <p>Tools: <strong>PhotoRec</strong> (broadest signature DB), <strong>Scalpel</strong> (config-driven), <strong>Foremost</strong>, <strong>bulk_extractor</strong> (features rather than full files — emails, URLs, IPs, AES keys).</p>
+      </div>
+    </div>
+
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">🚧</span><span class="ct">Limitations of carving</span></div>
+      <div class="prose">
+        <ul>
+          <li><strong>No filename, no path, no timestamps</strong> — carving recovers content only. The MFT is what carries the metadata.</li>
+          <li><strong>Fragmentation breaks carving</strong> — if the file's clusters aren't contiguous, simple header-to-footer carving stitches together garbage.</li>
+          <li><strong>No footer = no end</strong> — formats without a reliable footer (raw text, MP3) are guessed at size and often over- or under-recovered.</li>
+          <li><strong>Overwrites are fatal</strong> — even one cluster overwritten and the file is corrupted past easy repair.</li>
+          <li><strong>Encrypted / compressed</strong> content has no recognisable signature in the bytes.</li>
+          <li><strong>Resident NTFS files</strong> have no clusters in unallocated and so are <em>invisible to a carver</em> — recover via $MFT.</li>
+          <li><strong>Lots of false positives</strong> — signatures collide with embedded thumbnails, screenshots in documents, etc. Verify by opening.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6 — REGISTRY                                          -->
+<!-- ============================================================ -->
+<div class="sec s-6">
+  <div class="sec-h">
+    <span class="sec-num">06</span>
+    <span class="sec-t">Windows Registry</span>
+    <span class="sec-d">Configuration, user activity, persistence</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-b s4">
+      <div class="ch"><span class="ci">🗝</span><span class="ct">Hives — where they live, what they hold</span></div>
+      <div class="tw"><table class="et">
+        <thead><tr><th>Hive</th><th>Location</th><th>What it holds (forensic value)</th></tr></thead>
+        <tbody>
+          <tr class="cr"><td>SAM</td><td>C:\Windows\System32\config\SAM</td><td>Local accounts, RIDs, password-hash containers, last-logon, failed-login count</td></tr>
+          <tr class="pu"><td>SYSTEM</td><td>C:\Windows\System32\config\SYSTEM</td><td>Boot config, drivers, services, ControlSets, ShimCache, USB history, time zone, network interfaces, mounted devices</td></tr>
+          <tr class="cr"><td>SECURITY</td><td>C:\Windows\System32\config\SECURITY</td><td>LSA secrets, cached domain creds, audit policy, machine account</td></tr>
+          <tr class="wa"><td>SOFTWARE</td><td>C:\Windows\System32\config\SOFTWARE</td><td>OS version &amp; install date, installed apps, NetworkList (SSIDs), AmCache, autoruns, app permissions</td></tr>
+          <tr class="in"><td>NTUSER.DAT</td><td>C:\Users\&lt;user&gt;\NTUSER.DAT</td><td>Per-user shell history, run / recent / typed paths, UserAssist, Office MRU, mounted printers</td></tr>
+          <tr class="gr"><td>UsrClass.dat</td><td>%LOCALAPPDATA%\Microsoft\Windows\UsrClass.dat</td><td>Per-user shellbags (folder-view history), MUICache, app capability state</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-r">
+      <div class="ch"><span class="ci">🔎</span><span class="ct">Registry Explorer</span></div>
+      <div class="prose">
+        <p>EZ-Tools GUI — load offline hive files, browse the tree, see deleted keys / values recovered from unallocated cells, apply <strong>bookmarks</strong> that label forensically interesting keys with a hover-over explanation. Best learning tool.</p>
+      </div>
+    </div>
+
+    <div class="c c-r">
+      <div class="ch"><span class="ci">⌨</span><span class="ct">RECmd</span></div>
+      <div class="prose">
+        <p>CLI counterpart to Registry Explorer. Runs <em>batch files</em> (<code>.reb</code>) — collections of regex queries against many keys at once. KAPE's <code>RECmd_Kroll</code> batch is the de-facto sweep.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="cc">RECmd.exe --bn <span class="val">BatchExamples\Kroll_Batch.reb</span> -d <span class="val">C:\hives</span> --csv <span class="val">out</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-r">
+      <div class="ch"><span class="ci">🧪</span><span class="ct">RegRipper</span></div>
+      <div class="prose">
+        <p>Harlan Carvey's plugin-driven parser. Each plugin (<code>.pl</code>) targets a specific key and pretty-prints findings. Quick triage, easy to script. Ships with hundreds of community plugins — UserAssist, RunMRU, TypedURLs, USB, Shellbags…</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="cc">rip.exe -r <span class="val">NTUSER.DAT</span> -f <span class="val">ntuser</span> &gt; ntuser.txt</div></div>
+      </div>
+    </div>
+
+    <div class="c c-r">
+      <div class="ch"><span class="ci">📐</span><span class="ct">Choosing between them</span></div>
+      <div class="prose">
+        <ul>
+          <li><strong>Learning a key</strong> → Registry Explorer + bookmarks.</li>
+          <li><strong>Batch / scripted sweep</strong> → RECmd + Kroll batch.</li>
+          <li><strong>Quick triage report</strong> → RegRipper.</li>
+          <li>All three handle offline hives — use the files KAPE extracted, not the live Registry.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">👤</span><span class="ct">SAM — local accounts in detail</span></div>
+      <div class="prose">
+        <p>The <strong>SAM</strong> hive (Security Account Manager) holds the database of <em>local</em> Windows accounts under <code>SAM\Domains\Account\Users\</code>. <em>Domain accounts and Microsoft / Azure-AD accounts are not here</em> — they live in AD or are profile-only on this host.</p>
+        <ul>
+          <li><strong>RID (Relative Identifier)</strong> — last sub-authority of the user's SID. Built-ins are fixed: <em>500 Administrator, 501 Guest, 503 DefaultAccount, 504 WDAGUtilityAccount</em>. First created local user → 1000, then 1001, 1002…</li>
+          <li>Per-user values: <code>F</code> (account flags, last-logon, failed-login count, password-fail time), <code>V</code> (username, full name, comment, hash containers).</li>
+          <li>Useful properties: account-disabled bit, password-never-expires, must-change-on-next-logon.</li>
+        </ul>
+        <p><strong>Cloud / Microsoft accounts</strong> aren't in SAM — they show up only as profile folders (<code>C:\Users\&lt;name&gt;</code>) and in <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\&lt;SID&gt;</code>. The SID's <em>ProfileImagePath</em> ties the SID to the on-disk username; for MS-account users the <em>last login</em> values plus the <code>IdentityCRL</code> keys link the local SID to the cloud email — that linkage is how you prove a real human used the account.</p>
+      </div>
+    </div>
+
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">💻</span><span class="ct">SYSTEM + SOFTWARE — profiling the machine</span></div>
+      <div class="prose">
+        <p>Together they answer <em>what machine is this, what OS, when was it installed, who configured it?</em></p>
+        <ul>
+          <li><strong>OS version &amp; install date</strong>: <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion</code> — <em>ProductName, CurrentBuild, DisplayVersion, InstallDate</em> (epoch).</li>
+          <li><strong>Computer name</strong>: <code>SYSTEM\ControlSet001\Control\ComputerName\ComputerName</code>.</li>
+          <li><strong>Time zone</strong>: <code>SYSTEM\…\Control\TimeZoneInformation</code> — critical for converting all timestamps consistently.</li>
+          <li><strong>Network interfaces &amp; DHCP hints</strong>: <code>SYSTEM\…\Services\Tcpip\Parameters\Interfaces\{GUID}</code> — IP, gateway, DHCP server, lease times, last-known networks.</li>
+          <li><strong>Network profiles (SSIDs)</strong>: <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles</code> &amp; <code>Signatures\Unmanaged</code> — name of every Wi-Fi network the host joined + first-/last-connect.</li>
+          <li><strong>Installed applications</strong>: <code>SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code> (and <code>WOW6432Node</code> for 32-bit).</li>
+          <li><strong>App permissions</strong> (camera, mic, location): <code>SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\*</code>.</li>
+          <li><strong>Autoruns</strong>: <code>SOFTWARE\Microsoft\Windows\CurrentVersion\Run</code>, <code>RunOnce</code>; per-user equivalents in NTUSER.DAT.</li>
+          <li><strong>Shutdown time</strong>: <code>SYSTEM\ControlSet001\Control\Windows</code> → <em>ShutdownTime</em> (FILETIME).</li>
+        </ul>
+        <p><strong>CurrentControlSet</strong> is a runtime alias for the active ControlSet (usually <code>ControlSet001</code>); on offline hives you read the explicit number, picking the one named in <code>Select\Current</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-a s4">
+      <div class="ch"><span class="ci">🗂</span><span class="ct">NTUSER.DAT — per-user activity gold</span></div>
+      <div class="prose">
+        <p>One <code>NTUSER.DAT</code> per profile (<code>C:\Users\&lt;user&gt;\NTUSER.DAT</code>). The richest single source of "what did the user do on this machine".</p>
+      </div>
+      <div class="tw"><table class="et">
+        <thead><tr><th>Key</th><th>Path under NTUSER.DAT</th><th>Forensic value</th></tr></thead>
+        <tbody>
+          <tr class="cr"><td>WordWheelQuery</td><td>\Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery</td><td>Every search term typed into Explorer's search box — direct insight into intent</td></tr>
+          <tr class="cr"><td>TypedPaths</td><td>\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths</td><td>Paths the user typed into the Explorer address bar (incl. UNC shares)</td></tr>
+          <tr class="wa"><td>RecentDocs</td><td>\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs</td><td>Recently opened documents, bucketed by extension; ordered MRU</td></tr>
+          <tr class="wa"><td>RunMRU</td><td>\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU</td><td>Everything typed into Win+R — fast lookup of suspect commands and tools</td></tr>
+          <tr class="in"><td>Office File MRU</td><td>\Software\Microsoft\Office\&lt;ver&gt;\&lt;app&gt;\User MRU\…\File MRU</td><td>Per-application recent files (Word, Excel, …) with last-opened timestamps</td></tr>
+          <tr class="in"><td>TrustRecords</td><td>\Software\Microsoft\Office\&lt;ver&gt;\&lt;app&gt;\Security\Trusted Documents\TrustRecords</td><td>Files for which the user clicked "Enable Editing / Enable Macros" — phishing-payload provenance</td></tr>
+          <tr class="pu"><td>ComDlg32 (CIDSizeMRU)</td><td>\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32</td><td>Common Open/Save dialog state — what was opened or saved via standard dialogs</td></tr>
+          <tr class="cr"><td>OpenSavePidlMRU</td><td>…\ComDlg32\OpenSavePidlMRU\&lt;ext&gt;</td><td>Files opened/saved with the common dialog, bucketed by extension, with full PIDL paths</td></tr>
+          <tr class="cr"><td>LastVisitedPidlMRU</td><td>…\ComDlg32\LastVisitedPidlMRU</td><td>Maps an executable to the last folder it browsed via Open/Save — pairs apps with files</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose" style="margin-top:8px">
+        <p><strong>Why these matter together:</strong> WordWheelQuery + TypedPaths + RunMRU = intent and tooling. RecentDocs + Office MRU + OpenSavePidlMRU + LastVisitedPidlMRU = what files were touched, by which app, when. TrustRecords = which malicious documents the user explicitly approved.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s4">
+      <div class="ch"><span class="ci">🗃</span><span class="ct">UsrClass.dat — Shellbags &amp; per-user app state</span></div>
+      <div class="prose">
+        <p><code>UsrClass.dat</code> lives at <code>C:\Users\&lt;user&gt;\AppData\Local\Microsoft\Windows\UsrClass.dat</code> and is mounted as <code>HKCU\Software\Classes</code>. Its forensic crown jewels are <strong>Shellbags</strong>:</p>
+        <ul>
+          <li>Path: <code>Local Settings\Software\Microsoft\Windows\Shell\Bags</code> + <code>BagMRU</code>.</li>
+          <li>Records that a user <em>navigated into</em> a folder in Explorer — even if the folder was on a USB drive, a network share, or has since been deleted.</li>
+          <li>Surfaces folder names, layouts, and the rough <em>last-time-this-folder-was-viewed</em>.</li>
+          <li>Parsed by <strong>SBECmd</strong> (EZ Tools).</li>
+        </ul>
+        <p>Other useful keys under UsrClass: <strong>MUICache</strong> (display names of every binary the user launched), <strong>LocalServer32 / InprocServer32</strong> COM registrations (persistence), and per-user file-association overrides.</p>
+      </div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Parse Shellbags</div><div class="cc">SBECmd.exe -d <span class="val">C:\KAPE\Users</span> --csv <span class="val">out</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7 — APPLICATION EXECUTION                              -->
+<!-- ============================================================ -->
+<div class="sec s-7">
+  <div class="sec-h">
+    <span class="sec-num">07</span>
+    <span class="sec-t">Application Execution Artefacts</span>
+    <span class="sec-d">Did it run? When? How often? By whom?</span>
+  </div>
+
+  <div class="g">
+    <div class="c c-r s4">
+      <div class="ch"><span class="ci">🎯</span><span class="ct">The execution-evidence stack</span></div>
+      <div class="prose">
+        <p>No single artefact reliably proves "this binary ran". Forensic confidence comes from <em>multiple artefacts agreeing</em>. Each one captures execution differently — Prefetch tracks user-mode launches, ShimCache tracks the compat-check, Amcache tracks file-system scans, UserAssist tracks Explorer-launched GUIs, BAM/DAM tracks the OS scheduler's view. Disagreement is itself a clue (timestomping, anti-forensics).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">📅</span><span class="ct">BAM — Background Activity Monitor</span></div>
+      <div class="prose">
+        <p>Windows kernel service that tracks per-user background activity for power management. Hive path: <br><span class="path">SYSTEM\CurrentControlSet\Services\bam\State\UserSettings\&lt;SID&gt;</span></p>
+        <ul>
+          <li>One value per executable the user ran, named after the full NT-format path (<code>\Device\HarddiskVolume1\Windows\System32\notepad.exe</code>).</li>
+          <li>Data carries the <strong>last-execution FILETIME</strong>.</li>
+          <li>Persists across reboots, ties execution to a <em>user SID</em>.</li>
+          <li>Survives long after the binary is deleted — easy proof of <em>"this user ran this tool at this time"</em>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-r s2">
+      <div class="ch"><span class="ci">🖥</span><span class="ct">DAM — Desktop Activity Moderator</span></div>
+      <div class="prose">
+        <p>The companion to BAM for foreground UWP / Modern app activity. Hive path: <br><span class="path">SYSTEM\CurrentControlSet\Services\dam\State\UserSettings\&lt;SID&gt;</span></p>
+        <ul>
+          <li>Same shape as BAM: value per executable, last-execution FILETIME.</li>
+          <li>Captures desktop-side power-managed apps.</li>
+          <li>Combine BAM + DAM for a full per-user execution timeline.</li>
+          <li>Parse via RegRipper (<code>bam.pl</code>) or RECmd Kroll batch — output is CSV ready for Timeline Explorer.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-a">
+      <div class="ch"><span class="ci">⌨</span><span class="ct">RunMRU</span></div>
+      <div class="prose">
+        <p>Stores everything typed into Win+R. NTUSER.DAT key:</p>
+        <span class="path">\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU</span>
+        <ul>
+          <li>One value per entry (<code>a, b, c…</code>) with command text + a trailing <code>\1</code>.</li>
+          <li><strong>MRUList</strong> value gives the most-recent order.</li>
+          <li>Quick way to spot operator-style usage: <code>cmd</code>, <code>powershell</code>, <code>\\dc01\c$</code>, <code>mmc</code>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-a">
+      <div class="ch"><span class="ci">🖱</span><span class="ct">UserAssist</span></div>
+      <div class="prose">
+        <p>Tracks GUI applications launched via Explorer / Start menu. NTUSER.DAT key:</p>
+        <span class="path">\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist\{GUID}\Count</span>
+        <ul>
+          <li>Value names are <strong>ROT13-encoded paths</strong> — decode to read.</li>
+          <li>Records <em>run count, focus count, focus time, last-execution time</em>.</li>
+          <li>Misses CLI launches and process-launched-by-other-process — pair with BAM / Prefetch.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-a">
+      <div class="ch"><span class="ci">🔁</span><span class="ct">FeatureUsage</span></div>
+      <div class="prose">
+        <p>Windows 10+ telemetry-ish key under NTUSER.DAT:</p>
+        <span class="path">\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage</span>
+        <ul>
+          <li>Sub-keys: <em>AppLaunch, AppSwitched, ShowJumpView, TrayButtonClicked</em>.</li>
+          <li>Per-app launch counts and taskbar interaction — useful for proving repeated, deliberate use.</li>
+          <li>Granularity per <em>application identifier</em> (AppID), not full path.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-a">
+      <div class="ch"><span class="ci">🚀</span><span class="ct">Prefetch</span></div>
+      <div class="prose">
+        <p>Files at <code>C:\Windows\Prefetch\&lt;EXE&gt;-&lt;hash&gt;.pf</code>. Windows pre-loads commonly-used binaries to speed launches — the side-effect is rich execution evidence.</p>
+        <ul>
+          <li><strong>Last eight</strong> execution timestamps (Win10+).</li>
+          <li>Run count.</li>
+          <li>List of every <em>file and DLL</em> referenced during the first 10 s of execution — often surfaces tooling and config files the binary touched.</li>
+          <li>Volume serial + path the binary was launched from — proves location, even for binaries since deleted.</li>
+          <li>Disabled by default on SSD-only systems in some Win11 builds — absence ≠ wasn't run.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">🧱</span><span class="ct">ShimCache (AppCompatCache)</span></div>
+      <div class="prose">
+        <p>SYSTEM hive key — populated by the Application Compatibility engine. Hive path:</p>
+        <span class="path">SYSTEM\CurrentControlSet\Control\Session Manager\AppCompatCache\AppCompatCache</span>
+        <ul>
+          <li>One entry per binary the compat engine examined — <em>not strictly proof of execution</em> on modern Windows (more "was seen / checked").</li>
+          <li>Carries: <em>full path, $SI last-modified timestamp</em>, sometimes an <em>"executed" flag</em> (Win7) — flag dropped in Win8+.</li>
+          <li>Written to disk only at <em>shutdown</em> — live extraction is partial; image-after-reboot is empty for the most recent activity.</li>
+          <li>Bounded (~1024 entries on Win10) — old entries drop off.</li>
+          <li>Excellent for spotting binaries that no longer exist on disk.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="c c-p s2">
+      <div class="ch"><span class="ci">🗄</span><span class="ct">AmCache</span></div>
+      <div class="prose">
+        <p>Hive at <code>C:\Windows\AppCompat\Programs\Amcache.hve</code>. Populated by the Program Compatibility Assistant whenever a binary is scanned.</p>
+        <ul>
+          <li>Per-binary entries with: <em>full path, SHA-1 hash of the file, file size, PE link-time, first-seen timestamp on this host, publisher / product / version</em>.</li>
+          <li>Recoverable even after the binary is deleted — the hash alone is investigative gold.</li>
+          <li>Covers a far wider set of artefacts than Prefetch: every <code>.exe</code> the OS noticed, not just ones that ran often.</li>
+          <li>Replaces RecentFileCache.bcf on modern Windows.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-g s2">
+      <div class="ch"><span class="ci">🔧</span><span class="ct">Parsing — the EZ-Tools loop</span></div>
+      <div class="cmds">
+        <div class="cmd"><div class="lbl">Prefetch → CSV (PECmd)</div><div class="cc">PECmd.exe -d <span class="val">C:\Windows\Prefetch</span> --csv <span class="val">out</span> --csvf <span class="val">prefetch.csv</span></div></div>
+        <div class="cmd"><div class="lbl">AmCache → CSV</div><div class="cc">AmcacheParser.exe -f <span class="val">Amcache.hve</span> --csv <span class="val">out</span> -i</div></div>
+        <div class="cmd"><div class="lbl">ShimCache → CSV</div><div class="cc">AppCompatCacheParser.exe -f <span class="val">SYSTEM</span> --csv <span class="val">out</span> --csvf <span class="val">shimcache.csv</span></div></div>
+        <div class="cmd"><div class="lbl">BAM / DAM via RECmd</div><div class="cc">RECmd.exe --bn <span class="val">BatchExamples\Kroll_Batch.reb</span> -d <span class="val">C:\hives</span> --csv <span class="val">out</span></div></div>
+        <div class="cmd"><div class="lbl">UserAssist via RegRipper</div><div class="cc">rip.exe -r <span class="val">NTUSER.DAT</span> -p userassist</div></div>
+        <div class="cmd"><div class="lbl">Visualise / pivot</div><div class="cc">TimelineExplorer.exe <span class="val">out\*.csv</span></div></div>
+      </div>
+    </div>
+
+    <div class="c c-g s2">
+      <div class="ch"><span class="ci">👀</span><span class="ct">WinPrefetchView — quick GUI</span></div>
+      <div class="prose">
+        <p>NirSoft GUI for Prefetch. Doesn't replace PECmd for casework but is invaluable for fast browsing on the analyst workstation.</p>
+        <ul>
+          <li>Loads the local <code>Prefetch\</code> folder by default; <em>Advanced Options → Prefetch Folder</em> to point at a copy from KAPE.</li>
+          <li>Upper pane: each PF — process, run count, last run, creation, file path.</li>
+          <li>Lower pane: every file/DLL referenced during execution — quick "what did this binary touch".</li>
+          <li>Export selected rows to CSV / TSV / HTML for reports.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="g">
+    <div class="c c-b s4">
+      <div class="ch"><span class="ci">🧭</span><span class="ct">Cross-artefact comparison — building confidence</span></div>
+      <div class="tw"><table class="et">
+        <thead><tr><th>Artefact</th><th>Strong evidence for</th><th>Limitations</th></tr></thead>
+        <tbody>
+          <tr class="cr"><td>Prefetch</td><td>Run, last 8 runs, files touched, path</td><td>Disabled on some SSD builds; user-mode only</td></tr>
+          <tr class="wa"><td>ShimCache</td><td>Existence / inspection of binary, path</td><td>Not always proof of execution on Win8+; flushed at shutdown</td></tr>
+          <tr class="in"><td>AmCache</td><td>Hash + path + first-seen, even after delete</td><td>Doesn't carry run-count</td></tr>
+          <tr class="pu"><td>UserAssist</td><td>GUI launch, run count, focus time, user attribution</td><td>Misses CLI / spawned processes; ROT13 encoded</td></tr>
+          <tr class="gr"><td>BAM / DAM</td><td>Per-SID last execution time</td><td>Last-execution only, no count</td></tr>
+          <tr class="cr"><td>RunMRU</td><td>Operator intent — what was typed into Win+R</td><td>Per-user, easily cleared</td></tr>
+          <tr class="pu"><td>FeatureUsage</td><td>Repeated, taskbar-pinned usage</td><td>AppID granularity, not path</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<div class="ft">
+  <span>Windows Forensics Course Cheat Sheet · Verify against case-specific OS / build / tool versions · Preserve originals</span>
+  <span>Course notes · Reference for personal study</span>
+</div>
+
+</div></body></html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — KAPE & AIM · CCDCOE IDFC V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E84040;--red-dim:rgba(232,64,64,.12);
+  --amber:#E8952A;--amber-dim:rgba(232,149,42,.12);
+  --green:#2EAD6C;--green-dim:rgba(46,173,108,.10);
+  --blue:#3A8DD6;--blue-dim:rgba(58,141,214,.10);
+  --purple:#7C5CBF;--purple-dim:rgba(124,92,191,.10);
+  --teal:#1D9E8A;--teal-dim:rgba(29,158,138,.10);
+  --bg:#0C0D0F;--sf:#131519;--sf2:#1A1D23;
+  --bd:rgba(255,255,255,.07);--bdhi:rgba(255,255,255,.13);
+  --tx:#E8E6E0;--dm:#8A8880;--dm2:#555450;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--amber);--accent-dim:var(--amber-dim);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;line-height:1.6;padding:16px 16px 50px}
+.page{max-width:1200px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.crumb{font-size:9.5px;color:var(--dm2);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:4px}
+.crumb .acc{color:var(--accent)}
+.t1{font-family:var(--sans);font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#fff;line-height:1.15}
+.t2{font-size:11px;color:var(--dm);margin-top:3px}
+.skull{width:46px;height:46px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.b-a{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(232,149,42,.3)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,173,108,.3)}
+.b-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(58,141,214,.3)}
+.b-p{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.b-t{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(29,158,138,.3)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:11px;line-height:1.55}
+.tor .sl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:6px}
+.tor .tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;margin:0 3px 3px 0;font-size:10px;color:#9CDCFE}
+.tor .row{margin-bottom:2px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:11px;grid-template-columns:repeat(4,1fr);margin-bottom:11px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.c-r{border-top:2px solid var(--red)}.c-a{border-top:2px solid var(--amber)}
+.c-b{border-top:2px solid var(--blue)}.c-p{border-top:2px solid var(--purple)}
+.c-t{border-top:2px solid var(--teal)}.c-g{border-top:2px solid var(--green)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.ci{font-size:14px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;line-height:1.15}
+
+.prose{font-size:11.5px;color:var(--tx);line-height:1.65}
+.prose p{margin-bottom:6px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff}
+.prose em{color:var(--accent);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:10.5px;color:#9CDCFE;background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd)}
+.prose ul{list-style:none;padding-left:0;margin:4px 0 6px}
+.prose ul li{position:relative;padding-left:14px;margin-bottom:3px;font-size:11px;line-height:1.55}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:9px;top:3px}
+
+.cmds{display:flex;flex-direction:column;gap:5px}
+.cmd{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.lbl{font-size:9px;color:var(--dm2);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cc{font-size:10.5px;color:#C8E6FF;word-break:break-all;line-height:1.45}
+.cc .kw{color:#9CDCFE}.cc .val{color:#CE9178}.cc .cmt{color:var(--dm2);font-style:italic}
+
+.path{font-family:var(--mono);font-size:10px;color:#CE9178;background:var(--bg);border:1px solid var(--bd);padding:4px 7px;border-radius:4px;display:block;word-break:break-all;line-height:1.45;margin:3px 0}
+
+.al{display:flex;align-items:flex-start;gap:6px;padding:7px 10px;border-radius:5px;font-size:11px;line-height:1.5;margin-top:4px}
+.al.r{background:var(--red-dim);border:1px solid rgba(232,64,64,.25);color:#F4A0A0}
+.al.a{background:var(--amber-dim);border:1px solid rgba(232,149,42,.25);color:#F4C87A}
+.al.g{background:var(--green-dim);border:1px solid rgba(46,173,108,.25);color:#A5DCB5}
+.al.b{background:var(--blue-dim);border:1px solid rgba(58,141,214,.25);color:#9CC8F1}
+.ali{font-size:13px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:10.5px;min-width:260px}
+.et th{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm2);padding:5px 7px;text-align:left;border-bottom:1px solid var(--bd)}
+.et td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top;line-height:1.45}
+.et td:first-child{color:#9CDCFE;font-weight:500;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm2);margin:2px 0 4px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:8px;padding:10px 13px;margin-top:12px}
+.xref .sl{color:var(--accent);margin-bottom:5px}
+.xref .prose{font-size:11px}
+
+.ft{margin-top:18px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:10px;color:var(--dm2)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">⚡</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V2 / <span class="acc">03 — KAPE & AIM</span></div>
+      <div class="t1">KAPE &amp; Arsenal Image Mounter</div>
+      <div class="t2">Triage at speed — mount the image, sweep the high-value artefacts</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-a">KAPE</span>
+    <span class="b b-p">AIM</span>
+    <span class="b b-b">Triage</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">Arsenal Image Mounter</span><span class="tag">KAPE</span><span class="tag">gKape (GUI)</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">$MFT</span><span class="tag">$LogFile</span><span class="tag">$UsnJrnl</span><span class="tag">Registry hives</span><span class="tag">EventLogs</span><span class="tag">Prefetch</span><span class="tag">AmCache</span><span class="tag">ScheduledTasks</span><span class="tag">LNK / JumpLists</span><span class="tag">ShellBags</span><span class="tag">Browser history</span><span class="tag">Hiberfil / Pagefile</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Read Only</span><span class="tag">Write Temporarily</span><span class="tag">Target</span><span class="tag">Module</span><span class="tag">Triage set</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🗜</span><span class="ct">Arsenal Image Mounter — the volume that isn't there</span></div>
+    <div class="prose">
+      <p><strong>AIM</strong> (Arsenal Recon) is driver-backed: it presents an <em>E01 / VHD / raw / VMDK</em> to Windows as if it were a real SCSI disk. Unlike a software-only mount, the kernel sees an actual volume — so NTFS, BitLocker, VSS and every Windows-native tool just works on it.</p>
+      <ul>
+        <li><strong>Read Only</strong> — safe default. The image is exposed as a read-only volume. Hash stays intact. Use when the NTFS journal is clean.</li>
+        <li><strong>Write Temporarily</strong> — Windows still <em>thinks</em> it can write; AIM intercepts every write into a sparse overlay file on your analysis disk. Dismount discards the overlay. The source E01 is never touched.</li>
+        <li>Why <em>Write Temporarily</em> matters: a dirty NTFS volume will refuse to mount until the journal replays. <em>Read Only</em> blocks that replay and Windows sulks. The overlay lets the replay happen — into the overlay — so the volume mounts cleanly.</li>
+        <li>Same applies to chkdsk, to VSS revert, and to anything that wants to <em>touch</em> the disk before showing you files.</li>
+      </ul>
+      <div class="al b"><span class="ali">ℹ️</span><span><strong>Always confirm the mode on the dialog.</strong> The overlay file is on <em>your</em> drive — make sure you have headroom for it (a busy NTFS can write hundreds of MB during journal replay).</span></div>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">⚙️</span><span class="ct">KAPE — Targets &amp; Modules, in that order</span></div>
+    <div class="prose">
+      <p><strong>KAPE</strong> (Kroll Artifact Parser/Extractor, Eric Zimmerman) is a two-phase engine. Phase one <em>collects</em>, phase two <em>parses</em>. The two are deliberately decoupled so you can collect on the suspect host and parse on the lab box.</p>
+      <ul>
+        <li><strong>Target</strong> = a YAML recipe pointing at filesystem paths/files. e.g. <code>KapeTriage</code>, <code>RegistryHives</code>, <code>EventLogs</code>, <code>WebBrowsers</code>, <code>WindowsExecutables</code>. Targets ride <em>RawCopy / RawAccessRead</em> under the hood so locked system files (SAM, $MFT, EVTX in use) come out anyway.</li>
+        <li><strong>Module</strong> = a YAML recipe wrapping a parser CLI — <em>MFTECmd, EvtxECmd, RECmd, PECmd, AmcacheParser, JLECmd, SBECmd, LECmd</em>. Modules consume what Targets produced.</li>
+        <li><strong>Triage set</strong> = the <code>KapeTriage</code> compound target. It's a curated bundle pulling ~90% of what an IR examiner actually opens. One flag, one folder, full sweep.</li>
+        <li><strong>gKape</strong> = the GUI front-end. Same YAML logic, point-and-click. The CLI is what shows up in the report.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">🧭</span><span class="ct">Workflow — E01 → AIM → KAPE → parsed output</span></div>
+    <div class="prose">
+      <p>The taught flow, end to end:</p>
+      <ul>
+        <li>Mount the E01 with <strong>AIM</strong>. Pick <em>Read Only</em> first; if the volume refuses to come online, dismount and retry as <em>Write Temporarily</em>.</li>
+        <li>Note the drive letter Windows assigned — say <code>F:</code>. That becomes KAPE's <code>--tsource</code>.</li>
+        <li>Run KAPE with a Target (collection only) to produce a triage tarball.</li>
+        <li>Run KAPE with a Module (parsing only) against the collected tarball — or chain both in one invocation.</li>
+        <li>Output goes to a <em>working folder on your analysis disk</em>, never back onto the mounted image.</li>
+      </ul>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><div class="lbl">Collect the full triage set from a mounted E01</div><div class="cc">kape.exe <span class="kw">--tsource</span> <span class="val">F:</span> <span class="kw">--target</span> <span class="val">KapeTriage</span> <span class="kw">--tdest</span> <span class="val">C:\Triage\out</span> <span class="kw">--tflush</span></div></div>
+      <div class="cmd"><div class="lbl">Parse a previously-collected tarball with the EZ-tools module bundle</div><div class="cc">kape.exe <span class="kw">--msource</span> <span class="val">C:\Triage\out</span> <span class="kw">--module</span> <span class="val">!EZParser</span> <span class="kw">--mdest</span> <span class="val">C:\Triage\parsed</span> <span class="kw">--mflush</span></div></div>
+      <div class="cmd"><div class="lbl">Live host, walk Volume Shadow Copies too</div><div class="cc">kape.exe <span class="kw">--tsource</span> <span class="val">C:</span> <span class="kw">--target</span> <span class="val">KapeTriage</span> <span class="kw">--tdest</span> <span class="val">E:\out</span> <span class="kw">--vss</span></div></div>
+      <div class="cmd"><div class="lbl">Chained — collect &amp; parse in one run</div><div class="cc">kape.exe <span class="kw">--tsource</span> <span class="val">F:</span> <span class="kw">--target</span> <span class="val">KapeTriage</span> <span class="kw">--tdest</span> <span class="val">C:\T\out</span> <span class="kw">--module</span> <span class="val">!EZParser</span> <span class="kw">--mdest</span> <span class="val">C:\T\parsed</span> <span class="kw">--tflush</span> <span class="kw">--mflush</span></div></div>
+    </div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong><code>--vss</code> multiplies runtime &amp; output.</strong> Every shadow copy gets walked as if it were its own volume. Worth it for recovering deleted artefacts, but plan disk space (×N copies) and clock-time accordingly.</span></div>
+    <div class="al r"><span class="ali">🛑</span><span><strong>On a live host, never <code>--tdest</code> back onto the system drive.</strong> Aim the output at an external/network volume — otherwise KAPE's own writes pollute the very artefacts it's collecting.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">📂</span><span class="ct">What <code>KapeTriage</code> actually pulls — and where it lives</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Artefact</th><th>Source path on the volume</th><th>Why we want it</th></tr></thead>
+      <tbody>
+        <tr><td>$MFT</td><td><code>\$MFT</code> (root of every NTFS volume)</td><td>Authoritative file metadata, timestamps, resident data — covered in §04</td></tr>
+        <tr><td>$LogFile</td><td><code>\$LogFile</code></td><td>NTFS transaction log — recent filesystem operations, even for deleted files</td></tr>
+        <tr><td>$UsnJrnl:$J</td><td><code>\$Extend\$UsnJrnl:$J</code></td><td>Change journal — name-level audit of every create / rename / delete</td></tr>
+        <tr><td>SAM / SYSTEM / SOFTWARE / SECURITY</td><td><code>C:\Windows\System32\config\</code></td><td>Local accounts, services, installed software, audit policy (§06–§09)</td></tr>
+        <tr><td>NTUSER.DAT</td><td><code>C:\Users\&lt;u&gt;\NTUSER.DAT</code></td><td>Per-user activity: RecentDocs, TypedPaths, UserAssist, ShellBags</td></tr>
+        <tr><td>UsrClass.dat</td><td><code>C:\Users\&lt;u&gt;\AppData\Local\Microsoft\Windows\UsrClass.dat</code></td><td>Per-user shell — ShellBags, file associations (§13)</td></tr>
+        <tr><td>EventLogs (.evtx)</td><td><code>C:\Windows\System32\winevt\Logs\*.evtx</code></td><td>Security, System, Sysmon, RDP, PowerShell — the auditor's diary</td></tr>
+        <tr><td>Prefetch</td><td><code>C:\Windows\Prefetch\*.pf</code></td><td>Executable run history, run count, last-8 run times (§10)</td></tr>
+        <tr><td>AmCache</td><td><code>C:\Windows\AppCompat\Programs\Amcache.hve</code></td><td>Executable inventory + SHA-1 — programs that existed even if Prefetch missed them</td></tr>
+        <tr><td>Scheduled Tasks</td><td><code>C:\Windows\System32\Tasks\</code> + <code>SOFTWARE\…\Schedule\TaskCache</code></td><td>Persistence mechanism #1 — XML defines, registry corroborates</td></tr>
+        <tr><td>StartupInfo</td><td><code>C:\Windows\System32\WDI\LogFiles\StartupInfo\*.xml</code></td><td>Per-boot snapshot of every process started at logon</td></tr>
+        <tr><td>LNK files</td><td><code>C:\Users\&lt;u&gt;\AppData\Roaming\Microsoft\Windows\Recent\</code></td><td>Files the user opened — including from now-disconnected USB/network</td></tr>
+        <tr><td>JumpLists</td><td><code>…\Recent\AutomaticDestinations\</code>, <code>…\CustomDestinations\</code></td><td>Per-application MRU — pinned &amp; recent items (§12)</td></tr>
+        <tr><td>ShellBags</td><td>inside NTUSER.dat &amp; UsrClass.dat</td><td>Every folder the user ever browsed in Explorer, even if deleted (§13)</td></tr>
+        <tr><td>ChromeHistory</td><td><code>C:\Users\&lt;u&gt;\AppData\Local\Google\Chrome\User Data\Default\History</code></td><td>SQLite — URLs, downloads, search terms</td></tr>
+        <tr><td>FirefoxHistory</td><td><code>C:\Users\&lt;u&gt;\AppData\Roaming\Mozilla\Firefox\Profiles\&lt;prof&gt;\places.sqlite</code></td><td>SQLite — same role, different schema</td></tr>
+        <tr><td>Hiberfil</td><td><code>C:\hiberfil.sys</code></td><td>Compressed RAM snapshot — feeds memory analysis (§02)</td></tr>
+        <tr><td>Pagefile</td><td><code>C:\pagefile.sys</code></td><td>Swapped-out process memory — strings, secrets, fragments</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">Why it matters — the triage tarball</span></div>
+    <div class="prose">
+      <p>Instead of carving one artefact at a time across an hour-long session, KAPE produces a single, reproducible <strong>triage tarball</strong> — a folder structure mirroring the source paths, every interesting file in its place.</p>
+      <ul>
+        <li><em>Reproducible</em> — the YAML targets are the recipe. Anyone with the same KAPE version gets the same output.</li>
+        <li><em>Audit-trailed</em> — KAPE writes a <code>_kape.cli</code> + log per run, listing every file it touched and how.</li>
+        <li><em>Idempotent</em> — re-running on the same source produces the same tarball (timestamps aside).</li>
+        <li><em>Hand-offable</em> — zip the tarball, hand it to the next examiner. Their first task isn't "collect"; it's "analyse".</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🧨</span><span class="ct">Common traps in the classroom</span></div>
+    <div class="prose">
+      <ul>
+        <li><strong>Mounting a dirty volume as Read Only</strong> → Windows refuses, you think the image is corrupt. Re-mount as <em>Write Temporarily</em>.</li>
+        <li><strong>Running KAPE from inside the mounted volume</strong> — don't. KAPE binaries on the analysis disk, output on the analysis disk, source = the mount.</li>
+        <li><strong>Forgetting <code>--tflush</code> / <code>--mflush</code></strong> — leaves stale output from previous runs. Use them when starting clean.</li>
+        <li><strong>Spaces in paths</strong> — quote them. <code>--tdest "C:\My Cases\out"</code>.</li>
+        <li><strong>Antivirus on the analysis host</strong> will quarantine EZ-tools (Eric Zimmerman's parsers). Exclude the KAPE folder before the run.</li>
+        <li><strong>Mismatched casing between Target and Module names</strong> — KAPE is forgiving on Windows, but log it correctly in the report.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>KAPE is upstream of nearly every later section — its tarball is the substrate the rest of the course parses. Pin each artefact back to where it gets analysed in depth:</p>
+    <ul>
+      <li><strong>$MFT / $LogFile / $UsnJrnl</strong> → <em>MFTECmd</em> &amp; the NTFS internals deep-dive in <strong>§04</strong>. The same $MFT KAPE pulls is what timeline reconstruction is built on.</li>
+      <li><strong>Registry hives (SAM / SYSTEM / SOFTWARE / SECURITY / NTUSER / UsrClass)</strong> → <strong>§06–§09</strong>. SAM logon counts cross-check against Security.evtx 4624/4625.</li>
+      <li><strong>Prefetch &amp; AmCache</strong> → execution evidence in <strong>§10</strong>. Prefetch run-times corroborate AmCache install dates and Security.evtx process-creation events.</li>
+      <li><strong>LNK / JumpLists / ShellBags</strong> → user-activity reconstruction in <strong>§12–§13</strong>. LNK target IDs reference ShellBag GUIDs — two independent witnesses to the same folder visit.</li>
+      <li><strong>EventLogs vs SAM</strong> — Security.evtx 4624 events (logons) corroborate against SAM's per-account last-logon timestamp (<strong>§07</strong>). Disagreement = log tampering signal.</li>
+      <li><strong>Browser history vs ShellBags</strong> — a downloaded file shows up in Chrome/Firefox history <em>and</em> in the Downloads ShellBag <em>and</em> in a LNK in Recent. Three witnesses to one event.</li>
+      <li><strong><code>--vss</code> output ↔ file carving (§05)</strong> — shadow copies recover older versions of artefacts; carving recovers unallocated remnants. Together they reach files that no single source still has.</li>
+      <li><strong>Hiberfil / Pagefile</strong> → fold straight into memory forensics (<strong>§02</strong>) — Volatility can ingest both.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V2 · §03 KAPE &amp; AIM</span>
+  <span>Next → §04 NTFS</span>
+</div>
+
+</div></body></html>
