@@ -19,10 +19,10 @@ function wrap(html) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
     <style>
       body {
-        font: 15px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+        font: 15px/1.65 "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
         max-width: 820px;
         margin: 32px auto;
         padding: 0 24px 64px;
@@ -30,7 +30,8 @@ function wrap(html) {
         background: #fff;
       }
       h1, h2, h3, h4, h5, h6 {
-        font-family: "Syne", system-ui, sans-serif;
+        font-family: "Roboto", system-ui, sans-serif;
+        font-weight: 700;
         line-height: 1.25;
         margin: 1.6em 0 0.5em;
       }
@@ -46,7 +47,7 @@ function wrap(html) {
         border-radius: 4px;
         padding: 1px 5px;
         font-size: 0.92em;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "Roboto Mono", ui-monospace, monospace;
       }
       pre {
         background: #0c0d0f;
@@ -54,7 +55,7 @@ function wrap(html) {
         padding: 14px 16px;
         border-radius: 8px;
         overflow-x: auto;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "Roboto Mono", ui-monospace, monospace;
         font-size: 13px;
         line-height: 1.55;
       }
@@ -107,13 +108,13 @@ watch(
     v-if="srcdoc !== null"
     :srcdoc="srcdoc"
     title="Page viewer"
-    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation-by-user-activation"
   />
   <iframe
     v-else
     :src="file"
     title="Page viewer"
-    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation-by-user-activation"
   />
 </template>
 

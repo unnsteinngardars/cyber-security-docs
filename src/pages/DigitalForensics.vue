@@ -390,7 +390,7 @@ const forensicsTools = forensicsToolNames
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -422,7 +422,7 @@ const forensicsTools = forensicsToolNames
 }
 .prose strong,
 .bulletlist strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -447,7 +447,7 @@ const forensicsTools = forensicsToolNames
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .prop p {
@@ -460,10 +460,10 @@ const forensicsTools = forensicsToolNames
   margin-bottom: 0;
 }
 .prop strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prop-link {
-  color: #fff;
+  color: var(--hi);
   text-decoration: none;
 }
 .prop-link:hover {
@@ -514,7 +514,7 @@ const forensicsTools = forensicsToolNames
   background: var(--sf2);
 }
 .tbl strong {
-  color: #fff;
+  color: var(--hi);
 }
 
 .bulletlist {

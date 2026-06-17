@@ -263,7 +263,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 17px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   margin: 0;
   line-height: 1.2;
 }
@@ -373,7 +373,7 @@ const filtered = computed(() => {
   transform: rotate(90deg);
 }
 .layer__hdrs-sum:hover .layer__hdrs-title {
-  color: #fff;
+  color: var(--hi);
 }
 .layer__hdrs-title {
   flex: 1;
@@ -421,7 +421,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .hdr-block__size {

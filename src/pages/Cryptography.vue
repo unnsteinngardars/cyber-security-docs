@@ -208,7 +208,7 @@ const visiblePrimitives = computed(() => {
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -228,7 +228,7 @@ const visiblePrimitives = computed(() => {
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -263,7 +263,7 @@ const visiblePrimitives = computed(() => {
   font-family: var(--sans);
   font-size: 16px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .tcard__tag {
@@ -352,7 +352,7 @@ const visiblePrimitives = computed(() => {
   font-family: var(--sans);
   font-size: 18px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .pcard__full {

@@ -434,7 +434,7 @@ grep "open" services.gnmap | grep "ssh"</code></pre>
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -454,7 +454,7 @@ grep "open" services.gnmap | grep "ssh"</code></pre>
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -578,7 +578,7 @@ grep "open" services.gnmap | grep "ssh"</code></pre>
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -610,7 +610,7 @@ grep "open" services.gnmap | grep "ssh"</code></pre>
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .rcard__cmd {
   margin: 0;
@@ -669,7 +669,7 @@ grep "open" services.gnmap | grep "ssh"</code></pre>
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc {
   margin: 0;
@@ -686,7 +686,7 @@ grep "open" services.gnmap | grep "ssh"</code></pre>
   color: #9cdcfe;
 }
 .walk__desc strong {
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc em {
   color: var(--accent);

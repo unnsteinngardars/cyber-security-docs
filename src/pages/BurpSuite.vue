@@ -387,7 +387,7 @@ Grep - extract: "user":"([^"]+)"</code></pre>
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -407,7 +407,7 @@ Grep - extract: "user":"([^"]+)"</code></pre>
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -474,7 +474,7 @@ Grep - extract: "user":"([^"]+)"</code></pre>
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .mode__sum {
   margin: 0;
@@ -518,7 +518,7 @@ Grep - extract: "user":"([^"]+)"</code></pre>
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .tool__sum {
   margin: 0;
@@ -623,7 +623,7 @@ Grep - extract: "user":"([^"]+)"</code></pre>
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc {
   margin: 0;
@@ -640,7 +640,7 @@ Grep - extract: "user":"([^"]+)"</code></pre>
   color: #9cdcfe;
 }
 .walk__desc strong {
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc em {
   color: var(--accent);

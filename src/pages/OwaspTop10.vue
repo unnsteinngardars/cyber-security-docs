@@ -164,7 +164,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -237,7 +237,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   line-height: 1.15;
 }
 
@@ -311,7 +311,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 17px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   line-height: 1.25;
 }
 

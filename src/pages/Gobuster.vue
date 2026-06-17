@@ -360,7 +360,7 @@ gobuster dir -u https://ctf.example.com/ -w common.txt \
 .section { margin-bottom: 32px; }
 .section h2 {
   font-family: var(--sans); font-size: 15px; font-weight: 700;
-  color: #fff; letter-spacing: 0.02em; margin: 0 0 12px;
+  color: var(--hi); letter-spacing: 0.02em; margin: 0 0 12px;
 }
 
 .prose { color: var(--tx); font-size: 12.5px; line-height: 1.7; margin: 0 0 12px; }
@@ -368,7 +368,7 @@ gobuster dir -u https://ctf.example.com/ -w common.txt \
   background: var(--bg); border: 1px solid var(--bd);
   border-radius: 4px; padding: 1px 5px; font-size: 11.5px; color: #9cdcfe;
 }
-.prose strong { color: #fff; }
+.prose strong { color: var(--hi); }
 .prose em { color: var(--accent); font-style: normal; }
 
 .anatomy {
@@ -400,7 +400,7 @@ gobuster dir -u https://ctf.example.com/ -w common.txt \
   padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
 }
 .mode__head h3 {
-  margin: 0; font-family: var(--sans); font-size: 12.5px; font-weight: 700; color: #fff;
+  margin: 0; font-family: var(--sans); font-size: 12.5px; font-weight: 700; color: var(--hi);
 }
 .mode__sum { margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--tx); }
 .mode__cmd {
@@ -438,7 +438,7 @@ gobuster dir -u https://ctf.example.com/ -w common.txt \
   border-top: 2px solid var(--accent); border-radius: 10px;
   padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
 }
-.rcard h3 { margin: 0; font-family: var(--sans); font-size: 12.5px; font-weight: 700; color: #fff; }
+.rcard h3 { margin: 0; font-family: var(--sans); font-size: 12.5px; font-weight: 700; color: var(--hi); }
 .rcard__cmd {
   margin: 0; background: var(--bg); border: 1px solid var(--bd);
   border-radius: 6px; padding: 8px 10px; font-family: var(--mono);
@@ -462,7 +462,7 @@ gobuster dir -u https://ctf.example.com/ -w common.txt \
   display: flex; align-items: center; justify-content: center;
 }
 .walk__head h3 {
-  margin: 0; font-family: var(--sans); font-size: 13px; font-weight: 700; color: #fff;
+  margin: 0; font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--hi);
 }
 .walk__head h3 code {
   background: var(--bg); border: 1px solid var(--bd);
@@ -473,7 +473,7 @@ gobuster dir -u https://ctf.example.com/ -w common.txt \
   background: var(--bg); border: 1px solid var(--bd);
   border-radius: 4px; padding: 1px 5px; font-size: 11px; color: #9cdcfe;
 }
-.walk__desc strong { color: #fff; }
+.walk__desc strong { color: var(--hi); }
 .walk__desc em { color: var(--accent); font-style: normal; }
 .walk__cmd {
   margin: 0; background: var(--bg); border: 1px solid var(--bd);

@@ -217,7 +217,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 
 .tcard__cats {

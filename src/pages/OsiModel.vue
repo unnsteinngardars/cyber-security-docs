@@ -205,7 +205,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 17px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   margin: 0;
   line-height: 1.2;
 }

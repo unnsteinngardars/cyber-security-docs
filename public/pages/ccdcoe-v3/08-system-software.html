@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08 — SYSTEM &amp; SOFTWARE Hives · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--yellow);--accent-dim:var(--yellow-dim);--accent-deep:var(--yellow-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">⚙️</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">08 — SYSTEM &amp; SOFTWARE Hives</span></div>
+      <div class="t1">SYSTEM &amp; SOFTWARE — the machine's passport</div>
+      <div class="t2">OS profiling — what is this box, what runs on it, what does it talk to, what persists across reboots</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-t">SYSTEM</span>
+    <span class="b b-b">SOFTWARE</span>
+    <span class="b b-a">OS Profile</span>
+    <span class="b b-p">Autoruns</span>
+    <span class="b b-r">Persistence</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">SYSTEM hive</span><span class="tag">SOFTWARE hive</span><span class="tag">ControlSet001/002</span><span class="tag">Select\Current</span><span class="tag">Services</span><span class="tag">Enum\USB / USBSTOR</span><span class="tag">MountedDevices</span><span class="tag">Tcpip\Interfaces</span><span class="tag">ComputerName</span><span class="tag">TimeZoneInformation</span><span class="tag">ShutdownTime</span><span class="tag">Microsoft\Windows NT\CurrentVersion</span><span class="tag">Uninstall</span><span class="tag">Run / RunOnce</span><span class="tag">StartupApproved\Run</span><span class="tag">NetworkList\Profiles</span><span class="tag">Signatures\Unmanaged</span><span class="tag">Defender Exclusions</span><span class="tag">Portable Devices</span><span class="tag">CapabilityAccessManager</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">Registry Explorer + RE Plugins</span><span class="tag">RECmd (.reb batches)</span><span class="tag">RegRipper (rip.exe)</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">CurrentControlSet is virtual</span><span class="tag">OS profiling</span><span class="tag">Persistence triads</span><span class="tag">UBR ↔ CVE feeds</span><span class="tag">USB chain of custody</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">🪪</span><span class="ct">Why pair SYSTEM with SOFTWARE</span></div>
+    <div class="prose">
+      <p>Together these two machine-scope hives produce the box's <em>passport</em>. <strong>SYSTEM</strong> describes the hardware and kernel-level configuration the OS was booted with — drivers, services, mounted volumes, NIC IP plumbing, USB enumeration history, the wall-clock offset. <strong>SOFTWARE</strong> describes the OS build itself and everything installed on top of it — product name, edition, build, monthly patch level, registered owner, every application, every Wi-Fi network ever joined, machine-wide autoruns, app permission grants, AV exclusions.</p>
+      <p>Read in tandem, in five minutes you can answer: <em>what is this box, who owns it, where does it live, what does it run, what does it talk to, and what does it persist across reboots</em>. Every other artefact in the case is interpreted <em>through</em> this profile — timestamps without TimeZoneInformation are lies, malware paths without UBR cannot be mapped to CVEs, a downloaded LNK without USBSTOR loses half its provenance.</p>
+      <p><strong>Where:</strong> on a live host both hives live at <code>%SystemRoot%\System32\config\SYSTEM</code> and <code>...\SOFTWARE</code> and are locked by the kernel. Capture them with FTK Imager → <em>Obtain Protected Files</em> (§01), with KAPE's <code>RegistryHives</code> target, or from a triage image directly.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🔀</span><span class="ct">ControlSets — why CurrentControlSet isn't on disk</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Boot anchor</span>
+      <span class="fvc k-integrity">Diff baseline</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> the SYSTEM hive holds multiple parallel kernel configurations called <em>ControlSets</em> — usually <code>ControlSet001</code> and <code>ControlSet002</code>. A pointer key <code>SYSTEM\Select</code> holds four DWORDs:</p>
+      <ul>
+        <li><code>Current</code> — which ControlSet the running OS booted with.</li>
+        <li><code>Default</code> — which one would be used on next normal boot.</li>
+        <li><code>Failed</code> — last ControlSet that failed to boot.</li>
+        <li><code>LastKnownGood</code> — last ControlSet that booted through to a successful logon.</li>
+      </ul>
+      <p><strong>Structure:</strong> <code>SYSTEM\CurrentControlSet</code> is a <em>virtual</em> mount the kernel builds at boot from whichever ControlSet <code>Select\Current</code> points at. It <strong>does not exist on disk</strong>. When you open the hive offline you walk <code>ControlSet001</code> directly — or follow <code>Select\Current</code> if you want the boot the user actually had.</p>
+      <p><strong>Answers:</strong> the <em>other</em> ControlSet is the previous boot's configuration. When malware altered a service or driver during the most recent boot, diffing 001 against 002 surfaces exactly what changed — a free historical snapshot baked into the hive.</p>
+      <p><strong>Cannot tell you:</strong> anything before the previous boot. Older ControlSets are not retained; only the current and the LastKnownGood survive.</p>
+    </div>
+    <div class="al r"><span class="ali">⛔</span><span><strong>Offline gotcha:</strong> in Registry Explorer with a dead-box SYSTEM hive there is <em>no</em> <code>CurrentControlSet</code> node. Read <code>Select\Current</code> first, then walk that ControlSet — don't assume 001.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🪟</span><span class="ct">SOFTWARE — the OS passport key</span></div>
+    <div class="fv">
+      <span class="fvc k-time">InstallDate</span>
+      <span class="fvc k-pivot">UBR ↔ CVE</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion</code>.</p>
+      <p><strong>Structure:</strong> a flat key of named values that together identify the operating system to byte-level patch precision.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><code>ProductName</code>, <code>EditionID</code> — "Windows 10 Pro" vs "Enterprise" decides which group policies and features are available.</li>
+        <li><code>ReleaseId</code> / <code>DisplayVersion</code> + <code>CurrentBuild</code> — feature update level ("21H2", build 19044).</li>
+        <li><code>UBR</code> — <em>Update Build Revision</em>. The monthly patch number. Build alone says "Windows 10 21H2"; only <code>build.UBR</code> tells you which Patch Tuesday this host has received.</li>
+        <li><code>InstallDate</code> (UNIX seconds) + <code>InstallTime</code> (FILETIME) — when this image was first installed; anchors host age.</li>
+        <li><code>RegisteredOwner</code> / <code>RegisteredOrganization</code> — who the box was provisioned for. Useful in stolen-laptop and BYOD cases.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> what was installed <em>after</em> the OS, only that the OS itself is at this patch level. Application patching lives elsewhere (Uninstall, AppPaths, vendor keys).</p>
+    </div>
+    <div class="al b"><span class="ali">ℹ️</span><span><strong>UBR matters:</strong> CVE feeds key on <code>build.UBR</code>, not just build. "19044.4170" pins the host to one specific monthly cumulative — decides which exploits were viable on the date of compromise.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">🧱</span><span class="ct">SYSTEM hive — high-value subkeys</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Path (under ControlSet00X)</th><th>What's inside</th><th>Forensic value</th></tr></thead>
+      <tbody>
+        <tr><td>Control\ComputerName\ComputerName</td><td><code>ComputerName</code> string</td><td>Hostname — first line of the OS profile; anchors the box in network logs and AD events</td></tr>
+        <tr><td>Control\TimeZoneInformation</td><td><code>TimeZoneKeyName</code>, <code>ActiveTimeBias</code>, <code>StandardBias</code>, <code>DaylightBias</code></td><td><em>Resolve before anything else.</em> Without this every other timestamp in the case is wrong by hours</td></tr>
+        <tr><td>Control\Windows</td><td><code>ShutdownTime</code> — 8-byte FILETIME</td><td>Last <em>clean</em> shutdown of the box; corroborates the acquisition log from §01</td></tr>
+        <tr><td>Control\Session Manager\Memory Management\PrefetchParameters</td><td><code>EnablePrefetcher</code> (0=off, 1=app, 2=boot, 3=both)</td><td>Tells you whether Prefetch artefacts (§10) should exist on this disk before you go hunting</td></tr>
+        <tr><td>Control\FileSystem</td><td><code>NtfsDisableLastAccessUpdate</code> (0=on, 1=off, 2=user, 3=system-managed)</td><td>Decides whether NTFS Accessed timestamps (§04) are usable as access evidence</td></tr>
+        <tr><td>Control\hivelist</td><td>Logical hive name → on-disk path</td><td>Confirms which file on disk maps to which hive (handy on rebuilt or carved images)</td></tr>
+        <tr><td>Control\BackupRestore\FilesNotToBackup</td><td>Path patterns</td><td>Context for VSS / shadow-copy contents (§04 file system) — what was excluded from snapshots</td></tr>
+        <tr><td>Services</td><td><code>ImagePath</code>, <code>Start</code> (0 boot / 1 system / 2 auto / 3 manual / 4 disabled), <code>Type</code>, <code>ServiceDll</code></td><td>Persistence mechanism #1. Every Windows service — outliers, odd paths, unsigned DLLs are the malware tell</td></tr>
+        <tr><td>Enum\USB and Enum\USBSTOR</td><td>Vendor, product, serial of every USB device ever attached</td><td>USB history. Cross-ref with MountedDevices and SOFTWARE Portable Devices for the full chain</td></tr>
+        <tr><td>MountedDevices  <em>(hive root)</em></td><td><code>\DosDevices\C:</code>, <code>\??\Volume{GUID}</code> blobs</td><td>Drive letter ↔ volume GUID ↔ USB serial. First byte 0x44/0x49 distinguishes drive letter vs volume mount</td></tr>
+        <tr><td>Services\Tcpip\Parameters\Interfaces\&lt;GUID&gt;</td><td><code>IPAddress</code>, <code>SubnetMask</code>, <code>DefaultGateway</code>, <code>DhcpServer</code>, <code>DhcpIPAddress</code>, <code>LeaseObtainedTime</code>, <code>LeaseTerminatesTime</code>, <code>NameServer</code></td><td>Per-NIC IP config. DHCP lease timestamps pin the box to a specific network at a specific moment</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong>Service triage pattern:</strong> sort by <code>Start=2</code> (auto-start) and look for <code>ImagePath</code> outside <code>System32</code>, no publisher string, or a <code>ServiceDll</code> in <code>%AppData%</code> / <code>%ProgramData%</code>. That is the textbook service-persistence signature.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">📦</span><span class="ct">SOFTWARE hive — high-value subkeys</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Path</th><th>What's inside</th><th>Forensic value</th></tr></thead>
+      <tbody>
+        <tr><td>Microsoft\Windows NT\CurrentVersion</td><td><code>ProductName</code>, <code>EditionID</code>, <code>ReleaseId</code> / <code>DisplayVersion</code>, <code>CurrentBuild</code>, <code>UBR</code>, <code>InstallDate</code> (UNIX s), <code>InstallTime</code> (FILETIME), <code>RegisteredOwner</code>, <code>RegisteredOrganization</code></td><td>The OS passport. Build + UBR = exact patch level → maps directly to CVE exposure</td></tr>
+        <tr><td>Microsoft\Windows\CurrentVersion\Uninstall\*</td><td>Per-app subkeys: <code>DisplayName</code>, <code>DisplayVersion</code>, <code>InstallDate</code>, <code>Publisher</code>, <code>InstallLocation</code>, <code>UninstallString</code></td><td>Per-machine installed applications. Mirrored under <code>Wow6432Node\...\Uninstall</code> for 32-bit apps on x64</td></tr>
+        <tr><td>Microsoft\Windows\CurrentVersion\Run</td><td>Value name → command line</td><td>Machine-wide autoruns at logon for any user. The classic persistence key</td></tr>
+        <tr><td>Microsoft\Windows\CurrentVersion\RunOnce</td><td>Value name → command line</td><td>Runs once at next boot then deletes itself. Installer staging and dropper stage-2 love this key</td></tr>
+        <tr><td>Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run</td><td>Binary state per startup entry</td><td>What the user <em>actually enabled</em> in Task Manager → Startup. Disambiguates "registered" vs "active"</td></tr>
+        <tr><td>Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\&lt;GUID&gt;</td><td><code>ProfileName</code> (SSID), <code>Description</code>, <code>DateCreated</code>, <code>DateLastConnected</code>, <code>NameType</code>, <code>Managed</code></td><td>Every Wi-Fi / Ethernet network ever joined. The travel history of the machine</td></tr>
+        <tr><td>Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Unmanaged\&lt;sig&gt;</td><td><code>FirstNetwork</code> (SSID), <code>DefaultGatewayMac</code></td><td>AP MAC pins the box to a physical location (geolocate the BSSID against WiGLE)</td></tr>
+        <tr><td>Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\*</td><td>Per-resource subkeys (location, camera, microphone, contacts) with <code>LastUsedTimeStart</code> / <code>LastUsedTimeStop</code></td><td>Which app used which sensor and when. Modern Windows "capability log"</td></tr>
+        <tr><td>Microsoft\Windows Defender\Exclusions\*</td><td><code>Paths</code>, <code>Extensions</code>, <code>Processes</code>, <code>IpAddresses</code></td><td>Anything excluded from AV scanning. Highly suspicious when added by a non-IT account shortly before a malware drop</td></tr>
+        <tr><td>Microsoft\Windows Portable Devices\Devices</td><td>Friendly name + last-mounted drive letter, keyed by GUID</td><td>The user-facing view of the USB devices SYSTEM\USBSTOR enumerated — same device, different angle</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al b"><span class="ali">ℹ️</span><span><strong>Wow6432Node mirroring:</strong> on x64 Windows every 32-bit application installer writes to <code>SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall</code> instead of the native path. Always inspect both — half the installed apps live on the WOW6432 side.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🪤</span><span class="ct">Services — persistence mechanism #1</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Auto-start</span>
+      <span class="fvc k-hidden">Persistence</span>
+      <span class="fvc k-pivot">ControlSet diff</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>SYSTEM\ControlSet001\Services\&lt;ServiceName&gt;</code> — one subkey per service or driver.</p>
+      <p><strong>Structure:</strong> each subkey holds <code>ImagePath</code> (the binary), <code>ServiceDll</code> (for svchost-hosted services, the actual code), <code>Start</code> (boot/system/auto/manual/disabled), <code>Type</code> (kernel driver, file-system driver, own-process, shared-process), plus <code>Description</code>, <code>ObjectName</code> (the account it runs as).</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Every service and driver registered on the box — far broader than "what's running now".</li>
+        <li>Auto-start services (<code>Start=2</code>) — the persistence shortlist.</li>
+        <li>Kernel drivers loaded at boot (<code>Start=0</code>, <code>Type=0x1</code>) — rootkit territory.</li>
+        <li>What account each service runs under — LocalSystem services with user-writable <code>ImagePath</code> are escalation hooks.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> whether the service actually <em>ran</em> at the last boot — that's System.evtx 7045 / 7036 (§14) and Prefetch (§10) territory.</p>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🔌</span><span class="ct">USB chain — three views, one device</span></div>
+    <div class="fv">
+      <span class="fvc k-time">First/last insert</span>
+      <span class="fvc k-pivot">Volume serial</span>
+      <span class="fvc k-user">User binding</span>
+    </div>
+    <div class="prose">
+      <p>USB attribution is a three-key triangle. No single key tells the whole story — each holds a different layer.</p>
+      <ul>
+        <li><strong>SYSTEM <code>Enum\USB</code> / <code>Enum\USBSTOR</code></strong> — kernel enumeration. Vendor / product / serial of every device the bus ever saw. First-seen and last-connect timestamps in the subkey metadata.</li>
+        <li><strong>SYSTEM <code>MountedDevices</code></strong> — the volume binding. <code>\DosDevices\E:</code> values contain a blob whose first byte distinguishes drive-letter mappings (<code>0x44</code>) from volume mount points (<code>0x49</code>); the tail holds the volume GUID or USB device signature that ties E: back to a specific USBSTOR serial.</li>
+        <li><strong>SOFTWARE <code>Microsoft\Windows Portable Devices\Devices</code></strong> — the friendly view. Subkey name encodes the device path; <code>FriendlyName</code> is the label the user actually saw in Explorer.</li>
+      </ul>
+      <p>Per-user binding (which logon saw the device first) lives in NTUSER (§09) under <code>...\MountPoints2</code>. Add the System.evtx 1006 / 2003 driver-install events (§14) and you have a full chain of custody for any USB device.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🚀</span><span class="ct">Autoruns — Run / RunOnce / StartupApproved</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Logon trigger</span>
+      <span class="fvc k-hidden">Persistence</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>SOFTWARE\Microsoft\Windows\CurrentVersion\Run</code>, <code>...\RunOnce</code>, and <code>...\Explorer\StartupApproved\Run</code>. The first two are machine-wide; per-user equivalents live in NTUSER (§09).</p>
+      <p><strong>Structure:</strong> <code>Run</code> and <code>RunOnce</code> are flat — value name is the entry label, value data is the command line. <code>StartupApproved\Run</code> stores binary state blobs: byte 0 = enabled (02) or disabled (03), bytes 4–11 = FILETIME of the last toggle.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><code>Run</code> — executes at every interactive logon. The textbook persistence key.</li>
+        <li><code>RunOnce</code> — executes once at next boot, then the value is deleted. Loved by installer cleanup and by dropper stage-2 payloads that want one shot at SYSTEM context.</li>
+        <li><code>StartupApproved\Run</code> — what the user enabled or disabled in Task Manager → Startup. Tells you what was <em>actually live</em> versus what was merely registered.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> whether the entry actually fired without errors — confirm with Prefetch (§10), AmCache, or Security.evtx 4688.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🌐</span><span class="ct">NetworkList — the travel diary</span></div>
+    <div class="fv">
+      <span class="fvc k-time">DateCreated / DateLastConnected</span>
+      <span class="fvc k-pivot">BSSID geolocation</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\&lt;GUID&gt;</code> for each network the OS has ever connected to; <code>Signatures\Unmanaged\&lt;sig&gt;</code> and <code>Signatures\Managed\&lt;sig&gt;</code> for the underlying network fingerprints.</p>
+      <p><strong>Structure:</strong> <code>DateCreated</code> and <code>DateLastConnected</code> are 16-byte SYSTEMTIME blobs (year/month/dow/day/hour/min/sec/ms WORDs). Without an RE Plugin they look like hex noise; the plugin renders them as real timestamps.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Every Wi-Fi SSID and wired profile the box has ever joined — first-seen, last-seen, network category (public/private/domain).</li>
+        <li>The default-gateway MAC stored under <code>Signatures\Unmanaged</code> is the BSSID of the AP — geolocate against WiGLE for a physical-location pin.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> the wireless PSK (lives in WLAN profile XML under <code>%ProgramData%\Microsoft\Wlansvc\Profiles\Interfaces</code>, not in the hive).</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🧩</span><span class="ct">Registry Explorer plugins — raw blobs to tables</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Parser layer</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> community-maintained <code>.dll</code>s in <code>Registry Explorer\Plugins\</code>. Each implements <code>IRegistryPluginBase</code> for a specific subkey path and reformats its raw values into a readable grid.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Click an instrumented subkey (<code>NetworkList\Profiles</code>, <code>USBSTOR</code>, <code>Services</code>, <code>Uninstall</code>) — Registry Explorer renders the parsed table in the lower pane instead of hex blobs.</li>
+        <li>Each plugin grid is CSV-exportable straight into case notes.</li>
+        <li>Without plugins: NetworkList <code>DateLastConnected</code> is a SYSTEMTIME byte blob. With the plugin: a real timestamp column.</li>
+        <li>Keep the <code>Plugins\</code> folder current — Eric Zimmerman ships new ones with each release.</li>
+      </ul>
+      <p><strong>RECmd</strong> is the same idea automated and batched: a <code>.reb</code> batch file lists "plugin X against key Y" lines and emits one CSV per plugin across the whole hive. Batch for breadth, GUI for depth.</p>
+    </div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">OS profiling — 5-minute workflow</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Time-anchor first</span>
+      <span class="fvc k-pivot">One-page passport</span>
+    </div>
+    <div class="prose">
+      <p>Goal: from a freshly mounted image, produce a one-page profile of the machine before opening any other artefact.</p>
+      <ul>
+        <li><strong>Hostname</strong> → SYSTEM <code>ControlSet001\Control\ComputerName\ComputerName</code></li>
+        <li><strong>Timezone</strong> → SYSTEM <code>...\Control\TimeZoneInformation</code> (do this <em>first</em>)</li>
+        <li><strong>OS + build + UBR + install date</strong> → SOFTWARE <code>...\Windows NT\CurrentVersion</code></li>
+        <li><strong>Last clean shutdown</strong> → SYSTEM <code>...\Control\Windows\ShutdownTime</code></li>
+        <li><strong>IP config / DHCP lease</strong> → SYSTEM <code>Services\Tcpip\Parameters\Interfaces\&lt;GUID&gt;</code></li>
+        <li><strong>Networks joined</strong> → SOFTWARE <code>NetworkList\Profiles</code> + <code>Signatures\Unmanaged</code></li>
+        <li><strong>USB history</strong> → SYSTEM <code>Enum\USBSTOR</code> + <code>MountedDevices</code></li>
+        <li><strong>Installed apps</strong> → SOFTWARE <code>...\Uninstall</code> (+ <code>Wow6432Node</code>)</li>
+        <li><strong>Autoruns</strong> → SOFTWARE <code>...\Run</code>, <code>RunOnce</code>, <code>StartupApproved\Run</code> + SYSTEM <code>Services</code></li>
+        <li><strong>Defender posture</strong> → SOFTWARE <code>Windows Defender\Exclusions</code></li>
+      </ul>
+      <p>Either click through with RE + plugins or batch the lot with RECmd — both produce the same answers. The CSV output is the profile sheet.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — system-profile question pivot</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Question</th><th>Primary artefact</th><th>Corroborating artefact</th></tr></thead>
+      <tbody>
+        <tr><td>What is the OS build and exact patch level?</td><td>SOFTWARE <code>Microsoft\Windows NT\CurrentVersion</code> — <code>CurrentBuild</code> + <code>UBR</code></td><td>SOFTWARE <code>...\Component Based Servicing\Packages</code> (installed KBs)</td></tr>
+        <tr><td>Which ControlSet did the box boot from?</td><td>SYSTEM <code>Select\Current</code> DWORD</td><td>SYSTEM <code>Select\LastKnownGood</code>; 001 vs 002 diff</td></tr>
+        <tr><td>What is the box called and which timezone is it in?</td><td>SYSTEM <code>ControlSet001\Control\ComputerName\ComputerName</code></td><td>SYSTEM <code>ControlSet001\Control\TimeZoneInformation</code></td></tr>
+        <tr><td>When did this host shut down last?</td><td>SYSTEM <code>ControlSet001\Control\Windows\ShutdownTime</code> (FILETIME)</td><td>System.evtx 1074 / 6006 / 6008 (§14); §01 acquisition log</td></tr>
+        <tr><td>When was this OS first installed?</td><td>SOFTWARE <code>...\CurrentVersion\InstallDate</code> (UNIX s) / <code>InstallTime</code> (FILETIME)</td><td>$MFT record for <code>\Windows</code> directory creation (§04)</td></tr>
+        <tr><td>What IP did this box hold and on which network?</td><td>SYSTEM <code>Services\Tcpip\Parameters\Interfaces\&lt;GUID&gt;</code></td><td>SOFTWARE <code>NetworkList\Profiles</code> + <code>Signatures\Unmanaged</code> BSSID</td></tr>
+        <tr><td>What USB devices were plugged into this host?</td><td>SYSTEM <code>Enum\USBSTOR</code> (vendor / product / serial)</td><td>SYSTEM <code>MountedDevices</code>; SOFTWARE <code>Portable Devices</code>; NTUSER <code>MountPoints2</code> (§09)</td></tr>
+        <tr><td>Which volume letter mapped to which device?</td><td>SYSTEM <code>MountedDevices\\DosDevices\&lt;letter&gt;</code></td><td>$Volume serial (§04); LNK <code>TrackerDataBlock</code> (§12)</td></tr>
+        <tr><td>What applications are installed on this box?</td><td>SOFTWARE <code>...\Uninstall\*</code> (+ <code>Wow6432Node</code>)</td><td>SOFTWARE <code>AppPaths</code>; AmCache / Prefetch (§10)</td></tr>
+        <tr><td>What persistence mechanisms exist?</td><td>SOFTWARE <code>...\Run</code>, <code>RunOnce</code>, <code>StartupApproved\Run</code></td><td>SYSTEM <code>Services</code> (Start=2); Scheduled Tasks (§03/§10); NTUSER per-user Run (§09)</td></tr>
+        <tr><td>Which services auto-start at boot?</td><td>SYSTEM <code>ControlSet001\Services\*</code> with <code>Start=2</code></td><td>System.evtx 7045 (service install) / 7036 (state change) (§14)</td></tr>
+        <tr><td>Has the service config been changed recently?</td><td>SYSTEM <code>ControlSet001\Services</code> vs <code>ControlSet002\Services</code> diff</td><td>System.evtx 7045; <code>$LogFile</code> SYSTEM-hive metadata writes (§04)</td></tr>
+        <tr><td>Which Wi-Fi networks has this box ever joined?</td><td>SOFTWARE <code>NetworkList\Profiles\&lt;GUID&gt;</code></td><td>SOFTWARE <code>Signatures\Unmanaged\&lt;sig&gt;</code> for BSSID</td></tr>
+        <tr><td>What did the user permit to access the camera / mic / location?</td><td>SOFTWARE <code>...\CapabilityAccessManager\ConsentStore\*</code></td><td>NTUSER mirror under user-scope <code>CapabilityAccessManager</code> (§09)</td></tr>
+        <tr><td>What did the user exclude from Defender?</td><td>SOFTWARE <code>Microsoft\Windows Defender\Exclusions\*</code></td><td>Security.evtx 4657 (registry value write); MDAV operational log (§14)</td></tr>
+        <tr><td>Should I expect Prefetch on this host?</td><td>SYSTEM <code>...\Memory Management\PrefetchParameters\EnablePrefetcher</code></td><td>Existence of <code>%SystemRoot%\Prefetch\*.pf</code> (§10)</td></tr>
+        <tr><td>Are NTFS Accessed timestamps reliable here?</td><td>SYSTEM <code>...\Control\FileSystem\NtfsDisableLastAccessUpdate</code></td><td>$SI MACB sampling across known-touched files (§04)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>SYSTEM and SOFTWARE answer "what is this box". Almost every other artefact in the case is interpreted <em>through</em> them — these are the substrate, not the evidence:</p>
+    <ul>
+      <li><strong>TimeZoneInformation (SYSTEM)</strong> — required to convert <em>every</em> other timestamp in the case to wall-clock. Resolve before opening Event Logs, Prefetch, LNK files, or anything else.</li>
+      <li><strong>ShutdownTime (SYSTEM)</strong> ↔ <strong>§01 acquisition log</strong> ↔ <strong>System.evtx 1074 / 6006 / 6008 (§14)</strong> — last clean shutdown should align with when the examiner pulled the plug; mismatch is a power-loss or tampering signal.</li>
+      <li><strong>USBSTOR (SYSTEM)</strong> ↔ <strong>MountedDevices (SYSTEM)</strong> ↔ <strong>Portable Devices (SOFTWARE)</strong> ↔ <strong>MountPoints2 (NTUSER, §09)</strong> ↔ <strong>System.evtx 1006/2003 (§14)</strong> — same USB device, five views: kernel enumeration, volume binding, friendly name, per-user first-mount, driver-install event.</li>
+      <li><strong>Services (SYSTEM)</strong> ↔ <strong>Run / RunOnce / StartupApproved (SOFTWARE)</strong> ↔ <strong>Scheduled Tasks (§03 / §10)</strong> ↔ <strong>NTUSER per-user Run (§09)</strong> — the classic persistence triad expanded to four. Anomalies in any of them are the hook.</li>
+      <li><strong>Tcpip\Interfaces (SYSTEM)</strong> ↔ <strong>NetworkList Profiles + Unmanaged Signatures (SOFTWARE)</strong> — DHCP lease timestamps plus SSID plus AP MAC pin the machine to a place and a moment.</li>
+      <li><strong>Uninstall (SOFTWARE)</strong> ↔ <strong>AmCache / Prefetch / ShimCache (§10)</strong> — "installed" and "actually executed" are different questions; this pair lets you ask both.</li>
+      <li><strong>Defender Exclusions (SOFTWARE)</strong> ↔ any suspect paths surfaced in §10 — an exclusion added shortly before a malware first ran is a powerful narrative beat.</li>
+      <li><strong>OS build + UBR (SOFTWARE)</strong> ↔ CVE / advisory feeds — patch level decides which exploits were viable on the date of compromise.</li>
+      <li><strong>$Volume serial (§04)</strong> ↔ <strong>MountedDevices (SYSTEM)</strong> ↔ <strong>LNK TrackerDataBlock (§12)</strong> — the VSN is the join key between a file event and the physical volume it lived on.</li>
+      <li><strong>Hive file <code>$SI.Modified</code> (§04)</strong> vs <strong>any SYSTEM/SOFTWARE key <code>LastWriteTime</code></strong> — key writes must be ≤ hive file modify time; mismatch suggests offline hive tampering.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §08 SYSTEM &amp; SOFTWARE Hives</span>
+  <span>Next → §09 NTUSER.dat</span>
+</div>
+
+</div></body></html>

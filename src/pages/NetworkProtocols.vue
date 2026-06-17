@@ -261,7 +261,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 17px;
   font-weight: 800;
-  color: #fff;
+  color: var(--hi);
   line-height: 1.2;
 }
 .proto__full {

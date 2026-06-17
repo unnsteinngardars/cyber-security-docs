@@ -1,14 +1,5 @@
-:root {
-  --bg: #0f1115;
-  --panel: #161a22;
-  --panel-2: #1d2230;
-  --border: #262b38;
-  --text: #e6e8ee;
-  --muted: #8a92a6;
-  --accent: #6ea8ff;
-  --accent-soft: #1d2b47;
-  --sidebar-w: 280px;
-}
+/* Design tokens live in ./styles/theme.css and apply at :root.
+   This file holds app-shell layout and sidebar styles only. */
 
 * {
   box-sizing: border-box;
@@ -20,7 +11,9 @@ body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 14px/1.5 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #app {

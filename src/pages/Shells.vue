@@ -431,7 +431,7 @@ $proc = proc_open("/bin/sh -i", [$sock, $sock, $sock], $pipes);
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -462,7 +462,7 @@ $proc = proc_open("/bin/sh -i", [$sock, $sock, $sock], $pipes);
 }
 .prose strong,
 .bulletlist strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -487,7 +487,7 @@ $proc = proc_open("/bin/sh -i", [$sock, $sock, $sock], $pipes);
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .prop p {
@@ -512,7 +512,7 @@ $proc = proc_open("/bin/sh -i", [$sock, $sock, $sock], $pipes);
   font-style: normal;
 }
 .prop strong {
-  color: #fff;
+  color: var(--hi);
 }
 
 .table-wrap {
@@ -560,7 +560,7 @@ $proc = proc_open("/bin/sh -i", [$sock, $sock, $sock], $pipes);
   white-space: nowrap;
 }
 .tbl strong {
-  color: #fff;
+  color: var(--hi);
 }
 
 .ok,

@@ -370,7 +370,7 @@ mergecap -w merged.pcap edge.pcap dmz.pcap user-vlan.pcap</code></pre>
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -390,7 +390,7 @@ mergecap -w merged.pcap edge.pcap dmz.pcap user-vlan.pcap</code></pre>
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -495,7 +495,7 @@ mergecap -w merged.pcap edge.pcap dmz.pcap user-vlan.pcap</code></pre>
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .tcard h3 code {
@@ -551,7 +551,7 @@ mergecap -w merged.pcap edge.pcap dmz.pcap user-vlan.pcap</code></pre>
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc {
   margin: 0;
@@ -568,7 +568,7 @@ mergecap -w merged.pcap edge.pcap dmz.pcap user-vlan.pcap</code></pre>
   color: #9cdcfe;
 }
 .walk__desc strong {
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc em {
   color: var(--accent);

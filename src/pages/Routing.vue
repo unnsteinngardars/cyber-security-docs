@@ -328,7 +328,7 @@ const compareCols = computed(() => protocols.value);
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -348,7 +348,7 @@ const compareCols = computed(() => protocols.value);
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -380,7 +380,7 @@ const compareCols = computed(() => protocols.value);
   margin: 0;
 }
 .split__col strong {
-  color: #fff;
+  color: var(--hi);
 }
 .split__col em {
   color: var(--accent);
@@ -440,7 +440,7 @@ const compareCols = computed(() => protocols.value);
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .family p {
   margin: 0;
@@ -541,7 +541,7 @@ const compareCols = computed(() => protocols.value);
   font-family: var(--sans);
   font-size: 18px;
   font-weight: 800;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .proto__full {

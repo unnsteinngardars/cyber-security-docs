@@ -232,7 +232,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   text-decoration: none;
   display: inline-flex;
   align-items: center;

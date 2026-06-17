@@ -453,7 +453,7 @@ hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -481,7 +481,7 @@ hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -554,7 +554,7 @@ hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .mode__head code {
   font-family: var(--mono);
@@ -655,7 +655,7 @@ hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .rcard__cmd {
   margin: 0;
@@ -714,7 +714,7 @@ hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc {
   margin: 0;
@@ -731,7 +731,7 @@ hashcat -m 1800 -a 0 unrecovered.txt rockyou.txt --rules-file=best64.rule
   color: #9cdcfe;
 }
 .walk__desc strong {
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc em {
   color: var(--accent);

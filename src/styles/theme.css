@@ -1,0 +1,64 @@
+/* Global theme — pastel light palette extracted from CCDCOE IDFC v3.
+   Loaded once at the document root so every Vue page, scoped style, and
+   component inherits the same surface, text, border, and color-scale tokens. */
+
+:root {
+  --red: #ffb3ba;
+  --red-dim: rgba(255, 179, 186, 0.32);
+  --red-deep: #c25361;
+
+  --amber: #ffdfba;
+  --amber-dim: rgba(255, 223, 186, 0.32);
+  --amber-deep: #b8843e;
+
+  --yellow: #ffffba;
+  --yellow-dim: rgba(255, 255, 186, 0.32);
+  --yellow-deep: #9e9633;
+
+  --green: #baffc9;
+  --green-dim: rgba(186, 255, 201, 0.32);
+  --green-deep: #3a9e58;
+
+  --blue: #bae1ff;
+  --blue-dim: rgba(186, 225, 255, 0.32);
+  --blue-deep: #3a82c4;
+
+  --purple: #e0baff;
+  --purple-dim: rgba(224, 186, 255, 0.32);
+  --purple-deep: #8a52c2;
+
+  --teal: #baffe1;
+  --teal-dim: rgba(186, 255, 225, 0.32);
+  --teal-deep: #3a9e85;
+
+  --bg: #f4f0e8;
+  --sf: #ffffff;
+  --sf2: #f6f1e7;
+
+  --bd: rgba(60, 40, 20, 0.1);
+  --bdhi: rgba(60, 40, 20, 0.22);
+
+  --tx: #2d2820;
+  --dm: #7a6f5e;
+  --dm2: #a89e8a;
+  --hi: #1a1610;
+
+  --accent: var(--blue-deep);
+  --accent-dim: var(--blue-dim);
+  --accent-deep: var(--blue-deep);
+
+  --panel: var(--sf);
+  --panel-2: var(--sf2);
+  --border: var(--bd);
+  --text: var(--tx);
+  --muted: var(--dm);
+  --accent-soft: var(--blue-dim);
+
+  --font-sans: "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  --sans: var(--font-sans);
+  --mono: var(--font-mono);
+
+  --sidebar-w: 280px;
+}

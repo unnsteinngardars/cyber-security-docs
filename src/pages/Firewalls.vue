@@ -499,7 +499,7 @@
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -519,7 +519,7 @@
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -612,7 +612,7 @@
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .fw-card__alias {
@@ -726,7 +726,7 @@
   line-height: 1.6;
 }
 .split__col strong {
-  color: #fff;
+  color: var(--hi);
 }
 .split__col code {
   background: var(--bg);
@@ -755,7 +755,7 @@
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 .sol-card ul {
@@ -771,7 +771,7 @@
   line-height: 1.6;
 }
 .sol-card strong {
-  color: #fff;
+  color: var(--hi);
   font-weight: 600;
 }
 .sol-card code {

@@ -113,7 +113,7 @@ const filtered = computed(() => {
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
 }
 

@@ -604,7 +604,7 @@ exit</code></pre>
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -624,7 +624,7 @@ exit</code></pre>
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -698,7 +698,7 @@ exit</code></pre>
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .mode__head code {
   font-family: var(--mono);
@@ -807,7 +807,7 @@ exit</code></pre>
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .rcard__cmd {
   margin: 0;
@@ -866,7 +866,7 @@ exit</code></pre>
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
 }
 .walk__desc {
   margin: 0;

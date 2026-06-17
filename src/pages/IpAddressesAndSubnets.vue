@@ -309,7 +309,7 @@ const subnetExample = {
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--hi);
   letter-spacing: 0.02em;
   margin: 0 0 12px;
 }
@@ -329,7 +329,7 @@ const subnetExample = {
   color: #9cdcfe;
 }
 .prose strong {
-  color: #fff;
+  color: var(--hi);
 }
 .prose em {
   color: var(--accent);
@@ -348,7 +348,7 @@ const subnetExample = {
   font-family: var(--mono);
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--hi);
   text-align: center;
   letter-spacing: 0.04em;
   margin-bottom: 12px;
