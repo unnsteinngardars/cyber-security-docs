@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 — SAM Hive · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--red);--accent-dim:var(--red-dim);--accent-deep:var(--red-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-creds{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">👤</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">07 — SAM Hive</span></div>
+      <div class="t1">SAM &amp; User Accounts — Identity, Entitlement, Last-Logon</div>
+      <div class="t2">Who could log in to this box, when they actually did, and what they were entitled to do once they were in</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">SAM</span>
+    <span class="b b-b">Local Accounts</span>
+    <span class="b b-p">Domain / MSA</span>
+    <span class="b b-a">Logons</span>
+    <span class="b b-g">ProfileList</span>
+    <span class="b b-t">IdentityStore</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">SAM hive</span><span class="tag">Domains\Account\Users\[RID]</span><span class="tag">Domains\Builtin\Aliases</span><span class="tag">F blob</span><span class="tag">V blob</span><span class="tag">ProfileList</span><span class="tag">IdentityStore\LogonCache</span><span class="tag">IdentityStore\Cache</span><span class="tag">SECURITY\Policy\Secrets</span><span class="tag">SECURITY\Cache</span><span class="tag">NTUSER\OneDrive\Accounts</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">Registry Explorer</span><span class="tag">RECmd + SAM_Batch.reb</span><span class="tag">RegRipper (rip.exe)</span><span class="tag">samparse / profilelist plugins</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Local vs Domain vs MSA</span><span class="tag">RID</span><span class="tag">Machine SID prefix</span><span class="tag">Account flags bitmask</span><span class="tag">Group membership</span><span class="tag">SID ↔ ProfileImagePath</span><span class="tag">Bootkey-encrypted blobs</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Why "who is a user" is a multi-hive question</span></div>
+    <div class="prose">
+      <p>SAM is named after the <em>Security Account Manager</em> — and the name is honest about its scope: SAM only describes <strong>local</strong> identities. Anything authenticated against a domain controller, Microsoft Entra, or a consumer Microsoft account leaves <em>no</em> account record in SAM at all. The full picture is stitched from at least four hives, and an examiner who reads SAM alone will miss every domain admin who ever touched the box.</p>
+      <p>The forensic question splits into three orthogonal axes: <strong>who could authenticate</strong> (SAM, IdentityStore, SECURITY\Cache), <strong>who actually did</strong> (SAM F-blob last-logon, Security.evtx, ProfileList timestamps), and <strong>what they were entitled to</strong> (Builtin\Aliases group membership, primary group RID, profile location). Map all three before drawing conclusions.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🗂</span><span class="ct">Where account data actually lives</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Identity</span>
+      <span class="fvc k-pivot">Cross-hive</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> identity is sharded across SAM, SOFTWARE, SECURITY and every user's NTUSER. SAM is local-only; the rest fills in the cloud and domain story.</p>
+      <ul>
+        <li><code>C:\Windows\System32\config\SAM</code> — <em>local</em> accounts &amp; groups: usernames, hashes, flags, last logon.</li>
+        <li><code>SOFTWARE\Microsoft\IdentityStore\LogonCache</code> + <code>\IdentityStore\Cache</code> — cached identities for MSA / Azure AD / school accounts. Display name, e-mail, last login.</li>
+        <li><code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList</code> — every SID with a profile on disk → its <code>ProfileImagePath</code> (e.g. <code>C:\Users\bob</code>). The bridge from event-log SID to a folder you can grep.</li>
+        <li><code>SECURITY\Policy\Secrets</code> — LSA secrets / cached domain credentials. Adjacent, encrypted, not SAM proper.</li>
+        <li><code>NTUSER.DAT\Software\Microsoft\OneDrive\Accounts\Personal</code> (also <code>Business1</code>, <code>Business2</code>…) — per-user OneDrive metadata: e-mail, CID, sync root, last sync. Ties a Microsoft account to a Windows profile. <em>Deep dive in §11.</em></li>
+      </ul>
+      <p><strong>Answers:</strong> "every identity that has authenticated to this host" — but only by triangulating all four locations. <strong>Cannot tell you:</strong> session content, just session existence; for that you need Security.evtx (§14) or LSASS (§02).</p>
+    </div>
+    <div class="al r"><span class="ali">⚠️</span><span><strong>SAM is local-only.</strong> A username absent from SAM does <em>not</em> mean they never logged in. Domain and MSA users authenticate elsewhere; their footprint is in ProfileList, IdentityStore and <code>Security.evtx</code>.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🔑</span><span class="ct">Inside <code>SAM\Domains\Account\Users\&lt;HEX-RID&gt;</code></span></div>
+    <div class="fv">
+      <span class="fvc k-user">Local users</span>
+      <span class="fvc k-creds">Hashes</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> each local user is a subkey named with the user's <strong>RID</strong> in hex, zero-padded to 8 digits. Built-ins are fixed; custom users start at <code>000003E8</code> (1000) and increment.</p>
+      <p><strong>Structure:</strong></p>
+      <ul>
+        <li><code>000001F4</code> = 500 — <em>Administrator</em></li>
+        <li><code>000001F5</code> = 501 — <em>Guest</em></li>
+        <li><code>000001F7</code> = 503 — <em>DefaultAccount</em></li>
+        <li><code>000003E8</code> = 1000 — first locally created user; subsequent +1.</li>
+      </ul>
+      <p>Under each RID key there are two binary values that hold everything interesting:</p>
+      <ul>
+        <li><strong><code>F</code></strong> — fixed-length blob: last logon, last password change, last bad password attempt, <em>account flags</em>, failed-login count, logon count, primary group RID.</li>
+        <li><strong><code>V</code></strong> — variable-length blob: username, full name, comment, home dir, LM hash, NT hash, machine SID prefix.</li>
+      </ul>
+      <p><strong>Answers:</strong> the offline-credential and last-logon questions for every local account that ever existed (deletions remove subkeys, but residual unallocated cells often survive). <strong>Cannot tell you:</strong> nothing about domain or MSA users — they will not have a RID subkey here at all.</p>
+    </div>
+    <span class="path">SAM\Domains\Account\Users\000003E8\F</span>
+    <span class="path">SAM\Domains\Account\Users\000003E8\V</span>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">🧬</span><span class="ct">F &amp; V fields — what each one tells you forensically</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Last logon</span>
+      <span class="fvc k-creds">Hash material</span>
+      <span class="fvc k-integrity">Tamper signal</span>
+    </div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Blob</th><th>Field</th><th>Forensic value</th></tr></thead>
+      <tbody>
+        <tr><td>V</td><td>Username</td><td>Local account name. Compare against ProfileList; mismatch means the profile folder was renamed.</td></tr>
+        <tr><td>V</td><td>Full name / comment</td><td>Free-text — sometimes attackers leave hints ("svc-backup", "temp"). Anomalous descriptions = anomalous accounts.</td></tr>
+        <tr><td>V</td><td>Home directory</td><td>Where the profile <em>should</em> live; cross-check with actual <code>C:\Users\</code> contents.</td></tr>
+        <tr><td>V</td><td>LM hash / NT hash</td><td>Offline credential material. Feed to hashcat for cracking, or pass-the-hash via mimikatz. Empty NT hash = blank password.</td></tr>
+        <tr><td>V</td><td>Machine SID prefix</td><td>The S-1-5-21-… part. Concatenate with RID to recover any account's full SID.</td></tr>
+        <tr><td>F</td><td>Last logon time</td><td>FILETIME. Corroborate against Security.evtx 4624. Discrepancy = log tampering or non-interactive logon.</td></tr>
+        <tr><td>F</td><td>Last password change</td><td>Password reset during incident window = attacker locked the user out, or set a known password for re-entry.</td></tr>
+        <tr><td>F</td><td>Last bad password</td><td>Recent failed-auth timestamp. Cluster of these on Administrator = brute-force / spray.</td></tr>
+        <tr><td>F</td><td>Failed-login count</td><td>Counter since last successful logon. High value with a fresh last-logon = "they got in eventually".</td></tr>
+        <tr><td>F</td><td>Logon count</td><td>Lifetime interactive logons. 0 on an account that exists = created but never used (staged backdoor?).</td></tr>
+        <tr><td>F</td><td>Account flags</td><td>Bitmask — see flags table below. Disabled / pw-not-required / pw-never-expires all matter.</td></tr>
+        <tr><td>F</td><td>Primary group RID</td><td>Default group; cross-check with Builtin\Aliases membership for true privilege.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">🕒</span><span><strong>Last-logon nuance:</strong> the SAM <code>F</code> last-logon updates only on <em>interactive</em> authentication against this box's local SAM. Type-3 network logons, type-5 service logons, and any domain or MSA logon will <em>not</em> bump it — those land only in Security.evtx. A "stale" SAM last-logon does not mean a quiet account.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🚩</span><span class="ct">Account-flags bitmask (the <code>F</code> blob)</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Persistence signal</span>
+    </div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Bit</th><th>Meaning</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>0x0001</td><td>Disabled</td><td>Account exists but cannot auth. Re-enabling mid-incident = persistence.</td></tr>
+        <tr><td>0x0002</td><td>Home Dir Required</td><td>Profile policy — rarely interesting forensically.</td></tr>
+        <tr><td>0x0004</td><td>Password Not Required</td><td><em>Huge red flag</em> on a non-Guest account. Blank-password backdoor.</td></tr>
+        <tr><td>0x0008</td><td>Temp Duplicate Account</td><td>Rare; investigate context.</td></tr>
+        <tr><td>0x0010</td><td>Normal Account</td><td>Standard user — expected on everyone.</td></tr>
+        <tr><td>0x0020</td><td>MNS Logon Account</td><td>Legacy; rare.</td></tr>
+        <tr><td>0x0040</td><td>Interdomain Trust</td><td>Trust-relationship account.</td></tr>
+        <tr><td>0x0080</td><td>Workstation Trust</td><td>Computer account for a workstation.</td></tr>
+        <tr><td>0x0100</td><td>Server Trust</td><td>Computer account for a DC.</td></tr>
+        <tr><td>0x0200</td><td>Password Doesn't Expire</td><td>Set during a known intrusion window = attacker preserving access.</td></tr>
+        <tr><td>0x0400</td><td>Account Auto-Locked</td><td>Hit lockout policy. Pair with failed-login count.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al r"><span class="ali">🚩</span><span><em>Password Not Required</em> on a custom-RID account, or <em>Password Doesn't Expire</em> newly set on a privileged account: treat as persistence until proven otherwise. The <code>F</code> blob has no internal timestamp on flag changes — corroborate against the RID key's <code>LastWriteTime</code>.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">👥</span><span class="ct">Group membership — who is actually local admin</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Entitlement</span>
+      <span class="fvc k-pivot">Lateral path</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> local groups live under <code>SAM\Domains\Builtin\Aliases\&lt;group-RID-hex&gt;</code>. The <code>Members</code> subkey lists member SIDs (binary). Cross-reference each SID against the per-user <code>V</code> blob (machine-SID prefix + RID) to resolve to a username; for domain SIDs you'll need the DC.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><code>00000220</code> — <em>Administrators</em>. Anyone here is local admin. Domain SIDs here = domain users granted local admin.</li>
+        <li><code>0000022B</code> — <em>Remote Desktop Users</em>. Can RDP in. Pair with §08 TerminalServer keys.</li>
+        <li><code>0000022E</code> — <em>Backup Operators</em>. Can read any file via backup privilege — under-watched lateral path.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> when a member was added — the <code>Members</code> key's <code>LastWriteTime</code> is the only timestamp, and it covers <em>any</em> modification to the membership set. Membership is fact, not intent: a SID added during the incident window — even if it is a known domain user — is a privilege-escalation artefact.</p>
+    </div>
+    <span class="path">SAM\Domains\Builtin\Aliases\00000220\Members</span>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">🌐</span><span class="ct">Local vs Domain vs Microsoft / Azure AD — where each type leaves prints</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Account-type triage</span>
+    </div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Account type</th><th>Authenticated by</th><th>Username / hash here?</th><th>Where evidence of logon actually lives</th></tr></thead>
+      <tbody>
+        <tr><td>Local</td><td>This machine's SAM</td><td>Yes — full record in SAM</td><td>SAM <code>F</code>/<code>V</code> (last logon, hashes, flags) + Security.evtx 4624 / 4625</td></tr>
+        <tr><td>Domain (AD)</td><td>Domain Controller</td><td><em>No</em> — SAM has nothing</td><td>ProfileList (SID got a profile) + Security.evtx 4624/4634/4647 + SECURITY\Cache (cached creds) + LSASS (§02)</td></tr>
+        <tr><td>Microsoft / Azure AD</td><td>Microsoft Entra / live.com</td><td><em>No</em></td><td><code>SOFTWARE\Microsoft\IdentityStore\LogonCache</code> (display name, e-mail, last login) + NTUSER OneDrive\Accounts</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al b"><span class="ali">🧭</span><span><strong>Rule of thumb:</strong> if a SID appears in ProfileList but the matching RID isn't in SAM, you're looking at a domain or MSA logon. Pivot to IdentityStore + Security.evtx, not SAM.</span></div>
+    <div class="al a"><span class="ali">⚠️</span><span>Cached domain credentials in <code>SECURITY\Cache</code> are machine-encrypted (SYSKEY / BootKey). Mount the SYSTEM hive alongside SAM/SECURITY or decryption fails silently — you'll get a clean parse with garbage in every secret.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">⚙️</span><span class="ct">Tool invocations — parsing SAM &amp; IdentityStore</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Offline parse</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> use the §06 tooling (Registry Explorer / RECmd / RegRipper) against the offline hives lifted from <code>C:\Windows\System32\config\</code>. Always mount the SYSTEM hive in the same session — SAM hashes and SECURITY secrets are bootkey-encrypted.</p>
+      <ul>
+        <li><strong>RECmd — SAM batch</strong> (parses F + V + aliases): <code>RECmd.exe --hive F:\Windows\System32\config\SAM --bn RECmd\BatchExamples\SAM_Batch.reb --csv C:\out</code></li>
+        <li><strong>RegRipper — samparse plugin:</strong> <code>rip.exe -r F:\Windows\System32\config\SAM -p samparse</code></li>
+        <li><strong>RECmd — IdentityStore LogonCache</strong> (MSA / Azure AD): <code>RECmd.exe --hive F:\Windows\System32\config\SOFTWARE -kn "Microsoft\IdentityStore\LogonCache" --csv C:\out</code></li>
+        <li><strong>RegRipper — ProfileList</strong> (SID ↔ ProfileImagePath): <code>rip.exe -r F:\Windows\System32\config\SOFTWARE -p profilelist</code></li>
+        <li><strong>Registry Explorer — GUI workflow:</strong> File → Load offline hive → SAM → expand <code>Domains\Account\Users\&lt;RID&gt;</code>; right-click value → "View data in hex editor" to verify F/V layout by eye.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> nothing the hive doesn't already record. Tools just decode — they cannot reconstruct a deleted RID subkey beyond what registry unallocated-cell recovery (RECmd's deleted-record mode) surfaces.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🪪</span><span class="ct">IdentityStore &amp; OneDrive — naming the human behind the SID</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Identity resolution</span>
+      <span class="fvc k-pivot">Cloud ↔ local</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong> a SID in ProfileList tells you "someone with this SID has a profile here" — not who. Two registry locations turn the SID into a person, plus per-user OneDrive metadata clinches the cloud-account binding.</p>
+      <p><strong>Structure:</strong></p>
+      <ul>
+        <li><code>SOFTWARE\Microsoft\IdentityStore\LogonCache\&lt;version&gt;\Name2Sid</code> — display name + e-mail per cached identity. Resolves Microsoft accounts and Azure AD users that have ever signed in.</li>
+        <li><code>SOFTWARE\Microsoft\IdentityStore\Cache\&lt;SID&gt;\IdentityCache</code> — same identity data keyed by SID. Useful when you start from the SID end.</li>
+        <li><code>NTUSER.DAT\Software\Microsoft\OneDrive\Accounts\Personal</code> — under that user's NTUSER: e-mail, CID, <code>UserFolder</code>, <code>LastSignInTime</code>. Tightly couples a Microsoft account identity to a specific Windows profile.</li>
+        <li><code>\Business1</code>, <code>\Business2</code>, … — same shape for OneDrive for Business / school tenants. Multiple work tenants stack as separate subkeys.</li>
+      </ul>
+      <p><strong>Answers:</strong> triangulate ProfileList SID → IdentityStore e-mail → NTUSER OneDrive e-mail. Three sources, one human. Mismatch = investigate (profile takeover, manual SID injection, hive transplant).</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — identity questions, where to answer them</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Question</th><th>Primary artefact</th><th>Corroborating artefact</th></tr></thead>
+      <tbody>
+        <tr><td>Who could log into this box as a local user?</td><td>SAM <code>Domains\Account\Users\&lt;RID&gt;\V</code> (username)</td><td>SAM Builtin\Aliases membership (entitlement)</td></tr>
+        <tr><td>Who actually logged into this box?</td><td>Security.evtx 4624 (all logon types)</td><td>SAM <code>F</code> last-logon (local interactive) + ProfileList <code>LastWriteTime</code></td></tr>
+        <tr><td>Was this account local, domain, or MSA?</td><td>RID present in SAM = local; absent = domain / MSA</td><td>IdentityStore\LogonCache (MSA / Entra) + ProfileList SID prefix</td></tr>
+        <tr><td>Which SID maps to which profile folder?</td><td>ProfileList\&lt;SID&gt;\ProfileImagePath</td><td>SAM V machine-SID + RID concatenation</td></tr>
+        <tr><td>What is the human behind this SID?</td><td>IdentityStore\Cache\&lt;SID&gt;\IdentityCache (e-mail, display name)</td><td>NTUSER OneDrive\Accounts (e-mail, CID, LastSignInTime)</td></tr>
+        <tr><td>Was this account disabled at the time of the event?</td><td>SAM <code>F</code> account-flags bit 0x0001</td><td>RID key <code>LastWriteTime</code> (bounds the flip)</td></tr>
+        <tr><td>Was a backdoor account created in the incident window?</td><td>New RID ≥ 1000 in SAM with low logon count</td><td>Security.evtx 4720 (account created) + RID key <code>LastWriteTime</code></td></tr>
+        <tr><td>Was a known account given a blank password?</td><td><code>F</code> flag 0x0004 (<em>Password Not Required</em>)</td><td>Empty NT hash in <code>V</code> blob</td></tr>
+        <tr><td>Was a password reset by the attacker?</td><td>SAM <code>F</code> last-password-change time</td><td>Security.evtx 4724 / 4723 (reset / change)</td></tr>
+        <tr><td>Was an account brute-forced?</td><td><code>F</code> last-bad-password + failed-login count</td><td>Security.evtx 4625 clustering</td></tr>
+        <tr><td>Who is actually local admin?</td><td>Builtin\Aliases\00000220\Members SIDs</td><td>Per-RID V blob to resolve names; DC for domain SIDs</td></tr>
+        <tr><td>Who can RDP in?</td><td>Builtin\Aliases\0000022B\Members</td><td>§08 TerminalServer keys + Security.evtx 4624 type 10</td></tr>
+        <tr><td>Who owns this deleted file (<code>$Recycle.Bin</code>)?</td><td>$Recycle.Bin\&lt;SID&gt;\ subfolder name</td><td>SAM V machine-SID prefix + RID to resolve to username</td></tr>
+        <tr><td>Did cached domain creds leak from this box?</td><td>SECURITY\Cache (bootkey-encrypted MSCACHEv2)</td><td>SYSTEM hive (for bootkey) + LSASS dump (§02)</td></tr>
+        <tr><td>Which Microsoft account did this user sign OneDrive into?</td><td>NTUSER\Software\Microsoft\OneDrive\Accounts\Personal</td><td>IdentityStore\LogonCache Name2Sid (matching e-mail)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>SAM is the identity backbone. Almost every other artefact references a user by SID or username — but you can only resolve those once SAM + ProfileList + IdentityStore are mapped. The join keys to remember:</p>
+    <ul>
+      <li><strong>ProfileList SID ↔ <code>C:\Users\&lt;name&gt;</code> folder ↔ NTUSER.DAT</strong> — the three-way handshake that lets every per-user artefact (§09) be attributed to a human.</li>
+      <li><strong>SAM <code>F</code> last-logon ↔ Security.evtx 4624 logon events</strong> — agreement = corroboration, disagreement = log tampering or non-interactive auth (e.g. service logon type 5, network type 3).</li>
+      <li><strong>SAM group membership ↔ Scheduled Tasks &amp; Services running as a specific user (§03 / §08)</strong> — privileged group + persistence task = canonical "what attacker got" picture.</li>
+      <li><strong>SAM NT hash ↔ LSASS memory (§02)</strong> — same hash present in both confirms offline-crack feasibility and pass-the-hash potential.</li>
+      <li><strong>IdentityStore Microsoft account ↔ OneDrive sync DB (§11)</strong> — ties cloud sync activity to the local user that signed in.</li>
+      <li><strong>Account RID ↔ <code>$Recycle.Bin\&lt;SID&gt;\</code> ownership (§05)</strong> — deleted files are bucketed by the deleting user's full SID; resolve via SAM machine-SID + RID.</li>
+      <li><strong>SECURITY\Cache ↔ SYSTEM bootkey</strong> — cached domain creds only decrypt when the SYSTEM hive is mounted alongside; silent garbage otherwise.</li>
+      <li><strong>NTUSER per-user activity (§09)</strong> is meaningless until you've answered "whose NTUSER?" — that answer always comes from ProfileList + SAM.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §07 SAM Hive</span>
+  <span>Next → §08 SYSTEM &amp; SOFTWARE Hives</span>
+</div>
+
+</div></body></html>

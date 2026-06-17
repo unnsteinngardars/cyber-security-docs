@@ -115,7 +115,13 @@
             { "title": "01 — Evidence Collection", "slug": "v3-01-evidence-collection", "file": "pages/ccdcoe-v3/01-evidence-collection.html" },
             { "title": "02 — Memory Forensics", "slug": "v3-02-memory-forensics", "file": "pages/ccdcoe-v3/02-memory-forensics.html" },
             { "title": "03 — KAPE & AIM", "slug": "v3-03-kape-aim", "file": "pages/ccdcoe-v3/03-kape-aim.html" },
-            { "title": "04 — Windows Filesystem / NTFS", "slug": "v3-04-ntfs", "file": "pages/ccdcoe-v3/04-ntfs.html" }
+            { "title": "04 — Windows Filesystem / NTFS", "slug": "v3-04-ntfs", "file": "pages/ccdcoe-v3/04-ntfs.html" },
+            { "title": "05 — File Carving", "slug": "v3-05-file-carving", "file": "pages/ccdcoe-v3/05-file-carving.html" },
+            { "title": "06 — Registries Overview", "slug": "v3-06-registries-overview", "file": "pages/ccdcoe-v3/06-registries-overview.html" },
+            { "title": "07 — SAM Hive", "slug": "v3-07-sam", "file": "pages/ccdcoe-v3/07-sam.html" },
+            { "title": "08 — SYSTEM & SOFTWARE Hives", "slug": "v3-08-system-software", "file": "pages/ccdcoe-v3/08-system-software.html" },
+            { "title": "09 — NTUSER.dat", "slug": "v3-09-ntuser-dat", "file": "pages/ccdcoe-v3/09-ntuser-dat.html" },
+            { "title": "10 — Application Execution", "slug": "v3-10-application-execution", "file": "pages/ccdcoe-v3/10-application-execution.html" }
           ]
         }
       ]

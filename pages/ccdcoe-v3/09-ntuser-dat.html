@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>09 — NTUSER.dat · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--amber);--accent-dim:var(--amber-dim);--accent-deep:var(--amber-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🕵</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">09 — NTUSER.dat</span></div>
+      <div class="t1">NTUSER.dat — The Per-User Intent Ledger</div>
+      <div class="t2">What did <em>this specific human</em> type, search for, open, save, and trust — keystroke by keystroke</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-a">NTUSER</span>
+    <span class="b b-b">MRU</span>
+    <span class="b b-p">Explorer</span>
+    <span class="b b-t">Office</span>
+    <span class="b b-r">TrustRecords</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Hive</span><span class="tag">C:\Users\&lt;username&gt;\NTUSER.DAT</span><span class="tag">+ NTUSER.DAT.LOG1 / LOG2</span><span class="tag">→ HKCU when logged in</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">WordWheelQuery</span><span class="tag">TypedPaths</span><span class="tag">RecentDocs</span><span class="tag">RunMRU</span><span class="tag">UserAssist</span><span class="tag">MUICache</span><span class="tag">Office File MRU</span><span class="tag">Office Place MRU</span><span class="tag">TrustRecords</span><span class="tag">ComDlg32 OpenSavePidlMRU</span><span class="tag">LastVisitedPidlMRU</span><span class="tag">CIDSizeMRU</span><span class="tag">Map Network Drive MRU</span><span class="tag">MountPoints2</span><span class="tag">Search History</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">Registry Explorer + plugins</span><span class="tag">RECmd (NTUSER_Batch.reb)</span><span class="tag">RegRipper</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">HKCU per-user attribution</span><span class="tag">MRUListEx vs MRUList ordering</span><span class="tag">PIDL decoding</span><span class="tag">ROT13 obfuscation (UserAssist)</span><span class="tag">User intent vs system action</span></div>
+</div>
+
+<div class="g">
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Why NTUSER.dat is the intent layer of the system</span></div>
+    <div class="prose">
+      <p>Where §04 NTFS records what <em>happened to the bytes</em> and §10 records what <em>code ran</em>, NTUSER.dat records what a <em>human chose</em> — every term typed into a search box, every path entered in the address bar, every file picked in an Open / Save dialog, every macro the user explicitly trusted. It is the closest the registry comes to a transcript of intent.</p>
+      <p>Every artefact below is scoped to one user — one profile, one SID, one hive file. Nothing in this chapter attributes to a human until the hive itself is bound to a SID via §07 (<code>SAM</code> → <code>ProfileList</code> → profile path → this <code>NTUSER.DAT</code>). Without that binding, every "the user searched for X" sentence is structurally unsound.</p>
+      <p>The structural rhythm of HKCU is: <em>per-extension subkeys</em> + <em>MRU ordering value</em> + <em>numbered or named children</em>. Master that pattern once and the same shape appears across WordWheelQuery, RecentDocs, RunMRU, ComDlg32 OpenSavePidlMRU, and Office File MRU — only the payload format differs.</p>
+    </div>
+    <div class="al b"><span class="ali">📌</span><span><strong>MRUListEx vs MRUList:</strong> <code>MRUListEx</code> is <em>binary little-endian DWORDs</em> (RecentDocs, WordWheelQuery, ComDlg32). <code>MRUList</code> is an <em>ASCII string of single characters</em> (RunMRU, e.g. <code>gdcba</code>). They are not interchangeable — Registry Explorer parses each correctly, but eyeballing the binary value gets the order wrong in half the cases.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🔍</span><span class="ct">WordWheelQuery — Start menu / Explorer search</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-pivot">Intent</span>
+      <span class="fvc k-time">MRUListEx order</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery</span>
+      <p><strong>Structure:</strong> <code>MRUListEx</code> (REG_BINARY, little-endian DWORD sequence, most-recent first) + numbered values <code>0</code>, <code>1</code>, <code>2</code>, … each a UTF-16-LE search string.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Every term the user typed into the Start menu search box or the File Explorer search bar.</li>
+        <li>The <em>order</em> in which queries were issued (via the <code>MRUListEx</code> DWORD list).</li>
+        <li>Strong signal for filenames the user knew but couldn't locate — hidden files, deleted artefacts, attacker tooling the user was hunting or returning to.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> the search <em>results</em> the user saw, nor whether they clicked any result. Pair with §12 LNK files / RecentDocs to confirm a found-and-opened follow-through.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🧭</span><span class="ct">TypedPaths — Explorer address bar</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-pivot">Deliberate nav</span>
+      <span class="fvc k-hidden">UNC tell</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths</span>
+      <p><strong>Structure:</strong> values <code>url1</code>, <code>url2</code>, … (UTF-16-LE). Most recent is always <code>url1</code> — overwriting is positional, not MRU-listed.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Paths the user <em>typed</em> into the address bar — not paths they clicked into via the tree pane.</li>
+        <li>Local paths <em>and</em> UNC entries (<code>\\server\share</code>) alike.</li>
+        <li><em>UNC entries here are gold</em> — explicit, deliberate network access typed by a human, not a drive-letter shortcut click. The path tells you the share name and (often) the server.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> whether the resource was reachable or what was viewed inside it. Cross-reference with <code>Map Network Drive MRU</code> and §08 <code>MountedDevices</code> to confirm the share actually mounted.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📄</span><span class="ct">RecentDocs — files the user opened</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-time">Subkey LastWrite</span>
+      <span class="fvc k-pivot">Open ≠ exec</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs</span>
+      <p><strong>Structure:</strong> per-extension subkeys (<code>.docx</code>, <code>.jpg</code>, <code>.pdf</code>, <code>.exe</code>, …), each with its own <code>MRUListEx</code> and numbered binary values containing the filename plus a PIDL into the shell. The top-level <code>RecentDocs</code> aggregates across extensions.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Files the user <em>opened</em> via Explorer — note: <em>opening</em>, not <em>executing</em>.</li>
+        <li>Subkey <code>LastWriteTime</code> ≈ time of the most recent file of that extension — a per-extension last-activity proxy.</li>
+        <li>Entries survive deletion of the underlying file; the PIDL retains the original shell location.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> what the user did with the file once opened. Pair with §12 LNK files in <code>%APPDATA%\Microsoft\Windows\Recent</code> — the same open event materialises in both places with mutually corroborating timestamps.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">⌨</span><span class="ct">RunMRU — Win+R dialog history</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-execution">Typed → Enter</span>
+      <span class="fvc k-pivot">MRUList (ASCII)</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU</span>
+      <p><strong>Structure:</strong> values <code>a</code>, <code>b</code>, <code>c</code>, … each a UTF-16 string. <code>MRUList</code> — <em>ASCII</em> string like <code>gdcba</code> giving the order, most-recent first (left-most letter wins).</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Every string the user typed into the Win+R Run dialog and pressed Enter on.</li>
+        <li>One of the cleanest user-intent artefacts on the entire system — <code>cmd</code>, <code>powershell</code>, <code>\\attacker\share</code>, <code>%temp%\loader.exe</code>: if it's here, a human typed it.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> whether the command actually executed or what it did. Pair with §10 (UserAssist / Prefetch / BAM / Amcache) to prove the typed command resolved to a process that ran.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">UserAssist — GUI-launched program history</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-execution">Confirmed exec</span>
+      <span class="fvc k-hidden">ROT13 obfuscation</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist\{GUID}\Count</span>
+      <p><strong>Structure:</strong> value names are full executable paths <em>obfuscated with ROT13</em> (Microsoft's transparent shroud — <code>cmd.exe</code> becomes <code>pzq.rkr</code>). Each value's binary data carries a run counter, total focus time in ms, and a FILETIME of the last launch.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>GUI-initiated launches — programs started from the Start menu, desktop, taskbar, or a double-click. <em>Not</em> services or scheduled tasks (those go in BAM / DAM, see §10).</li>
+        <li>Run count and last-execution timestamp per executable — the closest the registry comes to a per-user process history.</li>
+        <li>Focus time hints at whether the user actually interacted with the window or just opened and closed it.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> command-line arguments, parent process, or non-GUI launches. CLI-only invocations (e.g. <code>powershell</code> launched by a parent process) skip UserAssist entirely.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🏷</span><span class="ct">MUICache — friendly names of executables run</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-execution">Ran at least once</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache</span>
+      <p><strong>Structure:</strong> value names are full executable paths (often with the <code>.FriendlyAppName</code> / <code>.ApplicationCompany</code> suffix); value data is the friendly name pulled from the PE version resource the first time the binary was launched in this user context.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Every executable the user has launched at least once — populated lazily by Explorer the first time a binary's icon or label is rendered.</li>
+        <li>Original paths persist even when the binary is moved or deleted — useful for surfacing the launch path of staging directories like <code>%TEMP%</code> or <code>%APPDATA%\Roaming</code>.</li>
+        <li>Friendly name / publisher harvested from version metadata — flags impersonation (e.g. an executable claiming <code>Microsoft Corporation</code> publisher running from <code>C:\Users\Public</code>).</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> when, how many times, or with what arguments — MUICache is a one-shot existence flag, not a counter.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📑</span><span class="ct">Office File MRU — Word / Excel / PowerPoint / Outlook</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-time">Per-entry FILETIME</span>
+      <span class="fvc k-pivot">Cloud paths</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Office\&lt;version&gt;\Word\User MRU\LiveId_&lt;hash&gt;\File MRU</span>
+      <p>Same structure under <code>Excel</code>, <code>PowerPoint</code>, <code>Outlook</code>. <code>&lt;version&gt;</code> is <code>16.0</code> for current Office.</p>
+      <p><strong>Structure:</strong> values <code>Item 1</code>, <code>Item 2</code>, … each a FILETIME prefix + full path of the document.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li>Documents opened by Office, with a <em>per-entry timestamp</em> Explorer doesn't keep.</li>
+        <li>Paths may be local, UNC, OneDrive HTTPS URL, or SharePoint URL — Office tracks <em>wherever it opened from</em>.</li>
+        <li>Adjacent <code>Place MRU</code> subkey lists folder paths recently picked as save targets.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> whether the document contained a macro or was actually edited. For trust-prompt outcomes, see <code>TrustRecords</code> directly.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">⚠</span><span class="ct">TrustRecords — "Enable Content" clicks</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-integrity">Trust decision</span>
+      <span class="fvc k-execution">Macros enabled</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Office\&lt;version&gt;\&lt;app&gt;\Security\Trusted Documents\TrustRecords</span>
+      <p><strong>Structure:</strong> one value per file whose macros or external content the user explicitly trusted. Value <em>name</em> is the file URL (<code>file:///</code>, <code>http://</code>, <code>smb://</code>). Value <em>data</em> ends with a flag DWORD.</p>
+      <p><strong>Answers:</strong> the canonical artefact for <em>"user clicked Enable Content on a malicious macro."</em></p>
+      <ul>
+        <li><code>7FFFFFFF</code> — user clicked <em>Enable Content</em> (macros enabled).</li>
+        <li><code>01000000</code> — Enable Editing only (Protected View dismissed, macros not enabled).</li>
+        <li>Entry survives deletion of the underlying file — the tombstone outlives the lure.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> what the macro <em>did</em> — pair with §10 process execution + child-process evidence.</p>
+    </div>
+    <div class="al r"><span class="ali">⚠️</span><span><strong>Flag-byte caveat:</strong> the <code>7FFFFFFF</code> / <code>01000000</code> interpretation is the modern Office convention. Older Office builds and some out-of-band patches shift the meaning. <em>Always record the raw hex verbatim in the report</em> and cite the Office version from the parent key — never paraphrase a click as "macros enabled" without the bytes to back it.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">💾</span><span class="ct">ComDlg32 — the common Open / Save dialog</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-pivot">PIDL decoding</span>
+      <span class="fvc k-hidden">Intent ≠ outcome</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32</span>
+      <p><strong>Structure:</strong> three sub-artefacts get written every time <em>any</em> application invokes the Windows common Open or Save dialog. Even a cancelled save leaves the intent here.</p>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><strong>OpenSavePidlMRU</strong> — per-extension subkeys (<code>.docx</code>, <code>.exe</code>, …) plus a catch-all <code>*</code>. Each value is a <em>PIDL</em> (shell ID list) describing a file recently picked in any Open or Save dialog. Decoded, you recover the full path and a reference to the shell location at click time — including removable / network volumes that may no longer be attached.</li>
+        <li><strong>LastVisitedPidlMRU</strong> — one entry per <em>executable</em> that opened a common dialog. Maps an <code>.exe</code> name to the <em>folder</em> it last opened a dialog in. Tells you "the last folder Word saw" or "the last folder <code>mshta.exe</code> browsed".</li>
+        <li><strong>CIDSizeMRU</strong> — the dialog window size each application requested. Low forensic value alone, but proves an app was launched at least once and opened a common dialog.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> whether the file was actually saved / opened — the dialog write happens at <em>pick time</em>, before Cancel. PIDLs decay slowly: 25–26 newer entries overwrite an old one, so a picked file's tombstone lives long after deletion.</p>
+    </div>
+    <div class="al b"><span class="ali">ℹ️</span><span><strong>PIDL decoding:</strong> Registry Explorer's plugin panel resolves PIDLs to human paths automatically. Manual decoding is rarely necessary — but understand that a PIDL is a <em>chain of shell folder IDs</em>, not a string path. That's why it can describe a file on a USB stick that's now unplugged: the chain reconstructs through shell-folder GUIDs, not drive letters.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🌐</span><span class="ct">Map Network Drive MRU + MountPoints2</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-pivot">Network attribution</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where:</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU</span>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2</span>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><strong>Map Network Drive MRU</strong> — UNC paths the user explicitly mounted as a drive letter via Explorer's <em>Map Network Drive…</em> wizard. Distinct from TypedPaths (which is address-bar typing): this is "I want this share as <code>Z:</code>".</li>
+        <li><strong>MountPoints2</strong> — subkeys for every volume the user's account has seen. <em>Drive-letter subkeys</em> (<code>A:</code>–<code>Z:</code>) reflect mounts; <em>GUID subkeys</em> describe removable media that was attached at least once; <em>UNC subkeys</em> (<code>##server#share</code>) prove a share was accessed under this user's context.</li>
+        <li>Subkey <code>LastWriteTime</code> often pinpoints first-attach / first-access time per device.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> the device's volume serial — that comes from <code>SYSTEM\MountedDevices</code> (§08). Pair the two to bind the user-context view (MountPoints2) to the machine-context view (MountedDevices).</p>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🔎</span><span class="ct">Other search-history surfaces</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-pivot">Search intent</span>
+    </div>
+    <div class="prose">
+      <p><strong>Where (depending on Windows build):</strong></p>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\Search\RecentApps</span>
+      <span class="path">Software\Microsoft\Windows\CurrentVersion\SearchSettings</span>
+      <p><strong>Answers:</strong></p>
+      <ul>
+        <li><strong>Search\RecentApps</strong> (Win10) — recently used apps surfaced to the Start menu / Cortana, each with a launch counter and last-launch FILETIME. Equivalent to a Start-menu-side UserAssist.</li>
+        <li>Cortana / web-search history sometimes leaks here on builds where local search and web search share the WordWheel pipeline — treat WordWheelQuery as a superset and let the plugin decide.</li>
+      </ul>
+      <p><strong>Cannot tell you:</strong> what was found. Treat these as supplementary corroboration alongside WordWheelQuery, not standalone evidence.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">🗺</span><span class="ct">Artefact → path → value map</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Artefact</th><th>Key (relative to NTUSER.DAT root)</th><th>Values</th><th>What it proves</th></tr></thead>
+      <tbody>
+        <tr><td>WordWheelQuery</td><td>Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery</td><td><code>MRUListEx</code> + <code>0</code>, <code>1</code>, … (UTF-16 strings)</td><td>Terms searched in Start / Explorer</td></tr>
+        <tr><td>TypedPaths</td><td>…\Explorer\TypedPaths</td><td><code>url1</code>, <code>url2</code>, …</td><td>Paths typed into Explorer address bar (incl. UNC)</td></tr>
+        <tr><td>RecentDocs</td><td>…\Explorer\RecentDocs[\.ext]</td><td><code>MRUListEx</code> + numbered binary blobs (PIDL)</td><td>Files opened by extension; aggregated at root</td></tr>
+        <tr><td>RunMRU</td><td>…\Explorer\RunMRU</td><td><code>a</code>…<code>z</code> + ASCII <code>MRUList</code></td><td>Commands typed into Win+R</td></tr>
+        <tr><td>UserAssist</td><td>…\Explorer\UserAssist\{GUID}\Count</td><td>ROT13 path → run counter + FILETIME + focus ms</td><td>GUI-launched programs with last-run timestamp</td></tr>
+        <tr><td>MUICache</td><td>Software\Classes\Local Settings\…\Shell\MuiCache</td><td>Exe path → friendly name / publisher</td><td>Executable ran at least once in this user context</td></tr>
+        <tr><td>Office File MRU</td><td>Software\Microsoft\Office\&lt;ver&gt;\&lt;app&gt;\User MRU\LiveId_&lt;hash&gt;\File MRU</td><td><code>Item 1</code>, <code>Item 2</code>, … (FILETIME + path)</td><td>Documents opened by Office, with timestamp</td></tr>
+        <tr><td>Office Place MRU</td><td>…\&lt;app&gt;\User MRU\LiveId_&lt;hash&gt;\Place MRU</td><td><code>Item 1</code>, …</td><td>Folders recently used as save targets</td></tr>
+        <tr><td>TrustRecords</td><td>Software\Microsoft\Office\&lt;ver&gt;\&lt;app&gt;\Security\Trusted Documents\TrustRecords</td><td>Value-name = file URL; data tail flag</td><td>User clicked Enable Content / Enable Editing</td></tr>
+        <tr><td>OpenSavePidlMRU</td><td>…\Explorer\ComDlg32\OpenSavePidlMRU[\.ext|\*]</td><td>PIDL blobs + <code>MRUListEx</code></td><td>Files picked in any Open/Save dialog</td></tr>
+        <tr><td>LastVisitedPidlMRU</td><td>…\Explorer\ComDlg32\LastVisitedPidlMRU</td><td>exe-name → folder PIDL</td><td>Last folder each app's dialog saw</td></tr>
+        <tr><td>CIDSizeMRU</td><td>…\Explorer\ComDlg32\CIDSizeMRU</td><td>exe-name → dialog size blob</td><td>App opened a common dialog at least once</td></tr>
+        <tr><td>Map Network Drive MRU</td><td>…\Explorer\Map Network Drive MRU</td><td>UNC paths + <code>MRUList</code></td><td>Network drives explicitly mapped by user</td></tr>
+        <tr><td>MountPoints2</td><td>…\Explorer\MountPoints2</td><td>Drive-letter / GUID / UNC subkeys</td><td>Volumes/shares this account has touched</td></tr>
+        <tr><td>Search\RecentApps</td><td>…\Search\RecentApps</td><td>App ID → launch count + last-launched FILETIME</td><td>Apps launched via Start search surface</td></tr>
+      </tbody>
+    </table></div>
+    <div class="al a"><span class="ali">⚠️</span><span><strong>Ordering rule:</strong> <code>MRUListEx</code> = binary little-endian DWORDs; <code>MRUList</code> = ASCII char string. Don't eyeball the binary — let the plugin sort it. And remember <code>TypedPaths</code> uses neither: <code>url1</code> is positional, always the most recent.</span></div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">⚙</span><span class="ct">Parsing — tooling notes</span></div>
+    <div class="prose">
+      <p><strong>Registry Explorer</strong> + plugins cover every artefact above out of the box — <code>WordWheelQuery</code>, <code>TypedPaths</code>, <code>RecentDocs</code>, <code>RunMRU</code>, <code>UserAssist</code>, <code>MUICache</code>, <code>OfficeMRU</code>, <code>TrustRecords</code>, <code>ComDlg32</code>. PIDLs are resolved to human-readable paths in the Plugins panel; UserAssist values are de-ROT13'd inline.</p>
+      <p><strong>RECmd</strong> (Eric Zimmerman, batch-mode parser) fires the same plugins from the CLI in one pass using <code>NTUSER_Batch.reb</code> and dumps a CSV per artefact — the right call for fleet-wide triage.</p>
+      <p><strong>RegRipper</strong> — perl-based, fast for targeted runs. Relevant plugins: <code>userassist</code>, <code>recentdocs</code>, <code>runmru</code>, <code>typedpaths</code>, <code>wordwheelquery</code>, <code>comdlg32</code>, <code>trustrecords</code>, <code>officedocs</code>, <code>muicache</code>, <code>mp2</code>.</p>
+      <p><strong>Always collect the transaction logs:</strong> <code>NTUSER.DAT.LOG1</code> and <code>.LOG2</code> alongside the hive. Registry Explorer replays them and surfaces dirty data the live hive doesn't yet show — recent activity that hadn't been flushed at acquisition time.</p>
+    </div>
+  </div>
+</div>
+
+<div class="g">
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📒</span><span class="ct">Artefact ledger — user-intent question pivot</span></div>
+    <div class="tw"><table class="et">
+      <thead><tr><th>Question</th><th>Primary artefact</th><th>Corroborating artefact</th></tr></thead>
+      <tbody>
+        <tr><td>What did this user search for?</td><td>WordWheelQuery</td><td>Search\RecentApps; browser history (§11)</td></tr>
+        <tr><td>What paths did they type in Explorer?</td><td>TypedPaths (<code>url1</code>…<code>url25</code>)</td><td>ShellBags BagMRU (§13)</td></tr>
+        <tr><td>What files did they open last?</td><td>RecentDocs per-extension MRU</td><td>Recent\*.lnk (§12); Office File MRU</td></tr>
+        <tr><td>Did they type a UNC path?</td><td>TypedPaths UNC entry</td><td>MountPoints2 (<code>##srv#share</code>); MountedDevices (§08)</td></tr>
+        <tr><td>What did they run via Win+R?</td><td>RunMRU (<code>a</code>…<code>z</code> + <code>MRUList</code>)</td><td>UserAssist; Prefetch / BAM (§10)</td></tr>
+        <tr><td>What GUI programs did they launch and when?</td><td>UserAssist (ROT13 path + FILETIME)</td><td>Prefetch; Amcache; MUICache (§10)</td></tr>
+        <tr><td>Which executables have they ever launched?</td><td>MUICache</td><td>UserAssist Count; Prefetch (§10)</td></tr>
+        <tr><td>Did they accept a macro?</td><td>TrustRecords (flag <code>7FFFFFFF</code>)</td><td>Office File MRU; Recent\*.lnk; Prefetch for child WINWORD → script host</td></tr>
+        <tr><td>Where did they save files via dialog?</td><td>ComDlg32\OpenSavePidlMRU</td><td>LastVisitedPidlMRU; $Recycle.Bin <code>$I</code> records (§05)</td></tr>
+        <tr><td>Which application opened a Save dialog?</td><td>LastVisitedPidlMRU (exe → folder PIDL)</td><td>CIDSizeMRU; Prefetch (§10)</td></tr>
+        <tr><td>What document did they open from where?</td><td>Office File MRU (FILETIME + path)</td><td>RecentDocs; OneDrive / SharePoint URLs</td></tr>
+        <tr><td>Which network shares has this account touched?</td><td>MountPoints2 UNC subkeys</td><td>Map Network Drive MRU; TypedPaths; §14 USB / network history</td></tr>
+        <tr><td>Did the user know a hidden filename?</td><td>WordWheelQuery term</td><td>RecentDocs entry post-search; LNK in Recent (§12)</td></tr>
+        <tr><td>Which user did this?</td><td>NTUSER.DAT hive path → profile folder</td><td>§07 SAM SID → ProfileList → profile path</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>NTUSER findings only become evidence once tied to <em>a specific human</em> and <em>a specific action that actually executed</em>. Every artefact above is intent — pair it with at least one independent witness:</p>
+    <ul>
+      <li><strong>§07 SAM → SID → ProfileList → NTUSER.DAT</strong> — the attribution chain. No SID match, no human. Every paragraph above implicitly assumes this binding has been done.</li>
+      <li><strong>RecentDocs ↔ §12 LNK files in <code>%APPDATA%\Microsoft\Windows\Recent</code></strong> — the same open event surfaces in both places. LNK carries MAC times, target volume serial, and a TrackerDataBlock GUID; pair with §04 NTFS <code>$Volume</code> VSN to bind the open to a specific physical device.</li>
+      <li><strong>RecentDocs / Office File MRU ↔ §13 Jump Lists</strong> — Jump Lists store the same recent-document data per application and persist across logons; the JL stream often contains entries that have already aged out of RecentDocs.</li>
+      <li><strong>TypedPaths UNC ↔ MountPoints2 ↔ §08 MountedDevices ↔ Map Network Drive MRU</strong> — confirms the typed share was actually mounted, when, and under which drive letter. MountedDevices ties drive letter → volume serial; cross-reference §04 NTFS <code>$Volume</code> VSN for the physical device.</li>
+      <li><strong>RunMRU + UserAssist + TrustRecords + Office File MRU</strong> — pair with §10 Application Execution (Prefetch, Amcache, BAM/DAM). Build a single timeline: <em>user typed → app launched → file opened → macro enabled → child process spawned</em>.</li>
+      <li><strong>ComDlg32 OpenSavePidlMRU ↔ §05 <code>$Recycle.Bin</code> <code>$I</code> records</strong> — the picked file may already be deleted; the PIDL is its tombstone, and the recycle-bin record gives the deletion timestamp and original path.</li>
+      <li><strong>TrustRecords URL ↔ RecentDocs ↔ LNK in Recent ↔ browser download history</strong> — for emailed lures, the closer those timestamps cluster, the cleaner the phishing-to-execution story.</li>
+      <li><strong>RecentDocs / Recent\*.lnk MACB ↔ §04 NTFS <code>$SI</code> vs <code>$FN</code></strong> — when LNK target timestamps disagree with NTFS witnesses, suspect timestomping on the target file.</li>
+      <li><strong>UserAssist / MUICache executable paths ↔ §10 Amcache / Prefetch hash</strong> — the same binary surfaces multiply; mismatched paths or missing Prefetch indicates a renamed / relocated executable.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §09 NTUSER.dat</span>
+  <span>Next → §10 Application Execution</span>
+</div>
+
+</div></body></html>

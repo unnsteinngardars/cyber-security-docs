@@ -62,6 +62,12 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
 .tile.t-2{--accent:var(--teal);--accent-deep:var(--teal-deep)}
 .tile.t-3{--accent:var(--amber);--accent-deep:var(--amber-deep)}
 .tile.t-4{--accent:var(--purple);--accent-deep:var(--purple-deep)}
+.tile.t-5{--accent:var(--green);--accent-deep:var(--green-deep)}
+.tile.t-6{--accent:var(--blue);--accent-deep:var(--blue-deep)}
+.tile.t-7{--accent:var(--red);--accent-deep:var(--red-deep)}
+.tile.t-8{--accent:var(--yellow);--accent-deep:var(--yellow-deep)}
+.tile.t-9{--accent:var(--amber);--accent-deep:var(--amber-deep)}
+.tile.t-10{--accent:var(--teal);--accent-deep:var(--teal-deep)}
 .tile .n{font-family:var(--sans);font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--accent-deep,var(--purple-deep))}
 .tile .t{font-family:var(--sans);font-size:16px;font-weight:800;color:var(--hi);line-height:1.2}
 .tile .d{font-size:12.5px;color:var(--dm);line-height:1.65}
@@ -94,7 +100,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
 <div class="intro">
   <p>V3 reframes the course as an <em>artefact catalogue</em>. V2 walked through tools; V3 walks through evidence — every section opens with an <strong>Artefact Ledger</strong> that lists the concrete objects you can pull off a system, where they live, and which forensic questions they actually answer.</p>
   <p>Each artefact is tagged with the kind of value it provides — timeline, user attribution, recovery, integrity, pivot, execution, credentials, persistence, or hidden-data exposure. The same chips repeat across sections so you can mentally connect findings across layers.</p>
-  <p>Open any tile below to dive into a section. The first four are live; the remaining sections from V2 still apply unchanged for now.</p>
+  <p>Open any tile below to dive into a section. Sections 01–10 are live; the remaining sections from V2 still apply unchanged for now.</p>
 </div>
 
 <div class="legend">
@@ -110,7 +116,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
 </div>
 
 <div class="grid">
-  <a class="tile t-1" href="#/v3-01-evidence-collection">
+  <a class="tile t-1" href="#/v3-01-evidence-collection" target="_top">
     <div class="n">01</div>
     <div class="t">Evidence Collection</div>
     <div class="d">The image isn't a finding — it's the substrate every later finding rests on. Acquisition artefacts, hashes, custody.</div>
@@ -120,7 +126,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
       <span class="lc k-recover">Recovery</span>
     </div>
   </a>
-  <a class="tile t-2" href="#/v3-02-memory-forensics">
+  <a class="tile t-2" href="#/v3-02-memory-forensics" target="_top">
     <div class="n">02</div>
     <div class="t">Memory Forensics</div>
     <div class="d">Five places where RAM (or what used to be RAM) is still recoverable — live memory, hiberfil, pagefile, swapfile, crash dumps.</div>
@@ -131,7 +137,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
       <span class="lc k-creds">Credentials</span>
     </div>
   </a>
-  <a class="tile t-3" href="#/v3-03-kape-aim">
+  <a class="tile t-3" href="#/v3-03-kape-aim" target="_top">
     <div class="n">03</div>
     <div class="t">KAPE &amp; AIM — Artefact Catalogue</div>
     <div class="d">16 artefact families, one collection sweep — what each one answers, what it cannot. The collected-vs-not matrix.</div>
@@ -142,7 +148,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
       <span class="lc k-pivot">Pivot</span>
     </div>
   </a>
-  <a class="tile t-4" href="#/v3-04-ntfs">
+  <a class="tile t-4" href="#/v3-04-ntfs" target="_top">
     <div class="n">04</div>
     <div class="t">Windows Filesystem / NTFS</div>
     <div class="d">Everything is a file — and every <code style="font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:1px 5px;border-radius:3px;border:1px solid rgba(186,225,255,.6)">$</code>file answers a different question. The metadata layer itself as evidence.</div>
@@ -153,11 +159,77 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
       <span class="lc k-hidden">Hidden data</span>
     </div>
   </a>
+  <a class="tile t-5" href="#/v3-05-file-carving" target="_top">
+    <div class="n">05</div>
+    <div class="t">File Carving</div>
+    <div class="d">What NTFS leaves behind when a file is "deleted" — and how to claw it back from MFT slots, unallocated clusters, VSS, and raw signatures.</div>
+    <div class="arts"><strong>Artefacts:</strong> deleted $MFT records, unallocated clusters, $Recycle.Bin $I/$R, file slack, VSS, magic-byte signatures</div>
+    <div class="chips">
+      <span class="lc k-recover">Recovery</span>
+      <span class="lc k-hidden">Hidden data</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+  <a class="tile t-6" href="#/v3-06-registries-overview" target="_top">
+    <div class="n">06</div>
+    <div class="t">Registries Overview</div>
+    <div class="d">Hives, keys, values — the regf container layout, transaction logs, dirty hives, and the deleted keys you can still recover from unallocated cells.</div>
+    <div class="arts"><strong>Artefacts:</strong> NTUSER.DAT, UsrClass.dat, SAM/SECURITY/SOFTWARE/SYSTEM, LastWriteTime, MRUList, regf cells (nk/vk/sk)</div>
+    <div class="chips">
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-recover">Recovery</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+  <a class="tile t-7" href="#/v3-07-sam" target="_top">
+    <div class="n">07</div>
+    <div class="t">SAM &amp; User Accounts</div>
+    <div class="d">Who could log in, when they actually did, what they were entitled to — local SAM, ProfileList SIDs, IdentityStore, OneDrive accounts.</div>
+    <div class="arts"><strong>Artefacts:</strong> SAM Domains\Account\Users\[RID], F &amp; V fields, ProfileList, IdentityStore\LogonCache, SECURITY\Cache, OneDrive Accounts</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-creds">Credentials</span>
+      <span class="lc k-time">Timeline</span>
+    </div>
+  </a>
+  <a class="tile t-8" href="#/v3-08-system-software" target="_top">
+    <div class="n">08</div>
+    <div class="t">SYSTEM &amp; SOFTWARE Hives</div>
+    <div class="d">OS profiling — what is this machine, what's on it, what does it talk to. ControlSets, services, USB history, network profiles, autoruns.</div>
+    <div class="arts"><strong>Artefacts:</strong> ControlSet001/002, Services, USBSTOR, MountedDevices, NetworkList, Run/RunOnce, Uninstall, TimeZoneInformation, ShutdownTime</div>
+    <div class="chips">
+      <span class="lc k-execution">Execution</span>
+      <span class="lc k-persist">Persistence</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+  <a class="tile t-9" href="#/v3-09-ntuser-dat" target="_top">
+    <div class="n">09</div>
+    <div class="t">NTUSER.dat — Per-User Activity</div>
+    <div class="d">What did this specific user actually do — searches, paths typed, files opened, Win+R commands, save dialogs. HKCU as a record of intent.</div>
+    <div class="arts"><strong>Artefacts:</strong> WordWheelQuery, TypedPaths, RecentDocs, RunMRU, ComDlg32 OpenSavePidlMRU, Office File MRU, TrustRecords, UserAssist, MUICache</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+  <a class="tile t-10" href="#/v3-10-application-execution" target="_top">
+    <div class="n">10</div>
+    <div class="t">Application Execution</div>
+    <div class="d">Did this binary actually run? Prefetch, AmCache, ShimCache, UserAssist, BAM/DAM, SRUM — and why ShimCache presence ≠ execution proof.</div>
+    <div class="arts"><strong>Artefacts:</strong> Prefetch .pf, Amcache.hve, AppCompatCache, UserAssist, BAM/DAM, MUICache, SRUDB.dat, Security 4688, Sysmon 1</div>
+    <div class="chips">
+      <span class="lc k-execution">Execution</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-recover">Recovery</span>
+    </div>
+  </a>
 </div>
 
 <div class="ft">
   <span>CCDCOE IDFC — V3 · artefact-first cheat sheet</span>
-  <span>Sections 01–04 live · 05+ inherits from V2.</span>
+  <span>Sections 01–10 live · 11+ inherits from V2.</span>
 </div>
 
 </div></body></html>
