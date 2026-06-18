@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15 — Network Forensics · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--teal);--accent-dim:var(--teal-dim);--accent-deep:var(--teal-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🌐</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">15 — Network Forensics</span></div>
+      <div class="t1">Network Forensics — What the Wire Saw, What the Host Remembered</div>
+      <div class="t2">PCAP-on-the-wire and registry-on-the-host meet in the middle — together they reconstruct sessions, attribute beacons, and prove what crossed the perimeter</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-t">PCAP</span>
+    <span class="b b-b">TCP/IP Stack</span>
+    <span class="b b-p">NetworkList</span>
+    <span class="b b-r">RDP MRU</span>
+    <span class="b b-a">Internet Settings</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">Wireshark</span><span class="tag">tshark</span><span class="tag">tcpdump</span><span class="tag">Scapy</span><span class="tag">NetworkMiner</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">SYSTEM\…\Tcpip\Parameters</span><span class="tag">Tcpip\Parameters\Interfaces\{GUID}</span><span class="tag">NetworkList\Profiles</span><span class="tag">NetworkList\Signatures\Unmanaged</span><span class="tag">Terminal Server Client\Servers</span><span class="tag">Internet Settings</span><span class="tag">PCAP</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Attacker traffic</span><span class="tag">Encrypted channels</span><span class="tag">Data reconstruction</span><span class="tag">Timeline anchoring</span><span class="tag">Analysing unknown protocol</span><span class="tag">Protocol reverse engineering</span><span class="tag">Encryption in custom protocols</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">🌐</span><span class="ct">Why network forensics — and how host artefacts fit in</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Two evidence planes</span>
+      <span class="fvc k-pivot">Wire ↔ host correlation</span>
+      <span class="fvc k-time">Independent clock source</span>
+    </div>
+    <div class="prose">
+      <p>"Network forensics" splits into two evidence planes that are best treated as one investigation:</p>
+      <ul>
+        <li><strong>The wire.</strong> What was actually transmitted — captured live with <code>tcpdump</code> / <code>Wireshark</code>, replayed from PCAPs, or reconstructed by passive parsers like NetworkMiner.</li>
+        <li><strong>The host.</strong> What the endpoint <em>remembered</em> about its own networking — interface configuration, networks it has ever joined, proxies it was told to use, RDP destinations it connected to. These live entirely in the registry hives covered by §08 SYSTEM / SOFTWARE and §09 NTUSER.</li>
+      </ul>
+      <p>Either plane on its own is incomplete: PCAP tells you what travelled but not which user or process; host artefacts tell you intent and configuration but never the bytes. Together they triangulate attacker activity, lateral movement, and exfiltration with corroboration that survives challenge.</p>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span>Wire timestamps come from the capture point's clock; host timestamps come from the endpoint's. <strong>Capture-point clock skew is the #1 mistake</strong> when overlaying PCAPs onto host timelines — record the time source for every capture device on first read.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🦈</span><span class="ct">Wireshark &amp; tshark — the GUI/CLI workhorse</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Capture &amp; analyse</span>
+      <span class="fvc k-pivot">Dissector ecosystem</span>
+    </div>
+    <span class="path">tshark -r case.pcap -Y 'tls.handshake.type == 1' -T fields -e ip.src -e tls.handshake.extensions_server_name</span>
+    <div class="prose">
+      <p><strong>Wireshark</strong> is the canonical packet analyser. Its strength is the dissector library — over a thousand built-in protocol decoders that turn a byte stream into a tree of named fields. Critical features for forensics:</p>
+      <ul>
+        <li><em>Display filters</em> (post-capture) vs <em>capture filters</em> (BPF, pre-capture). Display filters are richer; learn them first.</li>
+        <li><em>Follow Stream</em> reconstructs TCP / UDP / TLS / HTTP / QUIC application data into the user-readable conversation. The export menu yields raw bytes for malware extraction.</li>
+        <li><em>Statistics → Conversations / Endpoints</em> for traffic volumetry; <em>Protocol Hierarchy</em> for protocol mix; <em>I/O Graphs</em> for beacon-rate analysis.</li>
+        <li><em>Export Objects</em> recovers HTTP, SMB, FTP, TFTP, DICOM, IMF (email) objects directly to disk.</li>
+      </ul>
+      <p><strong>tshark</strong> is the headless equivalent — same engine, same filters, same dissectors, friendly to scripting. Use <code>-T fields</code> for CSV-style extraction, <code>-z</code> for stats.</p>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">tcpdump — capture, period</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Reliable capture</span>
+      <span class="fvc k-integrity">Minimal footprint</span>
+    </div>
+    <span class="path">tcpdump -i eth0 -s 0 -nn -w /tmp/case.pcap 'host 10.1.2.3 and not port 22'</span>
+    <div class="prose">
+      <p><strong>tcpdump</strong> is the de-facto capture tool on Unix-like systems — small, fast, and the libpcap reference user. Use it whenever the priority is "don't lose packets":</p>
+      <ul>
+        <li><code>-s 0</code> captures full frames (do not truncate).</li>
+        <li><code>-w</code> writes raw PCAP — analyse later with Wireshark.</li>
+        <li><code>-G &lt;seconds&gt; -W &lt;count&gt;</code> rotates capture files — essential for long-running collection.</li>
+        <li>BPF filter syntax is small but exact; escape carefully under shells.</li>
+        <li>On Windows the equivalent is <code>WinDump</code> or <code>dumpcap</code> (the capture engine inside Wireshark).</li>
+      </ul>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span><strong>Live capture mutates the system.</strong> Putting a NIC in promiscuous mode changes <code>$LogFile</code>, registry, and event-log state. For court-admissible captures, prefer a SPAN / TAP off-host.</span></div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🐍</span><span class="ct">Scapy — packets as Python objects</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Protocol RE</span>
+      <span class="fvc k-pivot">Custom dissectors</span>
+    </div>
+    <div class="prose">
+      <p><em>(The JSON entry reads "Scrapy"; in network-forensics context this is universally <strong>Scapy</strong> — Philippe Biondi's packet manipulation framework.)</em></p>
+      <p>Scapy lets you read PCAPs as Python lists of layered objects, inspect any field, rewrite, replay, or synthesise traffic. Forensic uses:</p>
+      <ul>
+        <li>Custom dissectors for protocols Wireshark doesn't know (in-house malware C2, IoT proprietary).</li>
+        <li>Bulk feature extraction — iterate over millions of packets and emit CSV.</li>
+        <li>Statistical beacon hunting: group packets by 5-tuple, compute inter-arrival times, flag low-jitter periodicity.</li>
+        <li>JA3 / JA3S / HASSH fingerprint computation when not pre-extracted.</li>
+        <li>Re-encoding traffic into known protocols to defeat anti-analysis padding.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">⛏</span><span class="ct">NetworkMiner — passive evidence extraction</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">File carving from PCAP</span>
+      <span class="fvc k-user">Host + cred discovery</span>
+    </div>
+    <div class="prose">
+      <p>NetworkMiner is a <em>passive</em> network forensic analyser — feed it a PCAP and it categorises by host, OS-fingerprints, extracts files, credentials (HTTP basic, FTP, IMAP, POP3, SMB, NTLM challenges), keywords, DNS queries, and sessions. The free version handles most investigation needs; the Professional edition adds richer protocol coverage.</p>
+      <p><strong>Best use:</strong> first-pass triage of large PCAPs to surface "what hosts talked to what" and "what files crossed the wire" before drilling in with Wireshark.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🧱</span><span class="ct">PCAP — the format itself</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Container basics</span>
+      <span class="fvc k-time">Per-packet timestamps</span>
+      <span class="fvc k-integrity">Truncation &amp; loss</span>
+    </div>
+    <div class="prose">
+      <p><strong>Two formats:</strong> the original <em>libpcap</em> (<code>.pcap</code>) and the modern <em>PCAP-NG</em> (<code>.pcapng</code>). PCAP-NG adds multiple interfaces per file, packet annotations, capture comments, and nanosecond timestamps. Wireshark writes PCAP-NG by default since 1.8; tcpdump still defaults to libpcap unless told otherwise.</p>
+      <p><strong>Per-packet record contains:</strong> <em>timestamp</em> (seconds + microseconds or nanoseconds), <em>captured length</em>, <em>original length</em>, and the raw frame bytes. Captured &lt; original means truncation — frames cut by a snaplen smaller than the wire MTU. <em>Always verify snaplen before trusting payload completeness.</em></p>
+      <p><strong>Hash &amp; integrity:</strong> PCAP itself has no built-in integrity protection. SHA-256 the file at acquisition; sign the hash if chain-of-custody matters. Capture devices that emit signed PCAP-NG (e.g. Endace) are preferred for evidentiary work.</p>
+      <p><strong>What's missing from PCAP that you'll wish you had:</strong></p>
+      <ul>
+        <li>TLS session keys — only present if the host was configured to dump them (<code>SSLKEYLOGFILE</code>) or if you can recover them from process memory (§02).</li>
+        <li>Application context — which process opened the socket. Solved by joining with Sysmon EID 3 / EDR netconn events.</li>
+        <li>User identity — solved by joining DHCP / RADIUS / authentication logs from the same time window.</li>
+      </ul>
+    </div>
+    <div class="al r"><span class="ali">!</span><span><strong>Encrypted traffic dominates modern PCAP.</strong> TLS 1.3, QUIC (HTTP/3), and DoH/DoT mean the bytes you capture are mostly meaningless without keys. Plan capture around <em>metadata-first</em> analysis (SNI, JA3/JA3S, cert SANs, timing, sizes) and grab session keys from host memory where possible.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">⚙</span><span class="ct">TCP/IP stack config — Tcpip\Parameters</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Host identity</span>
+      <span class="fvc k-pivot">DHCP &amp; DNS</span>
+    </div>
+    <span class="path">HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters</span>
+    <div class="prose">
+      <p><strong>Top-level values</strong> describe the host as a network entity:</p>
+      <ul>
+        <li><code>Hostname</code> / <code>NV Hostname</code> — the NetBIOS / DNS host name (compare to LNK <em>TrackerDataBlock</em> MachineID, §12).</li>
+        <li><code>Domain</code> / <code>NV Domain</code> — the AD / DNS domain join.</li>
+        <li><code>DhcpDomain</code> — domain assigned by DHCP last time the lease renewed.</li>
+        <li><code>NameServer</code> — statically configured DNS server(s); if blank, DHCP-supplied servers are used instead and live under <code>Interfaces\{GUID}</code>.</li>
+        <li><code>SearchList</code> — DNS suffix search order, useful for short-name resolution analysis.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🔌</span><span class="ct">Per-interface config — Interfaces\{GUID}</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">IP at time of incident</span>
+      <span class="fvc k-time">Lease times</span>
+    </div>
+    <span class="path">HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\{adapter-GUID}</span>
+    <div class="prose">
+      <p>One subkey per NIC (matched to NIC GUIDs in <code>NetworkList\Profiles</code>). Captures the live config:</p>
+      <ul>
+        <li><code>IPAddress</code> / <code>SubnetMask</code> / <code>DefaultGateway</code> — current static config.</li>
+        <li><code>DhcpIPAddress</code> / <code>DhcpServer</code> / <code>DhcpNameServer</code> — last DHCP-supplied values.</li>
+        <li><code>LeaseObtainedTime</code> / <code>LeaseTerminatesTime</code> / <code>T1</code> / <code>T2</code> — DHCP lease timeline in <em>UNIX epoch seconds</em>. These pin the host to an IP address inside a specific time window — critical for DHCP-side log correlation.</li>
+        <li><code>EnableDHCP</code>, <code>NameServer</code> override.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span>Combined with the DHCP server logs (or M365 / Azure AD sign-in IPs), the lease times here let you <strong>place a known IP on this exact host at an exact second</strong> — the most reliable host-to-IP binding evidence available.</span></div>
+  </div>
+
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">📡</span><span class="ct">NetworkList — every network this host has ever joined</span></div>
+    <div class="fv">
+      <span class="fvc k-time">First / last connected</span>
+      <span class="fvc k-pivot">SSID + Gateway MAC</span>
+      <span class="fvc k-user">Profile category</span>
+    </div>
+    <span class="path">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\{profile-guid}</span>
+    <span class="path">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Unmanaged\{signature-guid}</span>
+    <div class="prose">
+      <p><strong>Profiles</strong> stores one subkey per network the host has connected to — wired or wireless. Each carries:</p>
+      <ul>
+        <li><code>ProfileName</code> — the SSID for wireless, or "Network" / friendly name for wired.</li>
+        <li><code>Description</code> — human-readable.</li>
+        <li><code>DateCreated</code> and <code>DateLastConnected</code> — <em>SYSTEMTIME-style</em> binary blobs (16 bytes — Year/Month/DayOfWeek/Day/Hour/Min/Sec/Ms little-endian). Decode carefully; many parsers misread the byte order.</li>
+        <li><code>Category</code> — Public (0), Private (1), or Domain (2). Reveals what firewall posture the host applied.</li>
+        <li><code>NameType</code> — 6 = wireless, 23 = VPN, 71 = wired.</li>
+        <li><code>Managed</code> — 1 if domain-managed.</li>
+      </ul>
+      <p><strong>Signatures\Unmanaged\{sig}</strong> stores the network fingerprint that identifies one network instance from another:</p>
+      <ul>
+        <li><code>DefaultGatewayMac</code> — MAC of the router the host saw on this network. <em>Powerful</em>: changing physical sites means changing this MAC, so a host that "joined Home WiFi" with two different gateway MACs has roamed to two different physical homes.</li>
+        <li><code>DnsSuffix</code> — DNS suffix advertised on this network.</li>
+        <li><code>FirstNetwork</code> — the SSID / network name as first seen.</li>
+        <li><code>ProfileGuid</code> — joins back to the Profiles subkey.</li>
+      </ul>
+    </div>
+    <div class="al g"><span class="ali">✓</span><span><strong>Cross-checking with cloud sign-ins:</strong> Azure AD / M365 record the source IP. If that IP geolocates to "London" while NetworkList shows the host's last-connected WiFi gateway MAC matches a known "Madrid" router, you have evidence of token theft (the user was not where the sign-in claims).</span></div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🖥</span><span class="ct">RDP MRU — Terminal Server Client\Servers</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user, per-host</span>
+      <span class="fvc k-pivot">Lateral movement evidence</span>
+    </div>
+    <span class="path">HKCU\Software\Microsoft\Terminal Server Client\Servers\&lt;hostname-or-ip&gt;</span>
+    <span class="path">HKCU\Software\Microsoft\Terminal Server Client\Default (MRU list)</span>
+    <div class="prose">
+      <p><strong>Servers\&lt;host&gt;</strong> records every target the user typed into <code>mstsc.exe</code>. Per-subkey values include:</p>
+      <ul>
+        <li><code>UsernameHint</code> — the username most recently used to connect to that target.</li>
+        <li><code>CertHash</code> — hash of the RDP server cert most recently accepted by the user.</li>
+      </ul>
+      <p><strong>Default</strong> stores <code>MRU0..MRU9</code> values listing the most recent RDP targets in order.</p>
+      <p>Combine with §13 mstsc.exe Jump List and Security 4624 type 10 logon-success events on the target host for a complete lateral RDP picture.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🕸</span><span class="ct">Internet Settings — proxies, WPAD, TLS</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Forced-proxy attacks</span>
+      <span class="fvc k-integrity">Configuration tampering</span>
+    </div>
+    <span class="path">HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings</span>
+    <div class="prose">
+      <p>Per-user WinINET / WinHTTP configuration — the very same keys that legitimate group policy edits and that malware commonly tampers with to redirect or sniff traffic:</p>
+      <ul>
+        <li><code>ProxyEnable</code>, <code>ProxyServer</code>, <code>ProxyOverride</code> — explicit proxy.</li>
+        <li><code>AutoConfigURL</code> — PAC file URL. <em>An attacker who controls this URL can selectively MitM specific destinations</em> by returning a malicious PAC that points only those hosts to their proxy.</li>
+        <li><code>EnableAutoProxy</code> — WPAD discovery on / off.</li>
+        <li><code>Zones</code> subkey — Internet, Intranet, Trusted, Restricted zone mappings.</li>
+        <li><code>SecureProtocols</code> — bitmask of TLS versions allowed.</li>
+      </ul>
+    </div>
+    <div class="al r"><span class="ali">!</span><span><strong>Sudden writes to <code>AutoConfigURL</code> or <code>ProxyServer</code></strong> just before suspicious outbound traffic is a classic IOC. The registry key's <em>last-write time</em> from §06 is the timestamp you need; correlate with §10 Sysmon process-create for the tool that did it.</span></div>
+  </div>
+
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">Attacker traffic — the patterns to flag</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Indicators</span>
+      <span class="fvc k-time">Beacon analysis</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Beacon periodicity.</strong> C2 frameworks (Cobalt Strike, Sliver, Mythic, Brute Ratel, Havoc) call out at fixed sleeps with configurable jitter. Compute inter-arrival times per 5-tuple — low standard deviation around a non-trivial mean is the tell.</li>
+        <li><strong>DNS tunnels.</strong> Excessive subdomain length, high entropy in labels, abnormally many TXT / NULL queries to one domain.</li>
+        <li><strong>Domain fronting &amp; CDN abuse.</strong> SNI ≠ HTTP Host header, or SNI to legitimate CDN but JA3 fingerprint matches known toolkits.</li>
+        <li><strong>Exfil bursts.</strong> Sudden uplink dominance — many small outbound flows or one large to a fresh destination.</li>
+        <li><strong>Lateral SMB.</strong> Workstation-to-workstation TCP 445 between subnets that normally do not talk; SMB <em>Tree Connect</em> with administrative shares (<code>ADMIN$</code>, <code>C$</code>).</li>
+        <li><strong>RDP from unusual sources.</strong> Public-IP RDP into a workstation; RDP at impossible-travel times.</li>
+        <li><strong>Cleartext credentials.</strong> Basic auth / LDAP simple bind / SMB v1 from places that should know better.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🔒</span><span class="ct">Encrypted channels — metadata, not payload</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">SNI / JA3 / certs</span>
+    </div>
+    <div class="prose">
+      <p>When the payload is opaque, the metadata still talks:</p>
+      <ul>
+        <li><strong>SNI</strong> (Server Name Indication) — destination hostname in TLS 1.2 ClientHello, cleartext. TLS 1.3 + ECH hides it; if missing, that itself is a fingerprint.</li>
+        <li><strong>JA3 / JA3S</strong> — MD5 fingerprints of ClientHello / ServerHello extensions; distinguishes client libraries even when the SNI is generic. Public databases identify malware families.</li>
+        <li><strong>Certificate analysis</strong> — Subject, SAN, validity dates, issuer. Self-signed or freshly-issued Let's Encrypt cert on a brand-new domain talking to a workstation is a strong lead.</li>
+        <li><strong>Timing &amp; size sidechannels</strong> — request/response sizes leak page identity for HTTPS; periodic small TLS Application Data records indicate keepalive / beacon behaviour.</li>
+        <li><strong>Decryption when possible</strong> — recover <code>SSLKEYLOGFILE</code> from environment vars, browser preferences, or process memory (§02). Wireshark imports the file and decrypts retroactively.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🧬</span><span class="ct">Data reconstruction — pulling files from the wire</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Stream reassembly</span>
+    </div>
+    <div class="prose">
+      <p>Reconstruction patterns by protocol:</p>
+      <ul>
+        <li><strong>HTTP / HTTP/2</strong> — Wireshark's <em>Export Objects → HTTP</em>; for chunked / gzipped content, prefer <code>tshark -z http_req,tree</code> + manual reassembly via the Follow Stream byte view.</li>
+        <li><strong>SMB</strong> — Export Objects → SMB recovers files transferred via SMB1/2/3 reads &amp; writes (when unencrypted).</li>
+        <li><strong>FTP / TFTP / NFS</strong> — passive reassembly straightforward; Wireshark handles all.</li>
+        <li><strong>Email (SMTP / IMAP / POP3)</strong> — Wireshark and NetworkMiner reconstruct full RFC 822 messages including attachments.</li>
+        <li><strong>QUIC / HTTP/3</strong> — encryption from the first packet; reconstruction requires session keys.</li>
+        <li><strong>Custom protocols</strong> — Scapy + a hand-written reassembler; bridge to known formats (carving with <code>foremost</code> / file-magic).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">⏱</span><span class="ct">Timeline anchoring — PCAP as the wall clock</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Independent timestamp source</span>
+      <span class="fvc k-pivot">Host ↔ wire correlation</span>
+    </div>
+    <div class="prose">
+      <p>The wire and the host record time independently. That makes PCAP a powerful <em>anchor</em>: even when a compromised host's clock is suspect, the capture device sitting in front of it usually was not. Use this to:</p>
+      <ul>
+        <li>Detect host clock tampering — if PCAP says a TLS handshake happened at <em>T</em>, and Sysmon EID 3 on the host says the corresponding connect was at <em>T + 73 minutes</em>, the host clock was set wrong (or was rolled back as anti-forensics).</li>
+        <li>Anchor host artefacts to subnetwork events — DHCP-supplied lease times in <code>Tcpip\Parameters\Interfaces</code> let you bound the IP <em>before</em> the PCAP starts; renewal traffic <em>in</em> the PCAP confirms continuity.</li>
+        <li>Replay sequence of compromise — TLS handshake → first beacon → payload download → process create. Each is a row on the timeline; they should be seconds apart when the chain is real.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>Always preserve the capture device's NTP state</strong> alongside the PCAP. If the device drifted, you can math-correct only if you logged sync errors at acquisition.</span></div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🔬</span><span class="ct">Analysing an unknown protocol</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">First-look heuristics</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Port heuristics fail.</strong> Modern malware uses 443; some uses 53. Disregard port; let payload shape lead.</li>
+        <li><strong>First bytes:</strong> magic numbers, ASCII command words, length-prefix or length-suffix? Compare entropy of first N bytes — high entropy from byte 0 usually means encryption or compression.</li>
+        <li><strong>Direction patterns:</strong> who speaks first, request/response or push-only? Constant size? Constant time?</li>
+        <li><strong>Field discovery:</strong> count distinct byte values at each offset across many packets; offsets with low cardinality are likely opcodes / flags.</li>
+        <li><strong>Cross-source confirmation:</strong> §02 memory often contains the parsed plaintext of the same protocol — match opcodes to enums in the process.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🛠</span><span class="ct">Protocol reverse engineering</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Methodology</span>
+    </div>
+    <div class="prose">
+      <p>When a custom protocol must be fully decoded, the workflow is iterative:</p>
+      <ul>
+        <li>Capture a long, varied sample (many sessions, different inputs).</li>
+        <li>Group packets by 5-tuple; align by direction.</li>
+        <li>Hypothesise field boundaries; verify with statistical alignment across sessions.</li>
+        <li>Implement a candidate dissector in Scapy or as a Wireshark Lua plugin.</li>
+        <li>Cross-check against §02 memory disassembly of the binary parsing the protocol.</li>
+        <li>Iterate — most fields fall to the third or fourth pass.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">🔐</span><span class="ct">Encryption in custom protocols</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Key-material recovery</span>
+      <span class="fvc k-pivot">Bridging to memory</span>
+    </div>
+    <div class="prose">
+      <p>Custom encrypted protocols usually fall into one of three buckets, each with characteristic forensic openings:</p>
+      <ul>
+        <li><strong>Symmetric with a static key</strong> (XOR, RC4, AES-ECB/CBC with a hard-coded key). Recover the key from §02 memory or §10 Amcache-linked binary reverse engineering. Replay decryption of historical PCAP works the moment you have the key.</li>
+        <li><strong>Symmetric with a session-derived key</strong> (key exchange before payload). Look for an exchange phase early in each session — Diffie-Hellman, RSA-wrap of an AES key, or a hand-rolled equivalent. The key lives in process memory for the lifetime of the session.</li>
+        <li><strong>Wrapped TLS / hidden-protocol-in-TLS</strong> (e.g. Cobalt Strike-over-TLS, Meterpreter HTTPS). The outer TLS is standard — use <code>SSLKEYLOGFILE</code> recovery or memory-scrape session keys to decrypt; then apply the protocol RE flow to the inner stream.</li>
+      </ul>
+      <p>Document every key in the case file with its provenance — which memory image, which offset, when extracted. This is exactly the kind of evidence that gets challenged.</p>
+    </div>
+    <div class="al g"><span class="ali">✓</span><span><strong>Time matters here:</strong> sessions live only as long as their keys do. PCAP captured today is undecryptable from a memory image taken tomorrow if the process has restarted in between. <em>If you can capture memory and PCAP in one window, do.</em></span></div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>Network forensics is at its most powerful when wire evidence is joined to the host artefacts in the prior fourteen sections:</p>
+    <ul>
+      <li><strong>§01 Evidence Collection</strong> — PCAP, memory, and disk must be acquired in a documented order. Record the capture device, NTP state, and snaplen on first contact.</li>
+      <li><strong>§02 Memory Forensics</strong> — TLS session keys, decrypted C2 payload, the process-to-socket mapping, and the binary parser of any custom protocol all live here. Memory is the bridge between opaque PCAP and meaningful evidence.</li>
+      <li><strong>§04 NTFS — <code>$UsnJrnl</code></strong> — files dropped by network downloads appear as <code>FILE_CREATE</code> within seconds of the matching HTTP/SMB transfer in PCAP.</li>
+      <li><strong>§07 SAM</strong> — usernames in <em>UsernameHint</em> (Terminal Server Client\Servers) resolve to SIDs and account creation dates.</li>
+      <li><strong>§08 SYSTEM / SOFTWARE</strong> — Tcpip\Parameters, NetworkList\Profiles, NetworkList\Signatures, and the Services hive together describe how the host was configured to talk to the network. The §08 walkthrough covers reading these.</li>
+      <li><strong>§09 NTUSER</strong> — Terminal Server Client and Internet Settings are HKCU — they prove which user typed which RDP target and which proxy / PAC URL was active under their session.</li>
+      <li><strong>§10 Application Execution</strong> — Prefetch / Amcache for the binary opening the socket; Sysmon EID 1 for process create, Sysmon EID 3 for the connect itself, Sysmon EID 22 for DNS query. These join PCAP 5-tuples back to processes and users.</li>
+      <li><strong>§11 Cloud Storage</strong> — ODL upload events, OneDrive UserCid.dat, and tenant audit logs convert observed outbound TLS to specific files going to specific accounts.</li>
+      <li><strong>§12 Shell Items &amp; LNK — TrackerDataBlock</strong> — the MAC address embedded in a LNK joins to NetworkList <code>DefaultGatewayMac</code> and to Tcpip\Parameters NIC addresses.</li>
+      <li><strong>§13 Jump Lists</strong> — mstsc.exe Jump List per-target entries confirm the RDP MRU read from Terminal Server Client\Servers and add per-launch timestamps.</li>
+      <li><strong>§14 USB</strong> — USB-Ethernet impostors (BadUSB Network Adapters) appear in <code>USB\</code> and add a NIC that NetworkList records; cross-check arrival timestamps when investigating NAC bypass.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §15 Network Forensics</span>
+  <span>Next → §16 Email Forensics</span>
+</div>
+
+</div></body></html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 — Shell Items &amp; LNK · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--purple);--accent-dim:var(--purple-dim);--accent-deep:var(--purple-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🔗</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">12 — Shell Items &amp; LNK</span></div>
+      <div class="t1">Shell Items &amp; LNK — Pointers That Outlive Their Targets</div>
+      <div class="t2">The shell-link format is Windows' tiny biographical record of every file the user opened — including ones from drives that have been removed, formatted, or never existed locally</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-p">LNK</span>
+    <span class="b b-b">Shell Items</span>
+    <span class="b b-t">TrackerDataBlock</span>
+    <span class="b b-a">Volume Serial</span>
+    <span class="b b-r">Automatic Destinations</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">.lnk files</span><span class="tag">Recent\</span><span class="tag">Office Recent</span><span class="tag">Desktop / Start Menu / Quick Launch</span><span class="tag">CustomDestinations-ms</span><span class="tag">AutomaticDestinations-ms</span><span class="tag">Shell items inside ShellBags</span><span class="tag">RecentDocs MRU (binary)</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">LECmd</span><span class="tag">JLECmd</span><span class="tag">LinkParser (libyal/liblnk)</span><span class="tag">Magnet AXIOM</span><span class="tag">EZ Tools</span><span class="tag">RECmd shellbag plugins</span><span class="tag">Eric Zimmerman's ShellBagsExplorer</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Shell item lists (target IDs)</span><span class="tag">LinkInfo block</span><span class="tag">ExtraData blocks</span><span class="tag">Distributed Link Tracker (DLT)</span><span class="tag">MAC of target preserved</span><span class="tag">Volume serial reuse</span><span class="tag">UNC vs local paths</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">📎</span><span class="ct">The LNK format — a forensic gold mine in 0.5–8 KB</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Target MAC times snapshot</span>
+      <span class="fvc k-pivot">Volume serial + object ID</span>
+      <span class="fvc k-user">MAC address of last-opening host</span>
+      <span class="fvc k-recover">Survives target deletion</span>
+    </div>
+    <span class="path">%AppData%\Microsoft\Windows\Recent\&lt;document&gt;.lnk</span>
+    <span class="path">%AppData%\Microsoft\Office\Recent\</span>
+    <span class="path">%UserProfile%\Desktop\, …\Start Menu\, …\Quick Launch\</span>
+    <div class="prose">
+      <p><strong>What a shell link is:</strong> Microsoft documents it formally as <code>MS-SHLLINK</code>. Every <code>.lnk</code> file is a binary structure containing a fixed-size header, an optional <em>LinkTargetIDList</em> (a chain of shell items representing the path as the shell parses it), a <em>LinkInfo</em> block, optional string data, and a sequence of typed <em>ExtraData</em> blocks. Each layer carries different forensic information about the target <em>at the moment the link was last refreshed</em>.</p>
+      <p><strong>Header (76 bytes) provides:</strong></p>
+      <ul>
+        <li><em>CreationTime / AccessTime / WriteTime</em> of the target file as it existed when the LNK was last updated. These are FILETIME values stored independently of the target — even if the target is wiped, the LNK preserves the last-known MAC.</li>
+        <li><em>FileSize</em> of the target.</li>
+        <li><em>FileAttributes</em> (read-only, hidden, system, archive, etc.).</li>
+        <li><em>HotKey</em> — interactive evidence: a non-zero hotkey field proves the user customised this link.</li>
+        <li><em>ShowCommand</em> — Maximised / Minimised / Normal as the user last left it.</li>
+      </ul>
+      <p><strong>LinkInfo block typically yields:</strong> drive type (fixed / removable / network / CD-ROM), <em>VolumeSerialNumber</em>, <em>VolumeLabel</em>, local base path (e.g. <code>C:\Users\bob\…</code>), and (when applicable) the UNC path of a network share including server name. Two LNKs that point to the same physical USB stick will share the VSN even across hosts — this is the join key behind §14 USB correlation.</p>
+      <p><strong>ExtraData blocks of forensic value:</strong></p>
+      <ul>
+        <li><code>TrackerDataBlock</code> — the Distributed Link Tracker stamp: <em>MachineID</em> (NetBIOS name of the host that last "refreshed" the link), and three Object IDs containing the <em>MAC address</em> of the network adapter at the time of refresh and a timestamp embedded in the GUIDs.</li>
+        <li><code>PropertyStoreDataBlock</code> — extended metadata (author, application, Office document GUIDs).</li>
+        <li><code>EnvironmentVariableDataBlock</code> — for links that point to <code>%UserProfile%\…</code> style targets, preserves the unexpanded form alongside the resolved one.</li>
+        <li><code>SpecialFolderDataBlock</code> / <code>KnownFolderDataBlock</code> — CSIDL / KNOWNFOLDERID values when the target sits inside a special folder.</li>
+        <li><code>VistaAndAboveIDListDataBlock</code> — a second, post-Vista shell item list that may differ from the legacy one and is often what modern Explorer actually consumes.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>LNKs are auto-created</strong> by Explorer / Office in <code>Recent\</code> on simple file opens. The user does not have to "save a shortcut" for one to appear. Conversely, on <em>Win10+ controlled folder access</em> and on hardened images Explorer may suppress Recent — confirm policy before reading absence as proof.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🧬</span><span class="ct">Shell item lists — the structure beneath the path</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Used in ShellBags, LNK, RecentDocs MRU</span>
+      <span class="fvc k-recover">Records folder MAC at access</span>
+    </div>
+    <div class="prose">
+      <p>A <em>shell item</em> is the binary representation of one element in a path as the shell parses it: <em>Desktop</em>, <em>This PC</em>, a volume, a directory, a file. They are concatenated into <em>shell item lists</em> (a.k.a. <em>ID lists / PIDLs</em>) and embedded inside LNK files, ShellBags, RecentDocs MRU entries, and Common Dialog MRUs.</p>
+      <p>Each item type encodes its own metadata:</p>
+      <ul>
+        <li>File / folder items carry a short or long name, target MFT FILE reference (NTFS only), and target FILETIMEs.</li>
+        <li>Volume items carry the volume serial number and drive letter at the time of access.</li>
+        <li>Known-folder / CLSID items reference GUIDs like <code>{20D04FE0-3AEA-1069-A2D8-08002B30309D}</code> (This PC), <code>{F4E57C4B-2036-45F0-A9AB-443BCFE33D9F}</code> (Search Folder), or vendor-specific cloud-namespace GUIDs (OneDrive, Box).</li>
+        <li>Network / UNC items capture server name, share name, and the protocol (SMB / WebDAV).</li>
+      </ul>
+      <p>Because shell items are embedded in many artefacts, knowing the format pays in every later section.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">What LNK reveals that no other artefact does</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Unique evidence</span>
+      <span class="fvc k-pivot">Cross-host pivots</span>
+    </div>
+    <div class="prose">
+      <p>Other artefacts say "this file was opened." LNK uniquely says:</p>
+      <ul>
+        <li><strong>It came from <em>that</em> volume.</strong> VSN + label + drive type place the file on a specific USB / network share / cloud namespace.</li>
+        <li><strong>It was opened from <em>that</em> machine.</strong> TrackerDataBlock MAC + MachineID. When the same LNK is found on multiple endpoints, the MAC reveals the originating host of the file.</li>
+        <li><strong>The target's MAC times at access.</strong> Even if the target was wiped clean by anti-forensics, the LNK still records when it was created / modified / accessed by the last refresher.</li>
+        <li><strong>That the file was real and reachable.</strong> Explorer creates the LNK only after a successful open call — distinguishes "user opened this" from "the malware put a string here."</li>
+      </ul>
+    </div>
+    <div class="al r"><span class="ali">!</span><span><strong>VSN reuse is real.</strong> Two different USB sticks formatted by the same Windows host in close succession can land on identical VSNs. Always corroborate with disk label, USB <em>SerialNumber</em> from §08 USBSTOR, and Event 1006.</span></div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">📋</span><span class="ct">RecentDocs (binary) ↔ Recent\*.lnk</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-time">MRU order</span>
+    </div>
+    <span class="path">NTUSER\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs\&lt;ext&gt;</span>
+    <div class="prose">
+      <p>The RecentDocs key (per-user, per-extension subkey) stores binary blobs that <em>are</em> shell item lists referencing each opened file plus a UTF-16 caption. The companion <code>MRUListEx</code> in each subkey is a uint32 array recording the open order.</p>
+      <p>Pair each RecentDocs entry with the matching <code>Recent\&lt;name&gt;.lnk</code> for the full forensic story: RecentDocs gives MRU order and last-write timestamp; the LNK gives volume / tracker / target MAC. A RecentDocs entry without a corresponding LNK often signals targeted LNK deletion as anti-forensics.</p>
+    </div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📚</span><span class="ct">Office Recent — its own world</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-Office-version</span>
+      <span class="fvc k-time">Independent of Explorer Recent</span>
+    </div>
+    <span class="path">%AppData%\Microsoft\Office\Recent\</span>
+    <span class="path">NTUSER\Software\Microsoft\Office\&lt;ver&gt;\&lt;app&gt;\File MRU</span>
+    <div class="prose">
+      <p>Word, Excel, PowerPoint and Outlook each maintain their own MRU registry keys plus an <code>Office\Recent</code> folder full of LNKs. Modern Office (2016+) also pins <em>pinned</em> documents and stores per-document <em>UserMRU</em> entries with absolute paths to local files <em>and</em> SharePoint URLs to documents that never landed on disk — recovery here is the only host-side proof a user opened a cloud-only document.</p>
+    </div>
+  </div>
+
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">🧱</span><span class="ct">ShellBags — proof a folder was browsed</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Per-user</span>
+      <span class="fvc k-time">First / last access per folder</span>
+      <span class="fvc k-recover">Survives folder deletion</span>
+      <span class="fvc k-pivot">Network &amp; USB browsing</span>
+    </div>
+    <span class="path">USRCLASS.DAT\Local Settings\Software\Microsoft\Windows\Shell\Bags &amp; BagMRU</span>
+    <span class="path">NTUSER\Software\Microsoft\Windows\Shell\Bags &amp; BagMRU (legacy + some dialogs)</span>
+    <div class="prose">
+      <p><strong>What ShellBags do:</strong> they cache Explorer's view preferences for each folder a user opens — column widths, sort order, icon size — so the next visit looks the same. To do this Windows must <em>remember every folder ever browsed</em>, and that index is what we read.</p>
+      <p><strong>Structure:</strong> the <code>BagMRU</code> tree mirrors the folder hierarchy as the user navigated it. Each node stores a shell item (so volume info, target MAC times, network UNCs are all preserved) and an MRUListEx of its children. The parallel <code>Bags</code> subkey stores the actual view settings.</p>
+      <p><strong>What ShellBags prove:</strong></p>
+      <ul>
+        <li>The user (specifically — this is NTUSER / USRCLASS, per-account) <em>navigated</em> into a folder using Explorer or the Common Dialog at least once.</li>
+        <li>The folder existed at that path at that moment, with the recorded MAC times.</li>
+        <li>For USB and network shares — the volume label, serial, server, and share name as seen by Explorer.</li>
+        <li>The most recent registry write-time of the bag node is the upper bound on <em>last browsed</em>.</li>
+      </ul>
+      <p><strong>What ShellBags do NOT prove:</strong> that any file was opened from inside the folder, only that the folder was viewed. Distinguish browsing from access by joining against RecentDocs / LNK.</p>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span>ShellBags are only written when Explorer / a Common Dialog is the navigator. <strong>cmd.exe, PowerShell, robocopy, xcopy</strong> do not create ShellBag entries. Absence of a ShellBag for a folder does NOT prove the user never went there — only that they did not go there via the shell.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🧭</span><span class="ct">ShellBags use cases in real cases</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Investigation patterns</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Insider data theft:</strong> ShellBag entries with USB drive letters, network share UNCs, or unfamiliar cloud-namespace GUIDs reveal where the user went looking.</li>
+        <li><strong>Counter-anti-forensics:</strong> ShellBag entries for <code>C:\Users\&lt;name&gt;\AppData\…</code> staging directories that were later wiped — the folders are gone but the ShellBag and its embedded MAC times persist.</li>
+        <li><strong>Account takeover:</strong> ShellBag activity at unexpected hours or for folders the legitimate user never touched in OneDrive logs is a strong sign of remote interactive session abuse.</li>
+        <li><strong>Lateral movement:</strong> ShellBag entries containing <code>\\target-host\C$\…</code> are uncontestable evidence of admin-share browsing.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">💥</span><span class="ct">Tampering &amp; legitimate edge cases</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Pitfalls</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li>An LNK can be created without opening the target — drag-and-drop with right-click "Create shortcut here" works, as do crafted <code>.lnk</code> droppers (e.g. CVE-2010-2568 era and modern variants). <em>Treat creation as a necessary but not sufficient indicator of opening.</em></li>
+        <li>LNKs in <code>Recent\</code> are renamed by Explorer when the target is renamed — the on-disk LNK timestamp may post-date the actual open.</li>
+        <li>ShellBags compress over time: legacy bags get pruned on Windows version upgrades; record the OS build with every finding.</li>
+        <li><code>$MFT</code> records of LNK files give creation / modification of the LNK itself, which usually equals first / last open of the target — a powerful sanity check.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🛠</span><span class="ct">Tooling quick-reference</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">EZ Tools first</span>
+    </div>
+    <div class="tw"><table class="et">
+      <tr><th>Artefact</th><th>Tool</th></tr>
+      <tr><td>.lnk files</td><td>LECmd, Magnet AXIOM, liblnk-tools</td></tr>
+      <tr><td>Jump Lists</td><td>JLECmd (§13)</td></tr>
+      <tr><td>ShellBags</td><td>ShellBagsExplorer (GUI), SBECmd (CLI)</td></tr>
+      <tr><td>RecentDocs binary</td><td>RECmd plugin, RegRipper</td></tr>
+      <tr><td>Office MRU</td><td>RECmd, OfficeForensicAnalyzer</td></tr>
+    </table></div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>LNK and Shell Item evidence is at its most powerful when triangulated with the substrate:</p>
+    <ul>
+      <li><strong>§04 NTFS — <code>$MFT</code> / <code>$UsnJrnl</code> / <code>$Volume</code></strong> — the LNK's VSN joins to <code>$Volume</code> serial. The <code>FILE_CREATE</code> of the LNK in <code>Recent\</code> equals first open; <code>$UsnJrnl</code> records every later open as a write to the LNK.</li>
+      <li><strong>§07 SAM</strong> — Recent / Office MRU paths sit under a per-user profile whose owning SID maps via SAM to a real user and account creation date.</li>
+      <li><strong>§08 SYSTEM — MountedDevices &amp; USBSTOR</strong> — the volume serial inside a LNK joins to MountedDevices and to USBSTOR serial numbers, identifying the specific physical USB stick.</li>
+      <li><strong>§09 NTUSER — RecentDocs / Office MRU / TypedPaths / RunMRU</strong> — every LNK in <code>Recent\</code> has a matching RecentDocs entry, and Office MRU paths cross with Office <code>Recent\</code> LNKs to confirm app context.</li>
+      <li><strong>§10 Application Execution</strong> — the UserAssist GUID <code>{F4E57C4B-2036-45F0-A9AB-443BCFE33D9F}</code> counts launches from Recent / Start; the LNK reveals which target.</li>
+      <li><strong>§11 Cloud Storage</strong> — LNKs to OneDrive / Box-Edit cache directories prove a cloud document was opened locally — and the embedded VSN belongs to <code>C:</code>, never to the cloud namespace.</li>
+      <li><strong>§13 Jump Lists</strong> — Automatic and Custom destinations <em>contain</em> LNK structures internally — every concept on this page also applies inside <code>.automaticDestinations-ms</code>.</li>
+      <li><strong>§14 USB Event Log &amp; Drive History</strong> — VSN + Volume Label from LNK joins to Event 1006 (Partition/Diagnostic), Setupapi log entries, and §08 USBSTOR to identify specific removable devices used to exfiltrate data.</li>
+      <li><strong>§15 Timeline &amp; Correlation</strong> — LECmd / SBECmd CSV outputs merge naturally into Timeline Explorer for the master timeline. LNK target MAC times often pre-date the LNK's own create time — preserve both columns.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §12 Shell Items &amp; LNK</span>
+  <span>Next → §13 Jump Lists &amp; Shellbag Pivots</span>
+</div>
+
+</div></body></html>

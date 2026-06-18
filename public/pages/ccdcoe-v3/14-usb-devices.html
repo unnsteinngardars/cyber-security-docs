@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14 — USB Event Log &amp; Drive History · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--amber);--accent-dim:var(--amber-dim);--accent-deep:var(--amber-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🔌</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">14 — USB Event Log &amp; Drive History</span></div>
+      <div class="t1">USB &amp; Removable Media — Every Plug-In Leaves Fingerprints</div>
+      <div class="t2">USB enumeration writes to a dozen places at once — registry, system event logs, setupapi.dev.log, and per-user mount records — and the pieces only make sense together</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-a">USBSTOR</span>
+    <span class="b b-b">MountedDevices</span>
+    <span class="b b-r">Event 1006</span>
+    <span class="b b-p">Setupapi</span>
+    <span class="b b-t">Per-User Mount</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">SYSTEM\…\USBSTOR</span><span class="tag">SYSTEM\…\USB</span><span class="tag">SYSTEM\…\MountedDevices</span><span class="tag">SOFTWARE\Microsoft\Windows Portable Devices\Devices</span><span class="tag">SOFTWARE\Microsoft\Windows Search\VolumeInfoCache</span><span class="tag">NTUSER\Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2</span><span class="tag">setupapi.dev.log</span><span class="tag">Partition/Diagnostic 1006</span><span class="tag">Kernel-PnP 410-411-430</span><span class="tag">DriverFrameworks-UserMode 2003/2100/2101/2102/2105</span><span class="tag">EventLog-Security 6416</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">USBDeviceForensics (woanware/Jason Hale)</span><span class="tag">USBDetective</span><span class="tag">EvtxECmd (Kroll maps)</span><span class="tag">RECmd plugins</span><span class="tag">RegRipper usbdevices.pl / usbstor.pl</span><span class="tag">KAPE USB target</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">VID/PID</span><span class="tag">USB SerialNumber (may be faked)</span><span class="tag">ContainerID GUID</span><span class="tag">First connect / last connect / last removal</span><span class="tag">Drive-letter binding per user</span><span class="tag">VSN reuse</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">🔌</span><span class="ct">What Windows actually does when a USB is inserted</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Plug-and-play pipeline</span>
+      <span class="fvc k-time">Multiple timestamps</span>
+      <span class="fvc k-pivot">Cross-hive correlation</span>
+    </div>
+    <div class="prose">
+      <p>From an investigator's perspective, a single USB insertion fires a cascade of writes:</p>
+      <ul>
+        <li>Kernel PnP enumerates the device; <strong>setupapi.dev.log</strong> records driver matching with a wall-clock timestamp (first install of this VID/PID/SN).</li>
+        <li>The class driver registers the device under <code>SYSTEM\CurrentControlSet\Enum\USB\VID_xxxx&amp;PID_xxxx\&lt;SerialNumber&gt;</code> — and, for storage devices, also under <code>USBSTOR\Disk&amp;Ven_xxx&amp;Prod_xxx&amp;Rev_xxx\&lt;SerialNumber&gt;</code>.</li>
+        <li><strong>Properties</strong> subkeys (<code>0064</code>, <code>0066</code>, <code>0067</code>, <code>0083</code>) store the <em>First Install</em>, <em>Last Insertion</em>, <em>Last Removal</em>, and <em>Last Driver Install</em> FILETIMEs respectively — added in Win7+ and refined in Win10.</li>
+        <li><strong>Volume binding:</strong> <code>SYSTEM\MountedDevices</code> maps drive letters to volume objects (DOSDevice -> NT device path embedding the VSN); <code>SOFTWARE\Windows Portable Devices\Devices</code> records the user-visible label; <code>NTUSER\…\MountPoints2</code> records the per-user GUID corresponding to the volume the moment that user navigated into it via Explorer.</li>
+        <li><strong>Event logs:</strong> Microsoft-Windows-Partition/Diagnostic logs <em>Event 1006</em> with a wealth of per-disk info; DriverFrameworks-UserMode logs each enumeration step; Kernel-PnP logs power transitions; Security 6416 logs device class events under audit policy.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>No single artefact is sufficient.</strong> Modern USB triage joins setupapi.dev.log + USBSTOR + USB + MountedDevices + MountPoints2 + Partition/Diagnostic 1006 to land a specific device, a specific user, a specific volume, and a specific time interval.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">💾</span><span class="ct">USBSTOR — the storage-device ledger</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">VID/PID + Serial</span>
+      <span class="fvc k-time">First / last connect</span>
+    </div>
+    <span class="path">HKLM\SYSTEM\CurrentControlSet\Enum\USBSTOR\Disk&amp;Ven_*&amp;Prod_*&amp;Rev_*\&lt;SerialNumber&gt;</span>
+    <div class="prose">
+      <p><strong>Each subkey</strong> represents one storage device that was ever plugged in. Values of forensic interest:</p>
+      <ul>
+        <li><code>FriendlyName</code> — human-readable description ("Kingston DataTraveler 3.0").</li>
+        <li><code>ContainerID</code> — a GUID that stays stable for the physical device even when reformatted; powerful join key across reinstallations.</li>
+        <li><code>Properties\{83da6326-97a6-4088-9453-a1923f573b29}\0064/0066/0067</code> — InstallDate, LastArrival, LastRemoval FILETIMEs.</li>
+        <li><code>DeviceDesc</code> + <code>HardwareID</code> — strings used by setupapi.dev.log to match.</li>
+      </ul>
+      <p><strong>The <em>SerialNumber</em></strong> in the registry path is the join key for everything below. If the SN ends in <code>&amp;0</code>, the device <em>does not have a real serial</em> (typically cheap flash drives) and Windows synthesised one from the bus location — meaning that "serial" is bus-position-dependent and not unique across hosts.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🔗</span><span class="ct">USB — the bus-level ledger</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">All USB devices, not just storage</span>
+    </div>
+    <span class="path">HKLM\SYSTEM\CurrentControlSet\Enum\USB\VID_*&amp;PID_*\&lt;SerialNumber&gt;</span>
+    <div class="prose">
+      <p>The bus-enumeration parent of USBSTOR (and of every other USB device — keyboards, webcams, software-defined radios, BadUSB-style impostors). Storage devices appear here too, with the same SerialNumber that USBSTOR uses, plus a <em>LocationInformation</em> value indicating the physical port that was used and the parent hub. Comparing arrival timestamps across nodes can sometimes show which physical port a stick was plugged into.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📌</span><span class="ct">MountedDevices — drive letter ↔ volume</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">VSN binding</span>
+      <span class="fvc k-integrity">Per-system, not per-user</span>
+    </div>
+    <span class="path">HKLM\SYSTEM\MountedDevices</span>
+    <div class="prose">
+      <p>One binary value per drive letter (<code>\DosDevices\E:</code>) and per volume GUID (<code>\??\Volume{guid}</code>). The binary payload encodes the NT device path — for USB volumes this string contains the <em>USBSTOR DeviceInstanceID</em> and embeds the volume serial number; for fixed disks it encodes the partition signature + offset.</p>
+      <p><strong>Use:</strong> given a VSN found in a LNK or ShellBag, search MountedDevices for the matching binary blob to recover the drive letter the system assigned. Inverse use: pick a drive letter from a Recent\*.lnk basepath and find which USBSTOR device backed it.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">📅</span><span class="ct">setupapi.dev.log — the install diary</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Wall-clock timestamps</span>
+      <span class="fvc k-recover">Text log, easy to parse</span>
+    </div>
+    <span class="path">C:\Windows\INF\setupapi.dev.log (current) + setupapi.dev.YYYYMMDD_HHMMSS.log (rotated)</span>
+    <div class="prose">
+      <p>Plain text. Every driver install or device-class enumeration writes a stanza with a UTC-offset timestamp, the device instance ID (VID/PID/SN), and the .inf file used. <em>The first appearance</em> of a given SerialNumber is the device's first-ever plug-in on this host — a fact USBSTOR's properties also record but is hardest to dispute when present here.</p>
+      <p>Rotated logs go back further than the registry sometimes does (especially on long-lived images that lost CurrentControlSet content during repair).</p>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span><strong>setupapi.dev.log can be edited.</strong> A motivated insider can scrub lines. Sanity-check against Kernel-PnP and DriverFrameworks-UserMode event logs, which the user typically cannot edit without admin rights and tooling.</span></div>
+  </div>
+
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">📜</span><span class="ct">Event log sources for USB activity</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Per-event timestamps</span>
+      <span class="fvc k-pivot">User context (some)</span>
+    </div>
+    <div class="tw"><table class="et">
+      <tr><th>Channel</th><th>EID</th><th>Meaning</th></tr>
+      <tr><td>Microsoft-Windows-Partition/Diagnostic</td><td>1006</td><td>Per-volume disk metadata on connect — VSN, MBR/GPT bytes, partition table dump, model + serial. <em>Richest single event for USB triage.</em></td></tr>
+      <tr><td>Microsoft-Windows-Kernel-PnP/Configuration</td><td>410, 411, 430</td><td>Device install / enumeration / driver-load events with full DeviceInstanceID.</td></tr>
+      <tr><td>Microsoft-Windows-DriverFrameworks-UserMode/Operational</td><td>2003, 2004, 2010, 2100, 2101, 2102, 2105</td><td>UMDF lifecycle events on connect / disconnect. Disabled by default in some versions of Windows.</td></tr>
+      <tr><td>Microsoft-Windows-Storage-Storport/Operational</td><td>varied</td><td>Disk-level events. Cross-check with USBSTOR enumeration.</td></tr>
+      <tr><td>Security</td><td>6416</td><td>"A new external device was recognised by the system" — only under audit policy <em>Audit PNP Activity</em> (Win10+). Includes user SID.</td></tr>
+      <tr><td>Microsoft-Windows-Ntfs/Operational</td><td>various</td><td>Volume mount / dismount events on Win10+.</td></tr>
+    </table></div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>Event 1006</strong> dumps the first 512 bytes of the disk including MBR signature, partition table, and (for many devices) the controller-issued serial. Two devices reporting identical VID/PID/SN — usually cheap clones — can still be told apart by their MBR signatures captured here.</span></div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">👤</span><span class="ct">MountPoints2 — the per-user binding</span></div>
+    <div class="fv">
+      <span class="fvc k-user">SPECIFIC user used the volume</span>
+      <span class="fvc k-time">Key last-write time</span>
+    </div>
+    <span class="path">NTUSER\Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2\{volume-guid}</span>
+    <div class="prose">
+      <p>Inside each profile's NTUSER there's a subkey for every volume GUID that user's Explorer instance ever <em>navigated into</em>. The presence of a MountPoints2 entry for volume {G} proves that this user — not just <em>some</em> user on the host — touched that volume.</p>
+      <p>The <em>key's last-write time</em> approximates the last time that user navigated to the volume in Explorer. Combined with §12 ShellBags entries under the same volume GUID, you get an immediate "did they actually browse it" signal.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🏷</span><span class="ct">VolumeInfoCache &amp; Windows Portable Devices</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Volume label history</span>
+    </div>
+    <span class="path">HKLM\SOFTWARE\Microsoft\Windows Search\VolumeInfoCache\&lt;drive&gt;</span>
+    <span class="path">HKLM\SOFTWARE\Microsoft\Windows Portable Devices\Devices\&lt;guid&gt;</span>
+    <div class="prose">
+      <p><strong>VolumeInfoCache</strong> stores the volume label as Windows Search saw it on the most recent mount of each drive letter. <strong>Windows Portable Devices\Devices</strong> stores the FriendlyName the device presented (sometimes the manufacturer's branding, sometimes the user's chosen volume label) and the device instance ID.</p>
+      <p>Together these give you the human-readable name of a volume even after it's been wiped or reformatted.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">Standard USB triage workflow</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">From mount to user</span>
+    </div>
+    <div class="prose">
+      <ol>
+        <li><strong>Enumerate devices.</strong> Dump USBSTOR + USB subkeys. For each, capture SerialNumber, FriendlyName, ContainerID, InstallDate / LastArrival / LastRemoval.</li>
+        <li><strong>Validate with setupapi.dev.log.</strong> First appearance line per SerialNumber.</li>
+        <li><strong>Bind to volumes.</strong> Walk MountedDevices, extract the DeviceInstanceID from each <code>\??\Volume{}</code> binary blob, match SN to USBSTOR. Capture drive letter mappings.</li>
+        <li><strong>Bind to users.</strong> For each profile, walk MountPoints2 — list volume GUIDs and key write times. Now you have (user, volume, time-of-explorer-access).</li>
+        <li><strong>Bind to events.</strong> Pull Event 1006 by date range and match VSN. Pull Kernel-PnP 410/411/430 by DeviceInstanceID for connect / disconnect timestamps.</li>
+        <li><strong>Bind to files.</strong> Search §12 LNK and ShellBag entries for the volume serials gathered above; search Recent\AutomaticDestinations (§13) for the same. This is where "what files did the user open from this stick" gets answered.</li>
+        <li><strong>Look for copies in the other direction.</strong> §04 <code>$UsnJrnl</code> on <code>C:</code> may record bulk reads from the removable volume (rarely) but more commonly records writes <em>to</em> the stick if it stayed inserted long enough — only useful when the stick itself is also under analysis.</li>
+      </ol>
+    </div>
+    <div class="al r"><span class="ali">!</span><span><strong>Spoofed serials are real.</strong> Some BadUSB / impersonation devices clone the VID/PID/SN of a known good device. Always check the MBR signature from Event 1006 — two devices reporting identical SN with different MBR signatures are not the same physical device.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🧨</span><span class="ct">USB-borne malware fingerprints</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Beyond storage</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>HID impersonators (Rubber Ducky, Bash Bunny, P4wnP1).</strong> Look in <code>USB\VID_*&amp;PID_*</code> under the <em>HID</em> class for devices with FriendlyName "HID Keyboard Device" plugged in at the same minute as an unexplained PowerShell launch (§10 / Sysmon 1).</li>
+        <li><strong>USB Ethernet (e.g. Bash Bunny in NAC bypass mode).</strong> A <em>Realtek RTL8152</em> appearing on a host that should not have USB Ethernet is suspect.</li>
+        <li><strong>Mass-storage with <code>autorun.inf</code></strong> — Windows 10/11 ignores autorun on most volumes by default, but the Win7-era artefact persists; absence of execution does not erase the registry trace of insertion.</li>
+        <li><strong>Encrypted USB partitions (BitLocker To Go, VeraCrypt).</strong> The outer USBSTOR entry looks normal; mounting the inner encrypted volume creates a <em>second</em> MountedDevices binding and a separate set of LNK volume serials.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🛠</span><span class="ct">Tooling cheat-sheet</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Don't parse by hand</span>
+    </div>
+    <div class="tw"><table class="et">
+      <tr><th>Tool</th><th>Use</th></tr>
+      <tr><td>USBDeviceForensics</td><td>One-shot device dump, very thorough</td></tr>
+      <tr><td>USBDetective</td><td>Commercial, deep cross-host history</td></tr>
+      <tr><td>RegRipper plugins</td><td>usbstor.pl, usb.pl, mountdev.pl, mp2.pl, portdev.pl</td></tr>
+      <tr><td>RECmd</td><td>EZ Tools batch maps for the same hives</td></tr>
+      <tr><td>EvtxECmd</td><td>Microsoft-Windows-Partition/Diagnostic 1006 has a Kroll map</td></tr>
+      <tr><td>KAPE USB target</td><td>Collects everything in one pass</td></tr>
+    </table></div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>USB evidence is multi-source by nature — every confident USB finding rests on three or four of the following:</p>
+    <ul>
+      <li><strong>§04 NTFS — <code>$Volume</code> &amp; <code>$UsnJrnl</code></strong> — VSN inside MountedDevices, LNK, and 1006 joins to <code>$Volume</code> on the stick itself when you have it. <code>$UsnJrnl</code> on C: occasionally records writes to mapped drive letters during long mounts.</li>
+      <li><strong>§07 SAM</strong> — MountPoints2 lives per-user; the SID resolved via SAM ties a specific human to a specific volume.</li>
+      <li><strong>§08 SYSTEM &amp; SOFTWARE</strong> — USBSTOR, USB, MountedDevices are all in SYSTEM; VolumeInfoCache and Windows Portable Devices live in SOFTWARE. The §08 walkthrough covers the parent structure.</li>
+      <li><strong>§09 NTUSER — MountPoints2, RecentDocs, TypedPaths</strong> — proves the user navigated to the USB drive letter and what they typed into the address bar to get there.</li>
+      <li><strong>§10 Application Execution</strong> — Prefetch entries naming a binary path on a USB drive letter (or Amcache rows with the USB volume's drive type) prove an EXE was executed <em>from</em> the stick — major distinguishing fact for "user merely browsed" vs "user ran something".</li>
+      <li><strong>§11 Cloud Storage</strong> — sometimes a stick is the bridge between an air-gapped host and cloud upload elsewhere. Cross with ODL upload events on neighbouring hosts using file hashes.</li>
+      <li><strong>§12 Shell Items &amp; LNK</strong> — every LNK with drive type <em>Removable</em> carries the VSN that joins back here. <em>Hot pivot:</em> grep LECmd CSV for non-fixed drive types.</li>
+      <li><strong>§13 Jump Lists</strong> — embedded per-entry LNKs in AutomaticDestinations preserve removable-drive references long after the LNK in Recent\ is gone.</li>
+      <li><strong>§15 Timeline &amp; Correlation</strong> — when assembled, USB plug-ins are anchor events. A connect at T, ShellBag write at T+5s, RecentDocs entry at T+45s, Prefetch first-run at T+60s, removal at T+10m is a textbook "user opened a binary off this stick" sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §14 USB Event Log &amp; Drive History</span>
+  <span>Next → §15 Network Forensics</span>
+</div>
+
+</div></body></html>

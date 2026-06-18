@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18 — SRUM · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--blue);--accent-dim:var(--blue-dim);--accent-deep:var(--blue-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">📊</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">18 — SRUM</span></div>
+      <div class="t1">SRUM — System Resource Usage Monitor</div>
+      <div class="t2">Hourly snapshots of which program ran, under whose SID, how much CPU it used, how many bytes it sent and received, and over which network — for the last ~30 days</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-b">SRUDB.dat</span>
+    <span class="b b-t">ESE / JET</span>
+    <span class="b b-g">Per-hour rows</span>
+    <span class="b b-a">Bytes Sent/Recv</span>
+    <span class="b b-p">SID-attributed</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">esentutl.exe</span><span class="tag">SrumECmd</span><span class="tag">ESEDatabaseView</span><span class="tag">srum-dump (mark baggett)</span><span class="tag">KAPE SRUM target/module</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">C:\Windows\System32\sru\SRUDB.dat</span><span class="tag">Application Resource Usage table</span><span class="tag">Network Data Usage table</span><span class="tag">Network Connectivity table</span><span class="tag">Push Notifications table</span><span class="tag">Energy Estimator</span><span class="tag">SruDbIdMapTable</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">SRUM DUMP</span><span class="tag">ID-Type mapping (app / user / network)</span><span class="tag">Hourly write cadence</span><span class="tag">30-day retention</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">📊</span><span class="ct">What SRUM is and why it's exceptional</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Long-term execution record</span>
+      <span class="fvc k-user">SID-attributed</span>
+      <span class="fvc k-time">Hourly cadence, ~30 days</span>
+      <span class="fvc k-pivot">Bytes per app per network</span>
+    </div>
+    <span class="path">C:\Windows\System32\sru\SRUDB.dat (primary)</span>
+    <span class="path">…\sru\*.log / *.jrs (ESE write-ahead logs)</span>
+    <div class="prose">
+      <p><strong>What:</strong> the <em>System Resource Usage Monitor</em> service (dssvc / DPS / Diagnostic Policy Service ecosystem) writes a snapshot of system activity every ~60 minutes, rotating ~30 days of history into a single ESE database. Where Prefetch tells you "this binary ran" and Amcache tells you "this binary existed", SRUM tells you <em>how much</em> a binary ran, <em>which user</em> ran it, <em>how much network</em> it used, and <em>over which connection</em> — for every hour back to a month.</p>
+      <p><strong>Why it matters forensically:</strong></p>
+      <ul>
+        <li>Survives Prefetch clearing — SRUM is on a different write schedule.</li>
+        <li>Gives <em>volumetric</em> evidence of exfiltration: bytes-out per process per hour.</li>
+        <li>Carries the SID, so it ties activity to a specific human even on shared machines.</li>
+        <li>Tracks <em>foreground / background time</em> per app, distinguishing user-interactive use from background daemons.</li>
+        <li>Records the network interface profile a process used — joins WiFi SSID to data transfer.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>SRUM is a Win8+ feature</strong>, mature on Win10/11, present on Windows Server 2012+ (where many admins disable it). On servers, do not assume absence — confirm the <em>DiagTrack</em> / <em>DPS</em> services were running and check policy.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🗂</span><span class="ct">Tables of interest</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Schema</span>
+    </div>
+    <div class="prose">
+      <p>SRUDB.dat is an ESE database; each "provider" writes into its own table named by a GUID. The ones investigators care about:</p>
+      <ul>
+        <li><strong>Application Resource Usage</strong> (<code>{D10CA2FE-6FCF-4F6D-848E-B2E99266FA89}</code>) — CPU cycles, foreground / background time, faults, in-process CPU bytes per app per user per hour.</li>
+        <li><strong>Network Data Usage</strong> (<code>{973F5D5C-1D90-4944-BE8E-24B94231A174}</code>) — <em>BytesSent</em>, <em>BytesRecvd</em>, link layer, interface GUID, per app per user per hour. <em>The exfil-detection table.</em></li>
+        <li><strong>Network Connectivity Usage</strong> (<code>{DD6636C4-8929-4683-974E-22C046A43763}</code>) — per-app per-interface connection lifetime — when a process was connected, how long.</li>
+        <li><strong>Push Notifications</strong> (<code>{D10CA2FE-6FCF-4F6D-848E-B2E99266FA8A}</code>) — per app push notification counts.</li>
+        <li><strong>Energy Usage</strong> (<code>{FEE4E14F-02A9-4550-B5CE-5FA2DA202E37}</code> + LT variant) — battery / power estimates per app.</li>
+        <li><strong>SruDbIdMapTable</strong> — the lookup that resolves every <em>AppId</em>, <em>UserId</em>, <em>InterfaceLuid</em> integer into a string (process path, user SID, interface GUID). <em>Every other table is unreadable without this one.</em></li>
+        <li><strong>SruDbCheckpointTable</strong> — checkpoint book-keeping; not directly forensic but reveals SRUM service health.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🔑</span><span class="ct">SruDbIdMapTable — the decoder ring</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Universal join key</span>
+    </div>
+    <div class="prose">
+      <p>Every numeric ID in the other tables ultimately points back here. Three types of value matter:</p>
+      <ul>
+        <li><em>App IDs</em> — full process image path (<code>\Device\HarddiskVolumeN\…\app.exe</code>) or AppUserModelID for packaged apps. Resolve the volume number using §08 MountedDevices.</li>
+        <li><em>User IDs</em> — binary-encoded SIDs.</li>
+        <li><em>Interface IDs</em> — encoded NIC GUIDs that join to §15 NetworkList\Profiles.</li>
+      </ul>
+      <p>SrumECmd handles this decoding automatically; parsers that just dump raw tables produce gibberish columns until joined.</p>
+    </div>
+  </div>
+
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">⛏</span><span class="ct">Acquisition &amp; parsing</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Workflow</span>
+      <span class="fvc k-integrity">Dirty-DB recovery</span>
+    </div>
+    <span class="path">esentutl.exe /r SRU /l . /s . /i        # replay logs against SRUDB.dat</span>
+    <span class="path">SrumECmd.exe -d C:\Windows\System32\sru --csv out</span>
+    <div class="prose">
+      <p><strong>Acquisition:</strong> the DPS service holds SRUDB.dat open with full file lock. Either:</p>
+      <ul>
+        <li>Acquire from a hibernated / shut-down image where the database is clean.</li>
+        <li>Use VSS (<code>esentutl.exe /y /vss</code> or KAPE's <em>SRUM</em> target).</li>
+        <li>On a live host, stop the <em>DPS</em> service, copy, restart — and document the service interruption.</li>
+      </ul>
+      <p><strong>Recovery:</strong> if the captured DB is dirty (header shows "State: Dirty Shutdown" via <code>esentutl /mh</code>), replay the captured log generation set with <code>esentutl /r</code>. <em>SRUM uses the prefix "SRU" for its log files</em> — that's the value passed to <code>/r</code>. Without the logs, force-repair via <code>esentutl /p</code> is destructive but salvages most rows.</p>
+      <p><strong>Parsing:</strong></p>
+      <ul>
+        <li><strong>SrumECmd</strong> (Eric Zimmerman) — fastest forensic-friendly path; outputs one CSV per table, with all IDs resolved, ready for Timeline Explorer.</li>
+        <li><strong>srum-dump</strong> (Mark Baggett) — uses an XLSX template; useful when you want pre-styled output.</li>
+        <li><strong>ESEDatabaseView</strong> (NirSoft) — raw GUI for ad-hoc table inspection.</li>
+      </ul>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span><strong>Rows in the "live" hour are buffered in memory</strong> and not flushed to SRUDB.dat until the hourly write. The last 0–60 minutes of activity may be missing from a freshly-acquired database. For maximum coverage, combine with memory acquisition (§02).</span></div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">📤</span><span class="ct">Reading Network Data Usage — exfil pattern</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Volumetric evidence</span>
+    </div>
+    <div class="prose">
+      <p>For each (app, user, interface, hour) tuple, the Network Data Usage table gives <em>BytesSent</em> and <em>BytesRecvd</em>. Read patterns:</p>
+      <ul>
+        <li><strong>Unknown binary with high BytesSent.</strong> Out-of-policy app uploading data — instant candidate for the malware Prefetch/Amcache hit.</li>
+        <li><strong>BytesSent &gt;&gt; BytesRecvd</strong> for a normally request/response process (e.g. browser): suggests upload activity (forms / file uploads).</li>
+        <li><strong>Activity on an unusual interface.</strong> A workstation that has only ever talked over its corp WiFi suddenly showing data on a "new" interface ID — pivot to §15 NetworkList\Profiles to see what network was joined.</li>
+        <li><strong>Per-user breakdown.</strong> Two SIDs on the same host, only one with the heavy traffic — who was logged in.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">⏱</span><span class="ct">Application Resource Usage — process intent</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">CPU + foreground time</span>
+    </div>
+    <div class="prose">
+      <p>Per app per user per hour:</p>
+      <ul>
+        <li><em>ForegroundCycleTime</em> / <em>BackgroundCycleTime</em> — CPU cycles in each state.</li>
+        <li><em>ForegroundContextSwitches</em> / <em>BackgroundContextSwitches</em>.</li>
+        <li><em>ForegroundBytesRead / Written</em> / Background equivalents — disk I/O attribution.</li>
+        <li><em>FaceTime</em> (Win10+) — wallclock time the app was actively foreground.</li>
+      </ul>
+      <p>Distinguishes interactive use ("the user ran Word for two hours") from background execution ("backupd ran briefly every hour"). Critical when defending whether human action was involved.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s4">
+    <div class="ch"><span class="ci">🧭</span><span class="ct">Practical investigative use</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">SRUM-led pivots</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Find the exfiltration binary.</strong> Sort Network Data Usage by BytesSent desc; ignore browser / OneDrive / Defender; the remaining outliers are the candidates. Pivot to §10 Prefetch / Amcache for first-run.</li>
+        <li><strong>Confirm user attribution.</strong> Prefetch and Amcache lack SID; SRUM has it. Joining gives "user X ran binary Y at hour H and uploaded Z bytes."</li>
+        <li><strong>Reconstruct a session.</strong> Application Resource Usage <em>FaceTime</em> against logon-session boundaries (§19 Security 4624 / 4634) shows what the user did while logged on.</li>
+        <li><strong>Detect dormant payloads.</strong> A process with high BackgroundCycleTime but tiny ForegroundCycleTime — typical for a C2 implant.</li>
+        <li><strong>Defeat "I wasn't there."</strong> 30 days of hourly snapshots leave little room to deny presence. Combine with §07 SAM logon counts and §11 cloud sign-in IPs.</li>
+        <li><strong>Cap the upper bound.</strong> When EDR is blind, SRUM is often the broadest historical record of what executed on a workstation.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>The 30-day window is approximate.</strong> Retention varies with disk usage, ESE rollover policy, and OS version. Some images preserve closer to 60 days; some closer to 14. Always check the oldest <em>TimeStamp</em> column in the parsed CSV before claiming a window.</span></div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🧨</span><span class="ct">Anti-forensics &amp; integrity</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Tampering detection</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>SRUM service stop / disable.</strong> Hour gaps in the Application Resource Usage table where prior hours had any process activity. Cross-check Service Control Manager events 7036 in System.evtx for <em>DPS</em> state changes.</li>
+        <li><strong>SRUDB.dat deletion.</strong> <code>$UsnJrnl</code> shows the FILE_DELETE; recovery from VSS or unallocated possible.</li>
+        <li><strong>Forced ESE rollover.</strong> Massive disk-fill attacks have been used to evict old SRUM rows. Free-space / chkdsk evidence around the supposed event is a tell.</li>
+        <li><strong>Rare: direct row editing.</strong> Requires kernel/admin and a willingness to break the ESE checksum. Rebuilt indexes after such edits leave fingerprints; SrumECmd will skip pages it can't parse.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Server / Win11 nuances</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Coverage variance</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Windows Server 2016/2019/2022</strong> — SRUM is present but often the DPS service is disabled by hardening baselines. Confirm before relying on it.</li>
+        <li><strong>Windows 11</strong> — schema additions for <em>EnergyEstimationProvider</em> and a few new column names; older parsers fall back gracefully.</li>
+        <li><strong>Modern apps (UWP / Win32 packaged)</strong> appear with AppUserModelID rather than EXE path. Map via §08 SOFTWARE\…\App Paths or known AppID DB.</li>
+        <li><strong>Volume serials in app paths</strong> — process image paths are recorded as <code>\Device\HarddiskVolumeN\…</code>; resolve N via §14 MountedDevices.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>SRUM is one of the best <em>single sources</em> on a modern Windows image — but every conclusion is stronger when joined back to the substrate:</p>
+    <ul>
+      <li><strong>§04 NTFS</strong> — disk I/O figures in Application Resource Usage correlate with <code>$UsnJrnl</code> bursts; mass deletions visible there should drive SRUM disk I/O for the responsible process.</li>
+      <li><strong>§07 SAM</strong> — SRUM's per-row SID joins to SAM to name the user.</li>
+      <li><strong>§08 SYSTEM — MountedDevices</strong> — resolves <code>\Device\HarddiskVolumeN</code> to drive letters, making SRUM AppId strings human-readable.</li>
+      <li><strong>§09 NTUSER</strong> — RecentDocs / UserAssist / Office MRU often explain <em>why</em> a given app showed up in SRUM at a specific hour.</li>
+      <li><strong>§10 Application Execution</strong> — SRUM corroborates Prefetch / Amcache / BAM. BAM records <em>last execution</em> per user; SRUM gives <em>cycles</em> over time. Together they bound "ran how often" and "ran for how long".</li>
+      <li><strong>§11 Cloud Storage</strong> — OneDrive.exe / Dropbox.exe BytesSent rises around sync events; ODL log entries pin the exact files.</li>
+      <li><strong>§14 USB</strong> — process I/O attributable to USB volumes via §08 mount data.</li>
+      <li><strong>§15 Network Forensics</strong> — SRUM's interface-attributed totals join to NetworkList\Profiles by interface GUID, identifying which WiFi network the bytes traversed.</li>
+      <li><strong>§16 Email Forensics</strong> — OUTLOOK.EXE bytes sent during a known mailbox export window quantifies the export.</li>
+      <li><strong>§17 Windows Artefacts</strong> — Search indexer's CPU profile visible in Application Resource Usage; explains spikes attributable to indexing not user activity.</li>
+      <li><strong>§19 Event Log Analysis</strong> — System.evtx 7036 events on the DPS service explain SRUM gaps. Security 4624/4634 frame the logon sessions whose SIDs SRUM attributes activity to.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §18 SRUM</span>
+  <span>Next → §19 Event Log Analysis</span>
+</div>
+
+</div></body></html>

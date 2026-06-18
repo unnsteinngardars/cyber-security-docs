@@ -68,6 +68,15 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
 .tile.t-8{--accent:var(--yellow);--accent-deep:var(--yellow-deep)}
 .tile.t-9{--accent:var(--amber);--accent-deep:var(--amber-deep)}
 .tile.t-10{--accent:var(--teal);--accent-deep:var(--teal-deep)}
+.tile.t-11{--accent:var(--blue);--accent-deep:var(--blue-deep)}
+.tile.t-12{--accent:var(--purple);--accent-deep:var(--purple-deep)}
+.tile.t-13{--accent:var(--red);--accent-deep:var(--red-deep)}
+.tile.t-14{--accent:var(--amber);--accent-deep:var(--amber-deep)}
+.tile.t-15{--accent:var(--teal);--accent-deep:var(--teal-deep)}
+.tile.t-16{--accent:var(--purple);--accent-deep:var(--purple-deep)}
+.tile.t-17{--accent:var(--amber);--accent-deep:var(--amber-deep)}
+.tile.t-18{--accent:var(--blue);--accent-deep:var(--blue-deep)}
+.tile.t-19{--accent:var(--red);--accent-deep:var(--red-deep)}
 .tile .n{font-family:var(--sans);font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--accent-deep,var(--purple-deep))}
 .tile .t{font-family:var(--sans);font-size:16px;font-weight:800;color:var(--hi);line-height:1.2}
 .tile .d{font-size:12.5px;color:var(--dm);line-height:1.65}
@@ -225,11 +234,119 @@ body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5
       <span class="lc k-recover">Recovery</span>
     </div>
   </a>
+
+  <a class="tile t-11" href="#/v3-11-cloud-storage" target="_top">
+    <div class="n">11</div>
+    <div class="t">Cloud Storage</div>
+    <div class="d">OneDrive, Dropbox, Google Drive, Box — where the local sync clients leave per-user databases, log streams, and traces of files that may never have lived on disk in full form.</div>
+    <div class="arts"><strong>Artefacts:</strong> OneDrive SyncEngineDatabase, SafeDelete, ODL logs, Personal Vault, Dropbox dbx, Google DriveFS metadata_sqlite_db, Box logs</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-pivot">Pivot</span>
+      <span class="lc k-recover">Recovery</span>
+    </div>
+  </a>
+
+  <a class="tile t-12" href="#/v3-12-shell-items-lnk" target="_top">
+    <div class="n">12</div>
+    <div class="t">Shell Items &amp; LNK</div>
+    <div class="d">LNK files and shellbags — the system's own catalogue of which folders and files a user navigated, with MAC timestamps, volume serial, and original target paths.</div>
+    <div class="arts"><strong>Artefacts:</strong> .lnk files, RecentDocs, ShellBags (BagMRU/Bags), Automatic/Custom Destinations IDs, Shell Item PIDLs</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+
+  <a class="tile t-13" href="#/v3-13-jump-lists" target="_top">
+    <div class="n">13</div>
+    <div class="t">Jump Lists</div>
+    <div class="d">Automatic and Custom Destinations — per-application MRU lists keyed by AppID. The DestList stream gives ordered access history with sub-second timestamps.</div>
+    <div class="arts"><strong>Artefacts:</strong> AutomaticDestinations *.automaticDestinations-ms, CustomDestinations, DestList stream, AppID hashes, Activities</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-execution">Execution</span>
+    </div>
+  </a>
+
+  <a class="tile t-14" href="#/v3-14-usb-devices" target="_top">
+    <div class="n">14</div>
+    <div class="t">USB Devices</div>
+    <div class="d">Tracing removable media: when was a USB plugged, by whom, with what drive letter, and which files left or arrived. Cross-hive evidence stitched by VSN.</div>
+    <div class="arts"><strong>Artefacts:</strong> USBSTOR, MountedDevices, setupapi.dev.log, Kernel-PnP 20001, Event 1006, MountPoints2 per-user, VSN linkage</div>
+    <div class="chips">
+      <span class="lc k-pivot">Pivot</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-user">User attrib.</span>
+    </div>
+  </a>
+
+  <a class="tile t-15" href="#/v3-15-network-forensics" target="_top">
+    <div class="n">15</div>
+    <div class="t">Network Forensics</div>
+    <div class="d">PCAP capture and dissection, host-side network config evidence, attacker traffic patterns, JA3, and the registry artefacts that anchor a host to networks it has joined.</div>
+    <div class="arts"><strong>Artefacts:</strong> PCAP (Wireshark/tshark/tcpdump/Scapy/NetworkMiner), TCP/IP registry config, NetworkList Profiles/Signatures, RDP MRU, Internet Settings</div>
+    <div class="chips">
+      <span class="lc k-pivot">Pivot</span>
+      <span class="lc k-execution">Traffic</span>
+      <span class="lc k-time">Timeline</span>
+    </div>
+  </a>
+
+  <a class="tile t-16" href="#/v3-16-email-forensics" target="_top">
+    <div class="n">16</div>
+    <div class="t">Email Forensics</div>
+    <div class="d">Reading the headers like a postcard: Received chain, Auth-Results, SPF/DKIM/DMARC. PST/OST/NST, extended MAPI headers, server logs, and webmail traces.</div>
+    <div class="arts"><strong>Artefacts:</strong> Email headers, SPF/DKIM/DMARC, PST/OST/NST stores, Extended MAPI headers, Exchange/M365 audit logs, webmail browser traces</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-integrity">Integrity</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+
+  <a class="tile t-17" href="#/v3-17-windows-artefacts" target="_top">
+    <div class="n">17</div>
+    <div class="t">Windows Artefacts (misc)</div>
+    <div class="d">Windows Search index, thumbnail and icon caches, and the SID-scoped $Recycle.Bin $I/$R pair — odds-and-ends that often hold the only surviving copy of a deleted file's metadata.</div>
+    <div class="arts"><strong>Artefacts:</strong> Windows.edb (ESE, esentutl /r), thumbcache_*.db, iconcache_*.db, $Recycle.Bin $I/$R files per-SID</div>
+    <div class="chips">
+      <span class="lc k-recover">Recovery</span>
+      <span class="lc k-hidden">Hidden</span>
+      <span class="lc k-user">User attrib.</span>
+    </div>
+  </a>
+
+  <a class="tile t-18" href="#/v3-18-srum" target="_top">
+    <div class="n">18</div>
+    <div class="t">SRUM</div>
+    <div class="d">~30 days of hourly application resource usage, network bytes-sent per-process, and connectivity history. The single best artefact for spotting low-and-slow data exfil.</div>
+    <div class="arts"><strong>Artefacts:</strong> SRUDB.dat (ESE), Application Resource Usage, Network Data Usage, Network Connectivity, SruDbIdMapTable, esentutl /r SRU</div>
+    <div class="chips">
+      <span class="lc k-execution">Execution</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
+
+  <a class="tile t-19" href="#/v3-19-event-log-analysis" target="_top">
+    <div class="n">19</div>
+    <div class="t">Event Log Analysis</div>
+    <div class="d">EVTX as the auditor's spine: Security/System/Application/TerminalServices/WLAN-AutoConfig channels, XPath filtering, the LogonId pivot, and the full RDP event chain.</div>
+    <div class="arts"><strong>Artefacts:</strong> winevt\Logs\*.evtx, EvtxECmd, XPath, Security log (Logon/Logoff, Account Logon, Object Access, Account Mgmt, Privilege Use, Policy Change)</div>
+    <div class="chips">
+      <span class="lc k-user">User attrib.</span>
+      <span class="lc k-time">Timeline</span>
+      <span class="lc k-pivot">Pivot</span>
+    </div>
+  </a>
 </div>
 
 <div class="ft">
   <span>CCDCOE IDFC — V3 · artefact-first cheat sheet</span>
-  <span>Sections 01–10 live · 11+ inherits from V2.</span>
+  <span>Sections 01–19 live.</span>
 </div>
 
 </div></body></html>

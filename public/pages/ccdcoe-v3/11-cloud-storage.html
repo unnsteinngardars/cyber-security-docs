@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11 — Cloud Storage · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--blue);--accent-dim:var(--blue-dim);--accent-deep:var(--blue-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">☁</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">11 — Cloud Storage</span></div>
+      <div class="t1">Cloud Storage — Files That Lived Somewhere Else First</div>
+      <div class="t2">OneDrive, Dropbox, Google Drive, Box — the sync clients write rich local logs that reveal exfiltration, staging, and the truth about files no longer on disk</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-b">OneDrive</span>
+    <span class="b b-t">Dropbox</span>
+    <span class="b b-g">Google Drive</span>
+    <span class="b b-a">Box</span>
+    <span class="b b-p">Files-On-Demand</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">SyncEngineDatabase.db</span><span class="tag">SafeDelete.db</span><span class="tag">UserCid.dat</span><span class="tag">ClientPolicy*.ini</span><span class="tag">filecache.dbx</span><span class="tag">deleted.dbx</span><span class="tag">config.dbx</span><span class="tag">DriveFS metadata_sqlite_db</span><span class="tag">snapshot.db</span><span class="tag">Box Edit logs</span><span class="tag">odl / odlsent</span><span class="tag">Personal Vault</span></div>
+  <div class="row"><span class="sl">Parsed by</span><span class="tag">OneDriveExplorer</span><span class="tag">SQLECmd</span><span class="tag">DB Browser for SQLite</span><span class="tag">DBX Decoder (DropboxDecode)</span><span class="tag">Magnet AXIOM Cloud</span><span class="tag">odl-parser (cclgroup)</span><span class="tag">KAPE Targets: CloudStorage_All</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Reparse points / placeholders</span><span class="tag">Hydrated vs dehydrated</span><span class="tag">Resource ID ↔ Path mapping</span><span class="tag">DPAPI-wrapped tokens</span><span class="tag">Selective sync</span><span class="tag">Tenant SharePoint vs Personal</span><span class="tag">Server-side delete</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📁</span><span class="ct">OneDrive — SyncEngineDatabase.db</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Authoritative sync state</span>
+      <span class="fvc k-pivot">Resource ID ↔ Path</span>
+      <span class="fvc k-time">eTag history</span>
+    </div>
+    <span class="path">%LocalAppData%\Microsoft\OneDrive\settings\Personal|Business1\SyncEngineDatabase.db</span>
+    <div class="prose">
+      <p><strong>Where:</strong> per-tenant subfolder (<code>Personal</code> for consumer accounts, <code>Business1..N</code> for each work tenant signed in). The SQLite database is the OneDrive client's source of truth: every file the user has touched in the synced root has at least one row. The companion file <code>SyncEngineDatabase.db-wal</code> often contains the most recent transactions and <em>must</em> be carved together with the main file.</p>
+      <p><strong>Key tables:</strong></p>
+      <ul>
+        <li><code>od_ClientFile</code> — one row per object with <em>resourceID</em>, <em>parentResourceID</em>, <em>localHashDigest</em>, <em>serverHashDigest</em>, <em>size</em>, file/folder flag, and the <em>localWriteTime</em> / <em>serverLastChange</em> pair that exposes pre-sync clock skew.</li>
+        <li><code>od_GraphMetadata_Records</code> — sharing, links, sensitivity labels, and (post-Sept 2021 clients) per-file <em>eTags</em> capturing every server-side mutation.</li>
+        <li><code>od_HydrationData</code> — for Files-On-Demand, distinguishes <em>always available</em>, <em>online-only</em>, <em>locally available</em>, the moment hydration occurred, and any pinning user action.</li>
+      </ul>
+      <p><strong>Answers:</strong> what the user has in their OneDrive even when local cache is empty; what was deleted and when; what was renamed; what hash the server holds (joins against §10 Prefetch on payload binaries staged from cloud).</p>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span>Files-On-Demand placeholders are <strong>NTFS reparse points</strong> with an <code>IO_REPARSE_TAG_CLOUD</code> tag. They show in <code>$MFT</code> as zero physical bytes — §04 NTFS will appear to show an empty file. <em>Always cross-check SyncEngineDatabase</em> before concluding a user "had no copy."</span></div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🗑</span><span class="ct">OneDrive — SafeDelete.db &amp; UserCid.dat</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Tombstones</span>
+      <span class="fvc k-pivot">Account identity</span>
+      <span class="fvc k-integrity">Server-side deletes</span>
+    </div>
+    <span class="path">…\OneDrive\settings\&lt;tenant&gt;\SafeDelete.db</span>
+    <span class="path">…\OneDrive\settings\&lt;tenant&gt;\UserCid.dat (plaintext CID/objectID)</span>
+    <div class="prose">
+      <p><strong>SafeDelete.db</strong> holds soft-delete and conflict resolution metadata — the local record of "the server said this is gone." Each row carries the resourceID, full path at time of deletion, timestamp, and the deletion source (<em>user</em>, <em>server</em>, <em>policy</em>, <em>retention</em>). When server-side admin deletes happen during an investigation (e.g. exfil cleanup), this is often the only host-side proof the file ever existed.</p>
+      <p><strong>UserCid.dat</strong> stores the customer/tenant identifier — for Personal accounts a 16-hex-character CID, for Business the Azure objectID of the user. <em>This is the join key</em> against M365 Unified Audit Logs, SharePoint sign-in logs, and Azure AD audit records.</p>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span>The <strong>Recycle Bin in OneDrive runs server-side for 30–93 days</strong> and is NOT mirrored locally. If a threat actor used the web UI to delete uploaded data, SafeDelete will record the local tombstone but the file body lives only in M365 — request preservation immediately.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📝</span><span class="ct">OneDrive ODL Logs — the verbose telemetry stream</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Per-event timeline</span>
+      <span class="fvc k-pivot">Function-level traces</span>
+      <span class="fvc k-recover">Survives cache wipe</span>
+    </div>
+    <span class="path">%LocalAppData%\Microsoft\OneDrive\logs\Personal|Business1\*.odl[gz|sent]</span>
+    <div class="prose">
+      <p><strong>What:</strong> binary, gzip-compressed structured logs written by every running OneDrive process. Each row is a function-call event with timestamp, thread ID, function name, and 1–4 free-form parameter strings (paths, error codes, HTTP responses). Path strings are obfuscated with a per-install <em>Obfuscation Map</em> (the <code>ObfuscationStringMap.txt</code> file in the same folder) — without that map you only see hashes.</p>
+      <p><strong>Why it matters:</strong> ODL captures <em>every</em> upload, download, hydration, rename, conflict, throttling event, and authentication step — far more granularity than SyncEngineDatabase. Post-incident exfil scenarios live or die on ODL because it records WHICH file went up and WHEN, including the bytes-uploaded counter.</p>
+      <p><strong>Retention:</strong> the client rotates roughly daily and keeps about 30 logs before pruning — <em>collect early</em>. Parsed with Yogesh Khatri's <code>odl.py</code>, the open-source CCL Solutions parser, or KAPE's <code>OneDriveLogs</code> module.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🔐</span><span class="ct">OneDrive Personal Vault</span></div>
+    <div class="fv">
+      <span class="fvc k-hidden">BitLocker volume</span>
+      <span class="fvc k-user">MFA-protected</span>
+      <span class="fvc k-integrity">2-FA auth event</span>
+    </div>
+    <span class="path">%UserProfile%\OneDrive\Personal Vault (presents as locked drive when active)</span>
+    <div class="prose">
+      <p><strong>Mechanism:</strong> Personal Vault mounts a small BitLocker-To-Go VHD as a virtual drive whenever the user authenticates with MFA. While unlocked, contents are normal NTFS files; when locked, only the VHD remains.</p>
+      <p><strong>Forensic surface:</strong></p>
+      <ul>
+        <li><code>ClientPolicy_Vault*.ini</code> in the settings folder marks vault presence.</li>
+        <li>ODL <em>VaultUnlock</em> and <em>VaultLock</em> events stamp every access — these tie to a specific TOTP or app-prompt MFA challenge in Azure AD.</li>
+        <li>SyncEngineDatabase rows for vault items carry an isolated <code>parentResourceID</code> beneath a sentinel "Vault Root" object.</li>
+        <li>Once unlocked, Vault items appear in §09 NTUSER RecentDocs / §12 LNK like any normal file — providing the only easy index of what was inside.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">📦</span><span class="ct">Dropbox — filecache.dbx, deleted.dbx, config.dbx</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">SQLite, mostly</span>
+      <span class="fvc k-pivot">Server hashes</span>
+      <span class="fvc k-recover">Deleted-file ledger</span>
+      <span class="fvc k-integrity">Per-host encryption (legacy)</span>
+    </div>
+    <span class="path">%LocalAppData%\Dropbox\instance1\filecache.dbx (current) / instance_db (older clients)</span>
+    <div class="prose">
+      <p><strong>filecache.dbx</strong> is a SQLite database whose tables include <code>file_journal</code> (server_path, local_path, server_size, server_mtime, server_hash, local_size, local_mtime, local_hash) and <code>block_cache</code> (hash → chunk pointers). Modern (2017+) clients store it in cleartext SQLite; very old Dropbox clients wrapped the file with an SQLite extension keyed off DPAPI material — for those, you need the user's password or DPAPI master key.</p>
+      <p><strong>deleted.dbx</strong> is the local tombstone log — every server-deleted file leaves a row with original path, last server modification time, and deletion timestamp. Like OneDrive's SafeDelete, this often outlives the file body itself.</p>
+      <p><strong>config.dbx</strong> holds the linked account ID, host_id (the cookie the server uses to authenticate this install — <em>treat as a credential</em> when handling images), client_version, and selective-sync exclusion list. The exclusion list reveals folders the user <em>chose not</em> to sync — a powerful tell for staging behaviour.</p>
+      <p><strong>Hashes:</strong> Dropbox uses a unique block-hash scheme (4 MB SHA-256 blocks, concatenated, hashed again). Two installs of the same file produce identical block hashes — useful for joining across endpoints in multi-host incidents.</p>
+    </div>
+    <div class="al r"><span class="ali">✖</span><span><strong>The host_id in config.dbx is enough to impersonate the Dropbox client to the server</strong>, retrieving the user's whole namespace. Treat this artefact like a session token: image it, do not casually share, and rotate the user's password before returning the device.</span></div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">📂</span><span class="ct">Google Drive for Desktop (DriveFS)</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">SQLite metadata</span>
+      <span class="fvc k-pivot">DocID survives rename</span>
+      <span class="fvc k-time">Modification log</span>
+    </div>
+    <span class="path">%LocalAppData%\Google\DriveFS\&lt;profile-id&gt;\metadata_sqlite_db</span>
+    <div class="prose">
+      <p><strong>What:</strong> the current Google Drive client (formerly Backup &amp; Sync / File Stream) projects a virtual drive letter and caches metadata in <code>metadata_sqlite_db</code>. Key tables include <code>items</code> (the docID, parents, mime type, title, size, modified time, viewed-by-me time) and <code>stable_id</code> mapping rows that survive folder moves and renames.</p>
+      <p><strong>Why docID matters:</strong> Google's docID is immutable for the life of the file — even if the user renames a document, the docID stays. This lets you correlate against Google Workspace Admin audit logs (which always log docID, not path) and prove the same document was opened across endpoints.</p>
+      <p><strong>Companion:</strong> <code>content_cache\</code> holds locally-cached file bodies named by content hash — recover deleted-from-Drive bodies here even when the row is gone from <code>items</code>.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📥</span><span class="ct">Box Drive &amp; Box Tools</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Edit-then-upload events</span>
+      <span class="fvc k-pivot">Enterprise file_id</span>
+      <span class="fvc k-recover">Local cache copies</span>
+    </div>
+    <span class="path">%LocalAppData%\Box\Box\data\boxdata.sqlite (Box Drive)</span>
+    <span class="path">%LocalAppData%\Box\Box Edit\Documents\&lt;id&gt;\… (Box Edit working copies)</span>
+    <div class="prose">
+      <p>Box Drive's <code>boxdata.sqlite</code> tracks file_id, parent_id, name, size, modified_at, owner_id and sync_status. The Box Edit helper writes <em>full local working copies</em> any time a user clicks "Open" in the web UI on an Office doc — these working copies are often the only place an enterprise document touches the endpoint disk, and they live under per-doc subfolders even after the user "closes" the edit session.</p>
+      <p>Browser-driven uploads (sandbox), CLI uploads (Box CLI), and the Box for Office add-in each leave different traces — confirm <em>which</em> client was in use before reasoning about completeness.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🚨</span><span class="ct">Exfiltration triage — what to look for first</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Bulk download anomalies</span>
+      <span class="fvc k-time">Off-hours sync bursts</span>
+      <span class="fvc k-user">Newly-linked accounts</span>
+    </div>
+    <div class="prose">
+      <p>Cloud sync clients are dual-use — they're how data leaves <em>and</em> how forensic evidence arrives. A quick triage when a host is suspected of exfil:</p>
+      <ul>
+        <li><strong>New tenants:</strong> count subfolders under <code>OneDrive\settings\</code>. <em>Business2</em> appearing where there was only <em>Business1</em> means a second M365 tenant was linked — usually an attacker-controlled mailbox or a personal account.</li>
+        <li><strong>config.dbx / settings timestamps:</strong> sudden modification right before the incident equals new auth or selective-sync change.</li>
+        <li><strong>ODL "Upload" events vs SyncEngineDatabase size deltas:</strong> if ODL records uploads of files that no longer appear in the database, the attacker uploaded then unlinked.</li>
+        <li><strong>Browser downloads of installers</strong> for sync clients the org doesn't sanction (rclone, MEGAsync, pCloud) — §15 will pivot here using §10 Prefetch / Amcache.</li>
+        <li><strong>Wallpaper, screen-time, and presence APIs</strong> recorded in ODL reveal whether the user was actively at the keyboard during the upload — distinguishes interactive exfil from background sync.</li>
+      </ul>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span><strong>Sync clients can also be used to <em>stage</em> malware</strong>. A binary that appears in <code>%UserProfile%\OneDrive\…</code> and then runs out of that path will leave Prefetch / Amcache execution evidence but no Internet browser download history — the OneDrive sync was the delivery channel. Joining ODL upload events from a different host against this host's hydration events proves the lateral path.</span></div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🔍</span><span class="ct">Cross-cloud parser quick-reference</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Tooling</span>
+    </div>
+    <div class="tw"><table class="et">
+      <tr><th>Service</th><th>Tool</th></tr>
+      <tr><td>OneDrive</td><td>OneDriveExplorer (Brian Maloney), KAPE OneDrive module, odl-parser</td></tr>
+      <tr><td>Dropbox</td><td>DropboxDecode, Magnet AXIOM, manual SQLite</td></tr>
+      <tr><td>Google Drive</td><td>DriveFS-parser, GFEParser, Magnet AXIOM Cloud</td></tr>
+      <tr><td>Box</td><td>Manual SQLite + Box Edit folder listing</td></tr>
+      <tr><td>Universal</td><td>SQLECmd maps, DB Browser for SQLite, EvtxECmd for Edge/IE WebDriver download events</td></tr>
+    </table></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📊</span><span class="ct">Server-side data to pull in parallel</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Cloud-side audit</span>
+    </div>
+    <div class="prose">
+      <p>Host-side cloud artefacts are necessary but never sufficient. Pair every endpoint with:</p>
+      <ul>
+        <li><strong>M365 Unified Audit Log</strong> — joins UserCid.dat / objectID; preserve for 180+ days via litigation hold.</li>
+        <li><strong>Azure AD sign-in logs</strong> — geolocation + device ID per OneDrive auth.</li>
+        <li><strong>Google Workspace Admin Audit (Drive scope)</strong> — joins docID; gives view/download/share events the client never sees.</li>
+        <li><strong>Dropbox Business Audit Log</strong> — joins host_id.</li>
+        <li><strong>Box Enterprise Events API</strong> — joins file_id; captures shared-link creation that's invisible client-side.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>Cloud sync evidence is rarely the whole story — every finding here needs joining to the local-host substrate:</p>
+    <ul>
+      <li><strong>§04 NTFS — reparse points</strong> — Files-On-Demand placeholders appear in <code>$MFT</code> as zero-byte reparse tags. <em>Do not</em> conclude a file is missing without checking SyncEngineDatabase first. <code>$UsnJrnl</code> records hydration as a normal <em>FILE_CREATE / DATA_OVERWRITE</em>.</li>
+      <li><strong>§07 SAM</strong> — the Windows account that holds the sync tokens resolves to a SID in SAM; that SID joins SyncEngineDatabase metadata to a real human.</li>
+      <li><strong>§08 SOFTWARE — Run / Uninstall keys</strong> — confirms which sync clients are autostarted and which were ever installed (including uninstalled remnants that still leave settings folders).</li>
+      <li><strong>§09 NTUSER — RecentDocs / TypedPaths</strong> — opening a Files-On-Demand placeholder hydrates AND adds a RecentDocs entry; absence of RecentDocs for a file present in SyncEngineDatabase suggests programmatic / script access.</li>
+      <li><strong>§10 Application Execution</strong> — Prefetch / Amcache for binaries staged from cloud locations close the loop on "the file came from OneDrive and ran." OneDrive.exe itself appears in BAM with the SID, anchoring sync activity to a logon session.</li>
+      <li><strong>§12 LNK</strong> — when a user pinned or right-clicked a cloud file, the LNK target path carries the local cache location; the <code>TrackerDataBlock</code> carries the volume serial of <em>C:</em>, not of any cloud storage — useful for distinguishing a launched cached copy from a "View Online" click.</li>
+      <li><strong>§14 USB</strong> — for full data-loss timelines, cross USB plug-in events with sudden Dropbox / OneDrive selective-sync changes that would have moved data <em>off</em> cloud onto removable media.</li>
+      <li><strong>§15 Timeline &amp; Correlation</strong> — ODL is the most timestamp-dense source on a Windows host and will dominate any cloud-incident timeline. Normalise to UTC and merge with EvtxECmd output before reading.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §11 Cloud Storage</span>
+  <span>Next → §12 Shell Items &amp; LNK</span>
+</div>
+
+</div></body></html>

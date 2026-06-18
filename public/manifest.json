@@ -86,6 +86,36 @@
           "file": "pages/digital-forensics-cheatsheet.html"
         },
         {
+          "title": "CCDCOE IDFC V3",
+          "file": "pages/windows-forensics-course-cheatsheet-v3.html",
+          "children": [
+            { "title": "01 — Evidence Collection", "slug": "v3-01-evidence-collection", "file": "pages/ccdcoe-v3/01-evidence-collection.html" },
+            { "title": "02 — Memory Forensics", "slug": "v3-02-memory-forensics", "file": "pages/ccdcoe-v3/02-memory-forensics.html" },
+            { "title": "03 — KAPE & AIM", "slug": "v3-03-kape-aim", "file": "pages/ccdcoe-v3/03-kape-aim.html" },
+            { "title": "04 — Windows Filesystem / NTFS", "slug": "v3-04-ntfs", "file": "pages/ccdcoe-v3/04-ntfs.html" },
+            { "title": "05 — File Carving", "slug": "v3-05-file-carving", "file": "pages/ccdcoe-v3/05-file-carving.html" },
+            { "title": "06 — Registries Overview", "slug": "v3-06-registries-overview", "file": "pages/ccdcoe-v3/06-registries-overview.html" },
+            { "title": "07 — SAM Hive", "slug": "v3-07-sam", "file": "pages/ccdcoe-v3/07-sam.html" },
+            { "title": "08 — SYSTEM & SOFTWARE Hives", "slug": "v3-08-system-software", "file": "pages/ccdcoe-v3/08-system-software.html" },
+            { "title": "09 — NTUSER.dat", "slug": "v3-09-ntuser-dat", "file": "pages/ccdcoe-v3/09-ntuser-dat.html" },
+            { "title": "10 — Application Execution", "slug": "v3-10-application-execution", "file": "pages/ccdcoe-v3/10-application-execution.html" },
+            { "title": "11 — Cloud Storage", "slug": "v3-11-cloud-storage", "file": "pages/ccdcoe-v3/11-cloud-storage.html" },
+            { "title": "12 — Shell Items & LNK", "slug": "v3-12-shell-items-lnk", "file": "pages/ccdcoe-v3/12-shell-items-lnk.html" },
+            { "title": "13 — Jump Lists", "slug": "v3-13-jump-lists", "file": "pages/ccdcoe-v3/13-jump-lists.html" },
+            { "title": "14 — USB Event Log & Drive History", "slug": "v3-14-usb-devices", "file": "pages/ccdcoe-v3/14-usb-devices.html" },
+            { "title": "15 — Network Forensics", "slug": "v3-15-network-forensics", "file": "pages/ccdcoe-v3/15-network-forensics.html" },
+            { "title": "16 — Email Forensics", "slug": "v3-16-email-forensics", "file": "pages/ccdcoe-v3/16-email-forensics.html" },
+            { "title": "17 — Windows Artefacts", "slug": "v3-17-windows-artefacts", "file": "pages/ccdcoe-v3/17-windows-artefacts.html" },
+            { "title": "18 — SRUM", "slug": "v3-18-srum", "file": "pages/ccdcoe-v3/18-srum.html" },
+            { "title": "19 — Event Log Analysis", "slug": "v3-19-event-log-analysis", "file": "pages/ccdcoe-v3/19-event-log-analysis.html" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Archive",
+      "children": [
+        {
           "title": "CCDCOE IDFC",
           "file": "pages/windows-forensics-course-cheatsheet.html"
         },
@@ -106,22 +136,6 @@
             { "title": "11 — Cloud Storage", "file": "pages/ccdcoe-v2/11-cloud-storage.html" },
             { "title": "12 — Shell Items & LNK", "file": "pages/ccdcoe-v2/12-shell-items-lnk.html" },
             { "title": "13 — Jump Lists & Shellbags", "file": "pages/ccdcoe-v2/13-jumplists-shellbags.html" }
-          ]
-        },
-        {
-          "title": "CCDCOE IDFC V3",
-          "file": "pages/windows-forensics-course-cheatsheet-v3.html",
-          "children": [
-            { "title": "01 — Evidence Collection", "slug": "v3-01-evidence-collection", "file": "pages/ccdcoe-v3/01-evidence-collection.html" },
-            { "title": "02 — Memory Forensics", "slug": "v3-02-memory-forensics", "file": "pages/ccdcoe-v3/02-memory-forensics.html" },
-            { "title": "03 — KAPE & AIM", "slug": "v3-03-kape-aim", "file": "pages/ccdcoe-v3/03-kape-aim.html" },
-            { "title": "04 — Windows Filesystem / NTFS", "slug": "v3-04-ntfs", "file": "pages/ccdcoe-v3/04-ntfs.html" },
-            { "title": "05 — File Carving", "slug": "v3-05-file-carving", "file": "pages/ccdcoe-v3/05-file-carving.html" },
-            { "title": "06 — Registries Overview", "slug": "v3-06-registries-overview", "file": "pages/ccdcoe-v3/06-registries-overview.html" },
-            { "title": "07 — SAM Hive", "slug": "v3-07-sam", "file": "pages/ccdcoe-v3/07-sam.html" },
-            { "title": "08 — SYSTEM & SOFTWARE Hives", "slug": "v3-08-system-software", "file": "pages/ccdcoe-v3/08-system-software.html" },
-            { "title": "09 — NTUSER.dat", "slug": "v3-09-ntuser-dat", "file": "pages/ccdcoe-v3/09-ntuser-dat.html" },
-            { "title": "10 — Application Execution", "slug": "v3-10-application-execution", "file": "pages/ccdcoe-v3/10-application-execution.html" }
           ]
         }
       ]
