@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16 — Email Forensics · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--purple);--accent-dim:var(--purple-dim);--accent-deep:var(--purple-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">✉</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">16 — Email Forensics</span></div>
+      <div class="t1">Email Forensics — Headers, Stores, and the Path a Message Travelled</div>
+      <div class="t2">Local PST/OST stores, host-cached webmail, and the auth-result headers that survive across every hop — together they tell who actually sent what, when, and from where</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-p">Headers</span>
+    <span class="b b-b">PST/OST/NST</span>
+    <span class="b b-a">MAPI</span>
+    <span class="b b-g">SPF/DKIM/DMARC</span>
+    <span class="b b-t">Webmail Cache</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">Outlook</span><span class="tag">Xst Reader</span><span class="tag">libpff (pffexport)</span><span class="tag">readpst</span><span class="tag">Aid4Mail</span><span class="tag">Magnet AXIOM Email</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">Email Headers</span><span class="tag">Body &amp; attachments</span><span class="tag">Metadata</span><span class="tag">Store files (PST/OST/NST)</span><span class="tag">Server / Cloud logs</span><span class="tag">Webmail traces</span><span class="tag">SPF</span><span class="tag">DKIM</span><span class="tag">DMARC</span><span class="tag">Extended MAPI headers</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">Host-based email storage</span><span class="tag">Mail server</span><span class="tag">Cloud email server</span><span class="tag">Mobile storage</span><span class="tag">Attachment recovery from PST/OST messages</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-p s4">
+    <div class="ch"><span class="ci">📨</span><span class="ct">Email headers — the immutable trail</span></div>
+    <div class="fv">
+      <span class="fvc k-time">Per-hop timestamps</span>
+      <span class="fvc k-pivot">Auth attribution</span>
+      <span class="fvc k-integrity">Hardest to fake</span>
+    </div>
+    <span class="path">RFC 5322 / RFC 5321 headers — present in every message regardless of client</span>
+    <div class="prose">
+      <p>Read every header from the <em>bottom</em> up. Each MTA prepends a <code>Received:</code> line as it accepts the message — the oldest hop is closest to the body, the most recent is at the top. Read in that direction and you reconstruct the path.</p>
+      <p><strong>Forensically interesting headers:</strong></p>
+      <ul>
+        <li><code>Received:</code> — each line records the receiving server, sending server, protocol (SMTP / ESMTP / ESMTPSA), TLS state, queue ID, and UTC timestamp. The first Received line (bottom of the stack) reveals the <em>actual</em> originating IP, often very different from the From address.</li>
+        <li><code>From:</code> — sender as the user wrote it. <em>Trivially forged</em>. Check Reply-To and Return-Path for divergence.</li>
+        <li><code>Reply-To:</code> — where replies go. Mismatch with From is a classic phishing IOC.</li>
+        <li><code>Message-ID:</code> — a globally unique ID issued by the originating MTA. Format <code>&lt;random@originating-host&gt;</code> exposes the sender's mail platform.</li>
+        <li><code>Date:</code> — sender's claimed send time. Compare to the bottom-most Received timestamp; large skew suggests clock manipulation or replay.</li>
+        <li><code>Authentication-Results:</code> — receiver's verdict on SPF, DKIM, DMARC, ARC. The single most important header for attribution. Multi-hop systems may have several of these, each from a different verifier.</li>
+        <li><code>X-* headers</code> — vendor-specific. <code>X-Originating-IP</code>, <code>X-Mailer</code>, <code>X-MS-Exchange-CrossTenant-AuthSource</code>, <code>X-Sender-IP</code>, anti-spam scoring (<code>X-Microsoft-Antispam</code>, <code>X-Forefront-Antispam-Report</code>) all carry intelligence.</li>
+        <li><code>References:</code> / <code>In-Reply-To:</code> — Message-IDs of prior messages in the thread. Reconstructs conversation graphs even when individual mailboxes are missing.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>Authentication-Results is not optional intelligence — it's evidence.</strong> A message where SPF=pass DKIM=pass DMARC=pass from a legitimate domain is hard to forge without compromising sender infrastructure; one where all three fail is hard to defend as legitimate.</span></div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><span class="ci">🛡</span><span class="ct">SPF — sender path validation</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">DNS-published policy</span>
+    </div>
+    <div class="prose">
+      <p><strong>What it does:</strong> the sending domain publishes a DNS TXT record (<code>v=spf1 …</code>) listing the IPs allowed to send mail for that domain. Receivers compare the SMTP envelope <em>MAIL FROM</em> address against the IP that connected.</p>
+      <p><strong>Forensic value:</strong></p>
+      <ul>
+        <li><em>pass</em> — sender IP is in policy.</li>
+        <li><em>fail</em> / <em>softfail</em> — out of policy; usually phishing or misconfiguration.</li>
+        <li><em>neutral</em> / <em>none</em> — domain has no policy or did not commit.</li>
+        <li>SPF does not authenticate the visible <em>From:</em> header — only the envelope sender. A spoofed From: with a legitimate envelope sender can pass SPF. Always join with DKIM.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">✍</span><span class="ct">DKIM — cryptographic signature</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Signed-by-domain</span>
+    </div>
+    <div class="prose">
+      <p>The sending mail system computes an RSA / Ed25519 signature over selected headers + body and publishes the verifier key as a DNS TXT record under <code>&lt;selector&gt;._domainkey.&lt;domain&gt;</code>. Receivers fetch the key and verify.</p>
+      <p><strong>What survives a DKIM pass:</strong></p>
+      <ul>
+        <li>Sender domain controlled the signing infrastructure at send time.</li>
+        <li>Body and signed headers are byte-identical to what the sender produced.</li>
+        <li>Selector + algorithm preserve a fingerprint of the sending platform.</li>
+      </ul>
+      <p>An old DKIM-passing message is <em>self-authenticating evidence</em> years later — provided the historical key was rotated and recorded.</p>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span><strong>Short DKIM keys (1024-bit RSA) are forgeable</strong> by well-resourced adversaries — and old leaked keys cannot be re-rotated for past mail. Document key length and selector when basing findings on DKIM.</span></div>
+  </div>
+
+  <div class="c c-g s4">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">DMARC — alignment + policy</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Policy-driven verdict</span>
+      <span class="fvc k-pivot">Visible From alignment</span>
+    </div>
+    <div class="prose">
+      <p>DMARC layers on top of SPF and DKIM: published in DNS as <code>_dmarc.&lt;domain&gt;</code>, it specifies the <em>From:</em>-domain owner's policy (<em>none</em> / <em>quarantine</em> / <em>reject</em>) and reporting addresses. The key test DMARC adds is <strong>alignment</strong> — the From-header domain must match SPF's <em>MAIL FROM</em> domain (relaxed/strict) <em>or</em> the DKIM <em>d=</em> tag.</p>
+      <p>This is the gap that purely SPF or purely DKIM cannot close: an attacker can SPF-pass with their own domain in the envelope; alignment forces it to be the same domain the user sees.</p>
+      <p><strong>What to do with the DMARC verdict:</strong></p>
+      <ul>
+        <li><em>pass</em> — the visible From: was signed-or-pathed by the domain owner. Treat as authentic absent further indicators.</li>
+        <li><em>fail</em> with a published <em>reject</em> policy that the receiver respected — message would not normally reach an inbox. Its presence in a mailbox means policy bypass (allow-listing, M365 quarantine release, mailbox-rule retrieval, etc.) and is itself an event of interest.</li>
+        <li><em>fail</em> with <em>none</em> policy — sender published intent only.</li>
+      </ul>
+    </div>
+    <div class="al g"><span class="ali">✓</span><span><strong>DMARC RUA aggregate reports</strong> (sent to the address in <em>rua=</em>) give defenders historical visibility into who has been sending mail claiming their domain. They are an underused intelligence source for tracing impersonation campaigns.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">📦</span><span class="ct">PST — Outlook's offline mailbox</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">User-owned archive</span>
+      <span class="fvc k-pivot">Mailbox export</span>
+    </div>
+    <span class="path">%UserProfile%\Documents\Outlook Files\*.pst</span>
+    <span class="path">(older defaults) %LocalAppData%\Microsoft\Outlook\*.pst</span>
+    <div class="prose">
+      <p><strong>What it is:</strong> a <em>Personal Storage Table</em> — a self-contained MAPI database used by Outlook for archives, mailbox-exports, and (historically) primary IMAP/POP storage. ANSI PSTs (old, 2-GB limit, deprecated) and Unicode PSTs (current, up to 50 GB) both exist.</p>
+      <p><strong>Why it matters forensically:</strong></p>
+      <ul>
+        <li>Self-contained — readable on any machine without server access.</li>
+        <li>Common exfil format: enterprise users export entire mailboxes to PST.</li>
+        <li>Carries the full message store: folders, items, attachments, sent items, deleted items (often recoverable from internal slack).</li>
+        <li>Hidden / restricted folders (<code>Recoverable Items</code>) inside the PST sometimes preserve messages a normal Outlook user thought were gone.</li>
+      </ul>
+      <p>Open in Outlook by attaching the file, or read offline with <em>Xst Reader</em>, <em>libpff / pffexport</em>, <em>readpst</em>, or commercial Aid4Mail. Extract attachments and headers in one pass.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">💾</span><span class="ct">OST &amp; NST — synced caches</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Server-side backup</span>
+      <span class="fvc k-hidden">Survives mailbox purge</span>
+    </div>
+    <span class="path">%LocalAppData%\Microsoft\Outlook\*.ost</span>
+    <span class="path">%LocalAppData%\Microsoft\Outlook\*.nst (Teams / "New Outlook" cache)</span>
+    <div class="prose">
+      <p><strong>OST</strong> is Outlook's offline replica of the server-side mailbox in <em>Cached Exchange Mode</em>. Bit-compatible with PST internally, but the file is the user's <em>own copy</em> of what was on the Exchange / M365 server. <em>This makes OST invaluable when the server-side mailbox has been wiped, retention-purged, or admin-deleted.</em></p>
+      <p><strong>NST</strong> is a parallel cache used by Teams chat and the "New Outlook" preview — same OLE-derived binary structure, different folder schema. Often holds Teams messages that have been deleted server-side.</p>
+      <p>Both can be opened with Xst Reader / libpff. Convert OST to PST before importing into Outlook (Outlook itself refuses to attach a foreign OST).</p>
+    </div>
+    <div class="al r"><span class="ali">!</span><span><strong>OST encryption</strong> uses a per-mailbox key derived from the user's profile. Acquisition of a live profile preserves key material; cold-boot acquisition of a logged-out machine may lose it. Image while the user is logged in if at all possible.</span></div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🔬</span><span class="ct">Extended MAPI headers — the inside view</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">PR_TRANSPORT_MESSAGE_HEADERS</span>
+      <span class="fvc k-integrity">Internal-only metadata</span>
+    </div>
+    <div class="prose">
+      <p>Once a message lands in Exchange / Outlook, it accumulates <em>extended MAPI properties</em> beyond the RFC-822 headers. These are <em>not</em> visible in normal mail clients but are extracted by PST/OST parsers and by Microsoft Exchange admin tools.</p>
+      <p>Particularly useful properties:</p>
+      <ul>
+        <li><code>PR_TRANSPORT_MESSAGE_HEADERS</code> (0x007D) — the original Internet headers as they arrived, preserved even after Outlook reformats the rest.</li>
+        <li><code>PR_SENT_REPRESENTING_*</code> — the actual sending principal vs displayed sender (delegation / send-on-behalf detection).</li>
+        <li><code>PR_LAST_VERB_EXECUTED</code> — last user action (reply / forward / mark-read). Distinguishes received-but-unread from received-and-read.</li>
+        <li><code>PR_CLIENT_SUBMIT_TIME</code> vs <code>PR_DELIVERY_TIME</code> — sender's clock vs server's clock; divergence is a Date-header sanity check.</li>
+        <li><code>PR_CREATION_TIME</code> / <code>PR_LAST_MODIFICATION_TIME</code> — when the item arrived in this store and last changed locally.</li>
+        <li><code>PR_INTERNET_MESSAGE_ID</code> — joins to <code>Message-ID</code> for cross-store threading.</li>
+        <li><code>PR_RULE_ID</code> / hidden rule-store items — inbox rules an attacker added to forward / hide mail. Live in a hidden folder named <em>FAI</em> (Folder Associated Items); only specialised parsers expose them.</li>
+      </ul>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>Inbox rules used for stealth.</strong> Compromised accounts commonly get a rule like "forward everything from CFO to attacker@…" placed via OWA or PowerShell. The rule lives in hidden MAPI items, not in the user's visible Rules UI. Always enumerate hidden items.</span></div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><span class="ci">🌍</span><span class="ct">Server &amp; cloud logs</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Tenant-side truth</span>
+    </div>
+    <div class="prose">
+      <p>Host-side artefacts are <em>necessary</em> but rarely <em>sufficient</em> in modern email cases. Pair with:</p>
+      <ul>
+        <li><strong>M365 Unified Audit Log</strong> — <em>Send</em>, <em>SendAs</em>, <em>SendOnBehalf</em>, <em>HardDelete</em>, <em>SoftDelete</em>, <em>UpdateInboxRules</em>, <em>MoveToDeletedItems</em>. Default 90/180-day retention; place hold immediately.</li>
+        <li><strong>Exchange Message Trace</strong> — per-message delivery path including spam / quarantine actions. Retained ~10 days; export early.</li>
+        <li><strong>Microsoft Graph mailAttachment / message endpoints</strong> — for ad-hoc retrieval with full fidelity, including hidden FAI items.</li>
+        <li><strong>Exchange on-prem</strong> — message tracking logs, transport-rule logs, IIS logs for OWA / EAS.</li>
+        <li><strong>Google Workspace Email Log Search</strong> — equivalent message-trace for Gmail; Vault for retention.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🌐</span><span class="ct">Webmail traces on the host</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Browser cache &amp; storage</span>
+    </div>
+    <div class="prose">
+      <p>OWA, Gmail, Yahoo, Proton all leave host-side residue even without an installed client:</p>
+      <ul>
+        <li><strong>IndexedDB / LocalStorage</strong> (per-profile under <code>%LocalAppData%\Microsoft\Edge\User Data\&lt;profile&gt;\IndexedDB\</code> etc.) — Gmail/OWA cache message previews, drafts, contacts.</li>
+        <li><strong>Browser cache</strong> — HTML message bodies and inline images.</li>
+        <li><strong>Service-Worker caches</strong> for PWA-style webmail (Outlook PWA, Gmail offline).</li>
+        <li><strong>History / autofill</strong> — typed addresses, attached-file paths.</li>
+      </ul>
+      <p>These can be the only host-side proof a message was viewed when the user does not run a fat client at all.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📱</span><span class="ct">Mobile storage &amp; ActiveSync</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">EAS partnership</span>
+    </div>
+    <div class="prose">
+      <p>Mobile devices configured with Outlook for iOS/Android or native mail use Exchange ActiveSync. The mobile device's data is out of scope for Windows-host forensics, but the <em>partnership</em> records are not:</p>
+      <ul>
+        <li>M365 / Exchange Admin records every EAS device by deviceID — useful when a phone has been recycled.</li>
+        <li>OST <em>hidden FAI items</em> sometimes contain mobile-device-syncstate metadata.</li>
+        <li>Outlook for iOS/Android adds the M365 tenant under multiple device IDs over time — historical device list reveals lost / stolen / replaced devices.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📎</span><span class="ct">Attachment recovery</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Inside the store</span>
+    </div>
+    <div class="prose">
+      <p>Attachments live <em>inside</em> the PST/OST as MAPI <em>attachment objects</em> on a message. They are extracted not by file-system carving but by walking the store:</p>
+      <ul>
+        <li><em>libpff pffexport</em> dumps every attachment to disk with its original filename.</li>
+        <li>Xst Reader exposes attachment lists per message; right-click → save.</li>
+        <li>Outlook can save attachments via VBA scripting in bulk.</li>
+        <li>Embedded (OLE) messages — replies that include the prior message as <em>attached message</em> — recursively contain headers and attachments of their own. Walk them.</li>
+        <li>Deleted-item attachments sometimes survive in PST slack space — libpff's <code>--mode=all</code> recovers what is reachable.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">Common case patterns</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Workflow</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Phishing landing.</strong> Headers → identify originating IP → DMARC / SPF / DKIM verdict → join cloud audit for delivery time → check inbox-rule changes immediately after (auto-forward installed?) → host-side trace user clicked link (Edge history, browser cache).</li>
+        <li><strong>Insider mailbox export.</strong> PST creation timestamp on disk → Outlook "Import/Export" action in §10 UserAssist / Office MRU → file size of PST vs mailbox size → cloud audit <em>New-MailboxExportRequest</em> if PowerShell-driven.</li>
+        <li><strong>Compromised account hidden rule.</strong> Enumerate hidden FAI in OST → cloud audit <em>UpdateInboxRules</em> → join with Azure AD sign-ins around the change time.</li>
+        <li><strong>Spoofed sender impersonating exec.</strong> Visible From vs Authentication-Results DMARC verdict → publish-and-history check on the impersonated domain's DMARC policy → check whether the receiver's tenant has impersonation protection.</li>
+        <li><strong>Server-side delete cover-up.</strong> Local OST has the message; M365 Unified Audit Log shows <em>HardDelete</em> by the same user shortly after view; messages survive in <em>Recoverable Items</em> of the OST.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>Email is rarely investigated in isolation — every interesting message has host- and network-side context:</p>
+    <ul>
+      <li><strong>§04 NTFS — <code>$MFT</code> &amp; <code>$UsnJrnl</code></strong> — PST creation and OST modification timestamps on disk; mass writes around mailbox export are visible here.</li>
+      <li><strong>§07 SAM</strong> — Outlook profile sits under a specific user; SAM resolves SID to person.</li>
+      <li><strong>§09 NTUSER — Office MRU &amp; RecentDocs</strong> — Outlook's "Recent attachments" list lives here; opened-attachment paths cross to LNK.</li>
+      <li><strong>§10 Application Execution</strong> — OUTLOOK.EXE Prefetch / Amcache anchors first-use and recent-use times; UserAssist counts sessions.</li>
+      <li><strong>§11 Cloud Storage</strong> — many phishing attacks reach the user via OneDrive / SharePoint shared link; ODL events for the document open correlate with the message arrival time.</li>
+      <li><strong>§12 LNK</strong> — every attachment the user opened (which materialises to <code>%Temp%\Outlook Logging\</code> or to a chosen Save path) gets a Recent\ LNK.</li>
+      <li><strong>§13 Jump Lists</strong> — OUTLOOK.EXE Jump List shows opened items per-app.</li>
+      <li><strong>§15 Network Forensics</strong> — SMTP / IMAP / Exchange RPC / Outlook Anywhere / EAS / MAPI-over-HTTP traffic in PCAP corroborates the headers' Received chain.</li>
+      <li><strong>§17 Windows Artefacts — Windows.edb</strong> — the Windows Search index ingests Outlook mail content for desktop search; recovers message bodies even from PST files that are gone.</li>
+      <li><strong>§18 SRUM</strong> — bytes sent / received by OUTLOOK.EXE per user / per network give a corroborating volumetric view.</li>
+      <li><strong>§19 Event Log Analysis</strong> — Office Alerts / Microsoft-Office-Alerts.evtx logs security prompts; Application log catches Outlook crashes that may align with malicious attachment processing.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §16 Email Forensics</span>
+  <span>Next → §17 Windows Artefacts</span>
+</div>
+
+</div></body></html>

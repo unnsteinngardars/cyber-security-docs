@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17 — Windows Artefacts · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--amber);--accent-dim:var(--amber-dim);--accent-deep:var(--amber-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--blue-dim);border:1px solid rgba(186,225,255,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--blue-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--blue-deep);background:var(--blue-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(186,225,255,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body><div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">🪟</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 / <span class="acc">17 — Windows Artefacts</span></div>
+      <div class="t1">Windows Artefacts — Search Index, Thumbcaches, and the Recycle Bin</div>
+      <div class="t2">Three artefact families that survive the files they describe — the Search ESE database, per-resolution thumbnail caches, and the $I/$R Recycle Bin metadata that names everything the user thought they deleted</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-a">Windows.edb</span>
+    <span class="b b-p">Thumbcache</span>
+    <span class="b b-b">Iconcache</span>
+    <span class="b b-r">$Recycle.Bin</span>
+    <span class="b b-t">$I / $R</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">Tools</span><span class="tag">WinSearchDBAnalyzer</span><span class="tag">Timeline Explorer</span><span class="tag">Thumbcache Viewer</span><span class="tag">RBCmd</span><span class="tag">ESEDatabaseView</span><span class="tag">esentutl.exe</span></div>
+  <div class="row"><span class="sl">Artefacts</span><span class="tag">Windows.edb</span><span class="tag">Windows-gather.db</span><span class="tag">Windows-usn.db</span><span class="tag">WAL logs</span><span class="tag">thumbcache_*.db</span><span class="tag">iconcache_*.db</span><span class="tag">$Recycle.Bin\&lt;SID&gt;\</span><span class="tag">$I (metadata)</span><span class="tag">$R (recovered content)</span></div>
+  <div class="row"><span class="sl">Concepts</span><span class="tag">ESE / JET database recovery</span><span class="tag">GatherTime &amp; partial-content indexing</span><span class="tag">Thumbcache cacheID ↔ filename via preview</span><span class="tag">$I ↔ $R shared ID</span><span class="tag">SID-scoped per-user recycle</span></div>
+</div>
+
+<div class="g">
+
+  <div class="c c-a s4">
+    <div class="ch"><span class="ci">🔎</span><span class="ct">Windows Search — the system-wide ESE database</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Indexes everything reachable</span>
+      <span class="fvc k-pivot">Outlook + Browser + Files in one DB</span>
+      <span class="fvc k-hidden">Survives original file deletion</span>
+    </div>
+    <span class="path">C:\ProgramData\Microsoft\Search\Data\Applications\Windows\Windows.edb</span>
+    <span class="path">…\Windows-gather.db (gather queue)</span>
+    <span class="path">…\Windows-usn.db (USN journal cursor used to drive incremental indexing)</span>
+    <span class="path">…\*.log / *.jrs / WAL files (ESE recovery + write-ahead)</span>
+    <div class="prose">
+      <p><strong>What it is:</strong> <code>Windows.edb</code> is an <em>ESE</em> (Extensible Storage Engine, the JET Blue database engine) database holding the full-text Search index. It records, per indexed item: file name, file path, size, attributes, MAC timestamps, the <em>GatherTime</em> at which Search picked it up, and, for many file types, a chunk of <em>partial content</em> — extracted text, properties, EXIF, email headers and bodies, browser history snippets.</p>
+      <p><strong>What it indexes by default:</strong></p>
+      <ul>
+        <li>The user's profile folders (Documents, Pictures, Music, Videos, Desktop).</li>
+        <li>Outlook mailbox content (via the Office Search Provider) — bodies, subjects, sender, attachment names.</li>
+        <li>Edge / Internet Explorer browser history and favourites (via Internet Explorer history provider).</li>
+        <li>OneDrive content where Files-On-Demand has hydrated it.</li>
+        <li>Any additional paths added by group policy / user customisation.</li>
+      </ul>
+      <p><strong>Why it matters forensically:</strong> Search's copy of a file's <em>content</em> persists in the EDB <em>after the original file is deleted</em>. When NTFS metadata is wiped and Recycle Bin is emptied, partial content often remains here for weeks. <em>WinSearchDBAnalyzer</em> (Yogesh Khatri) extracts the rows; output is a CSV-of-everything Search ever saw, ready for Timeline Explorer.</p>
+    </div>
+    <div class="al b"><span class="ali">ℹ</span><span><strong>Acquisition note:</strong> the database is locked while the Search service runs. Either acquire from a hibernated / shut-down host, use VSS, or use <code>esentutl.exe /y /vss</code>. On a logged-in target, <em>StopService SearchIndexer</em> first, copy, restart — and document the service interruption.</span></div>
+  </div>
+
+  <div class="c c-b s2">
+    <div class="ch"><span class="ci">🩹</span><span class="ct">ESE recovery — the dirty-database problem</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Repair before parse</span>
+    </div>
+    <span class="path">esentutl.exe /mh Windows.edb               # header check</span>
+    <span class="path">esentutl.exe /r edb /l . /s . /i           # replay log files (clean recovery)</span>
+    <span class="path">esentutl.exe /p Windows.edb                # forced repair (lossy, last resort)</span>
+    <div class="prose">
+      <p>If acquisition was less than perfect, the EDB will be <em>dirty</em>. The header (<code>/mh</code>) reports it as such. Two paths to a parseable copy:</p>
+      <ul>
+        <li><strong>Soft recovery</strong> — replay the captured <em>.log</em> WAL files with <code>esentutl /r</code>. Lossless. Requires the matching log generation set.</li>
+        <li><strong>Repair</strong> — <code>esentutl /p</code> rebuilds page-by-page; rows in corrupted pages are dropped. Document the loss and re-run twice for stability.</li>
+      </ul>
+      <p>Modern WinSearchDBAnalyzer handles many dirty EDBs directly; older parsers need a clean DB.</p>
+    </div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">🗺</span><span class="ct">Notable Windows.edb columns</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Field map</span>
+    </div>
+    <div class="prose">
+      <p>A few of the property columns most often needed:</p>
+      <ul>
+        <li><code>System_ItemUrl</code> — full URL/path of the indexed item.</li>
+        <li><code>System_DateCreated</code>, <code>System_DateModified</code>, <code>System_DateAccessed</code> — file MAC at index time.</li>
+        <li><code>System_Size</code>, <code>System_ItemType</code>, <code>System_FileAttributes</code>.</li>
+        <li><code>System_Search_GatherTime</code> — when Search read this row. <em>Acts as an independent timestamp</em>.</li>
+        <li><code>System_Search_AutoSummary</code> / <code>System_Search_ContentSnippet</code> — partial extracted text.</li>
+        <li><code>System_Message_*</code> — Outlook-only: sender, recipient list, subject.</li>
+        <li><code>System_Image_*</code> / <code>System_Photo_*</code> — EXIF (DateTimeOriginal, GPS, Make/Model).</li>
+        <li><code>System_Document_*</code> — Office metadata (author, last-saved-by, revision).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🖼</span><span class="ct">Thumbcache &amp; Iconcache — Explorer's preview vault</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Image content survives</span>
+      <span class="fvc k-user">Per-user, per-resolution</span>
+      <span class="fvc k-pivot">CacheID is the join key</span>
+    </div>
+    <span class="path">%LocalAppData%\Microsoft\Windows\Explorer\thumbcache_32.db (and 96/256/1024)</span>
+    <span class="path">%LocalAppData%\Microsoft\Windows\Explorer\thumbcache_idx.db (lookup index)</span>
+    <span class="path">%LocalAppData%\Microsoft\Windows\Explorer\iconcache_*.db (icons + small thumbs)</span>
+    <div class="prose">
+      <p><strong>What:</strong> Explorer caches a thumbnail of every image, video, and many document types it has displayed in the file browser at sizes 32, 96, 256, 1024, and (Win10+) 2560 px. Each thumbcache file is a Microsoft custom binary format (an <em>Image Mounted Memory Database</em> by file layout). Per-thumbnail entries contain: cacheID, header signature, size, padding, and the raw image data (PNG, JPEG, or BMP).</p>
+      <p><strong>Why forensics loves it:</strong></p>
+      <ul>
+        <li>Thumbnails of photos, video frames, and document previews <em>survive after the original file is deleted</em> — including after Recycle Bin emptied.</li>
+        <li>Per-user (under <code>%LocalAppData%</code>) — proves <em>this user</em> opened a folder containing this content.</li>
+        <li>Independent of file extension — renaming or trying to hide a JPG as <code>.txt</code> still produced a thumbnail.</li>
+      </ul>
+      <p><strong>How to map thumbnail back to filename:</strong> Thumbcache stores cacheIDs, not filenames. The mapping back to filenames takes two routes:</p>
+      <ul>
+        <li><em>Thumbcache_idx.db</em> + Search index (<code>Windows.edb</code>) — preview thumbnail's cacheID is recorded against the indexed item URL.</li>
+        <li><em>Visual</em> — open the thumb in Thumbcache Viewer; if the preview shows a document, the filename is often visible in the corner / footer of the displayed content. This is the technique behind "explain how to find file name information from a thumbcache finding (preview + cacheID)".</li>
+        <li><em>Iconcache rows</em> for the same path also encode the associated executable / file extension via <code>shell32.dll</code> icon indexes.</li>
+      </ul>
+    </div>
+    <div class="al a"><span class="ali">⚠</span><span><strong>Thumbnails of network and removable drives</strong> are cached just like local ones. A thumbcache hit for a file with no corresponding <code>$MFT</code> record on the local volume is strong evidence the user opened the file from a USB, network share, or cloud namespace.</span></div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">🛠</span><span class="ct">Thumbcache parsing &amp; workflow</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">Tooling</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Thumbcache Viewer</strong> (Eric Kutcher) — GUI for browsing every thumbnail, exporting all images, viewing cacheID.</li>
+        <li><strong>thumbcache_viewer_cmd</strong> — CLI version for batch export and CSV of cacheID ↔ image-hash.</li>
+        <li><strong>Magnet AXIOM</strong> — automated extraction with attempted filename correlation against the Search DB.</li>
+      </ul>
+      <p>Typical case workflow:</p>
+      <ol>
+        <li>Export all thumbs at all resolutions into a per-user folder, one image file per cacheID.</li>
+        <li>Hash with SHA-256 to dedupe across resolution files.</li>
+        <li>Eyeball the result for sensitive content; for matches, attempt filename recovery via Windows.edb join.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="c c-g s2">
+    <div class="ch"><span class="ci">🔁</span><span class="ct">Iconcache — extension &amp; protected file types</span></div>
+    <div class="fv">
+      <span class="fvc k-pivot">Application install evidence</span>
+    </div>
+    <div class="prose">
+      <p>Iconcache files store the icon resource for each registered file extension and ProgID. Per-user — populated as the user encounters new file types. Two practical uses:</p>
+      <ul>
+        <li>Confirm an application <em>has been installed on this profile</em> even when it has since been uninstalled — its custom icons remain.</li>
+        <li>Pre-2019 versions of Windows also cached small thumbnails here; can be useful for very old images.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-r s4">
+    <div class="ch"><span class="ci">🗑</span><span class="ct">Recycle Bin — $I &amp; $R per-user vault</span></div>
+    <div class="fv">
+      <span class="fvc k-recover">Recovers metadata + content</span>
+      <span class="fvc k-user">SID-scoped</span>
+      <span class="fvc k-pivot">Shared ID joins the pair</span>
+    </div>
+    <span class="path">C:\$Recycle.Bin\&lt;user-SID&gt;\$I&lt;ID&gt; (metadata)</span>
+    <span class="path">C:\$Recycle.Bin\&lt;user-SID&gt;\$R&lt;ID&gt; (recovered original content)</span>
+    <div class="prose">
+      <p><strong>Mechanism:</strong> when the user "deletes" a file from Explorer, NTFS does two things — it moves the file to <code>C:\$Recycle.Bin\&lt;SID&gt;\</code> renaming it to <code>$R&lt;random6chars&gt;.&lt;ext&gt;</code>, and writes a parallel <code>$I&lt;samerandom6chars&gt;.&lt;ext&gt;</code> metadata file. The <em>shared random ID</em> is the join key between the two halves.</p>
+      <p><strong>$I file contents</strong> (Win10+: 544 bytes):</p>
+      <ul>
+        <li>Header (signature 0x02 for Win10+, 0x01 for Win7/8).</li>
+        <li>Original file size (8 bytes, uint64).</li>
+        <li>Deletion FILETIME (UTC).</li>
+        <li>Original filename length + path (UTF-16). Variable length on Win10+, fixed 260 chars on Win7.</li>
+      </ul>
+      <p><strong>$R file</strong> is the renamed original. It is byte-identical to what the user had — open it directly.</p>
+      <p><strong>Tool:</strong> <em>RBCmd</em> (Eric Zimmerman) parses every $I in a tree and emits a CSV with original path, original size, deletion time, owning SID, and the matching $R location.</p>
+    </div>
+    <div class="al g"><span class="ali">✓</span><span><strong>$I files are tiny and incredibly evidentially rich.</strong> Even when the user has emptied the Recycle Bin, $I records survive in NTFS slack and unallocated more often than $R bodies do — partial recovery of deletion <em>metadata</em> is common, full file body recovery less so.</span></div>
+  </div>
+
+  <div class="c c-p s2">
+    <div class="ch"><span class="ci">📐</span><span class="ct">Per-SID scoping</span></div>
+    <div class="fv">
+      <span class="fvc k-user">Attribution</span>
+    </div>
+    <div class="prose">
+      <p>The <code>&lt;SID&gt;</code> subfolder under <code>$Recycle.Bin</code> equals the SID of the user who deleted the file. This is rich attribution data when multiple profiles exist on the host. Join the SID to §07 SAM for the username; cross-check with §09 NTUSER load events for the same user.</p>
+      <p>On domain-joined systems the SID is a domain SID — resolve via AD or via cached domain SIDs in <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\</code>.</p>
+    </div>
+  </div>
+
+  <div class="c c-t s2">
+    <div class="ch"><span class="ci">📜</span><span class="ct">Versions &amp; OS quirks</span></div>
+    <div class="fv">
+      <span class="fvc k-integrity">Format history</span>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Win Vista – Win 8.1</strong>: $I header signature 0x01; filename field fixed 260 chars (520 bytes) UTF-16.</li>
+        <li><strong>Win 10 (1809+) and later</strong>: header signature 0x02; filename field becomes variable-length-prefixed.</li>
+        <li>NTFS-only feature — FAT volumes use a different (simpler) Recycle Bin model lacking $I/$R.</li>
+        <li><em>Shift+Delete</em> bypasses the Recycle Bin entirely — no $I/$R created. Look to <code>$UsnJrnl</code> (§04) for the deletion record.</li>
+        <li>Recycle Bin on removable drives: each connected USB stick gets its own <code>$RECYCLE.BIN\&lt;SID&gt;\</code> with the same $I/$R format. Joins to §14 USB.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-b s4">
+    <div class="ch"><span class="ci">🎯</span><span class="ct">Practical workflow — recovering "what did the user delete"</span></div>
+    <div class="fv">
+      <span class="fvc k-execution">End-to-end</span>
+    </div>
+    <div class="prose">
+      <ol>
+        <li><strong>Recycle Bin first.</strong> <code>RBCmd.exe -d C:\$Recycle.Bin --csv out</code> for every SID subfolder. CSV gives every "still in the bin" deletion with original path, time, and owning user.</li>
+        <li><strong>Windows.edb for older deletions.</strong> Run WinSearchDBAnalyzer. Compare items with high <em>GatherTime</em> to current <code>$MFT</code> presence — rows describing files no longer on disk are deletion candidates pre-dating Recycle Bin retention.</li>
+        <li><strong>Thumbcache for image evidence.</strong> Export thumbs; visually triage; for hits, cross-check whether the original file still exists. Absence + presence of preview is the deletion signal.</li>
+        <li><strong>USN journal &amp; MFT slack (§04).</strong> Pick up the deletion events directly. Slack of <code>$Recycle.Bin\</code> directories sometimes holds $I bodies even after the bin is emptied.</li>
+        <li><strong>Carving (§05).</strong> For images whose thumbnail was found, attempt full-file carving on the partition. JPEG/PNG headers are easy targets.</li>
+        <li><strong>Volume Shadow Copies.</strong> VSS snapshots often retain a complete pre-deletion view; mount with vshadowmount / KAPE.</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<div class="xref">
+  <div class="sl">Cross-references for corroboration</div>
+  <div class="prose">
+    <p>These three artefact families are <em>independent</em> records of what the user touched, viewed, and deleted — that's why corroborating them against the rest of the case is so productive:</p>
+    <ul>
+      <li><strong>§04 NTFS — <code>$MFT</code> / <code>$UsnJrnl</code></strong> — <code>$UsnJrnl</code> records the deletion of $R files when the user empties the bin; <code>$MFT</code> entries for $I files persist briefly in unallocated and slack.</li>
+      <li><strong>§05 File Carving</strong> — when $R is gone but thumbcache or Windows.edb partial content names a media file, carving the partition is the next move.</li>
+      <li><strong>§07 SAM</strong> — Recycle Bin SID subfolder resolves to the deleting user.</li>
+      <li><strong>§09 NTUSER — RecentDocs &amp; TypedPaths</strong> — recently-deleted files were probably recently opened first; RecentDocs often names them.</li>
+      <li><strong>§10 Application Execution</strong> — Search Index ingests partial content of Office docs, mail, browser history; AmCache + Prefetch confirm which app the user used to open a now-deleted file.</li>
+      <li><strong>§12 LNK</strong> — Recent\*.lnk LNKs for the deleted target preserve target MAC times and volume serial even when both the original and the $R copy are gone.</li>
+      <li><strong>§14 USB</strong> — removable-drive Recycle Bins ($RECYCLE.BIN\&lt;SID&gt;\ on the stick) follow the same $I/$R model; join VSN to identify the specific device.</li>
+      <li><strong>§16 Email Forensics</strong> — Windows.edb stores indexed Outlook content; Outlook attachments saved-then-deleted show up here long after the email itself was purged.</li>
+      <li><strong>§18 SRUM</strong> — explorer.exe + SearchIndexer.exe show as high-resource users when large index rebuilds happen; useful sanity check for "was Search even running at time T?"</li>
+      <li><strong>§19 Event Log Analysis</strong> — Microsoft-Windows-Search-ProfileNotify and similar logs record indexer state changes; mass deletions can correlate with Audit Object Access events 4663 when SACLs are enabled.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §17 Windows Artefacts</span>
+  <span>Next → §18 SRUM</span>
+</div>
+
+</div></body></html>

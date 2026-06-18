@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>19 — Event Log Analysis · CCDCOE IDFC V3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ffb3ba;--red-dim:rgba(255,179,186,.32);--red-deep:#c25361;
+  --amber:#ffdfba;--amber-dim:rgba(255,223,186,.32);--amber-deep:#b8843e;
+  --yellow:#ffffba;--yellow-dim:rgba(255,255,186,.32);--yellow-deep:#9e9633;
+  --green:#baffc9;--green-dim:rgba(186,255,201,.32);--green-deep:#3a9e58;
+  --blue:#bae1ff;--blue-dim:rgba(186,225,255,.32);--blue-deep:#3a82c4;
+  --purple:#e0baff;--purple-dim:rgba(224,186,255,.32);--purple-deep:#8a52c2;
+  --teal:#baffe1;--teal-dim:rgba(186,255,225,.32);--teal-deep:#3a9e85;
+  --bg:#F4F0E8;--sf:#FFFFFF;--sf2:#F6F1E7;
+  --bd:rgba(60,40,20,.10);--bdhi:rgba(60,40,20,.22);
+  --tx:#2D2820;--dm:#7A6F5E;--dm2:#A89E8A;--hi:#1A1610;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --accent:var(--red);--accent-dim:var(--red-dim);--accent-deep:var(--red-deep);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:28px 28px 60px}
+.page{max-width:1280px;margin:0 auto}
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.hdr-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.crumb{font-size:10.5px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase;font-family:var(--sans);font-weight:700;margin-bottom:6px}
+.crumb .acc{color:var(--accent-deep)}
+.t1{font-family:var(--sans);font-size:clamp(17px,3vw,26px);font-weight:800;color:var(--hi);line-height:1.2}
+.t2{font-size:12.5px;color:var(--dm);margin-top:5px}
+.skull{width:54px;height:54px;flex-shrink:0;background:var(--accent-dim);border:2px solid var(--accent-deep);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.b-r{background:var(--red-dim);color:var(--red-deep);border:1px solid rgba(255,179,186,.7)}
+.b-a{background:var(--amber-dim);color:var(--amber-deep);border:1px solid rgba(255,223,186,.7)}
+.b-g{background:var(--green-dim);color:var(--green-deep);border:1px solid rgba(186,255,201,.7)}
+.b-b{background:var(--blue-dim);color:var(--blue-deep);border:1px solid rgba(186,225,255,.7)}
+.b-p{background:var(--purple-dim);color:var(--purple-deep);border:1px solid rgba(224,186,255,.7)}
+.b-t{background:var(--teal-dim);color:var(--teal-deep);border:1px solid rgba(186,225,255,.7)}
+
+.tor{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--accent-deep);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:12.5px;line-height:1.7}
+.tor .sl{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dm);margin-right:8px}
+.tor .tag{display:inline-block;background:var(--red-dim);border:1px solid rgba(255,179,186,.7);border-radius:5px;padding:2px 8px;margin:0 4px 4px 0;font-size:11px;color:var(--red-deep);font-weight:600}
+.tor .row{margin-bottom:4px}.tor .row:last-child{margin-bottom:0}
+
+.g{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+@media(max-width:860px){.g{grid-template-columns:repeat(2,1fr)}.s2,.s3,.s4{grid-column:span 2!important}}
+@media(max-width:500px){.g{grid-template-columns:1fr}.s2,.s3,.s4{grid-column:1!important}}
+
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.c-r{border-top:3px solid var(--red-deep)}.c-a{border-top:3px solid var(--amber-deep)}
+.c-b{border-top:3px solid var(--blue-deep)}.c-p{border-top:3px solid var(--purple-deep)}
+.c-t{border-top:3px solid var(--teal-deep)}.c-g{border-top:3px solid var(--green-deep)}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--hi);line-height:1.2;flex:1;min-width:0}
+
+.fv{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.fvc{font-family:var(--sans);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:var(--sf2);border:1px solid var(--bd);color:var(--dm)}
+.fvc.k-time{color:var(--blue-deep);border-color:rgba(186,225,255,.7);background:var(--blue-dim)}
+.fvc.k-user{color:var(--green-deep);border-color:rgba(186,255,201,.7);background:var(--green-dim)}
+.fvc.k-recover{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+.fvc.k-integrity{color:var(--red-deep);border-color:rgba(255,179,186,.7);background:var(--red-dim)}
+.fvc.k-pivot{color:var(--purple-deep);border-color:rgba(224,186,255,.7);background:var(--purple-dim)}
+.fvc.k-execution{color:var(--teal-deep);border-color:rgba(186,255,225,.7);background:var(--teal-dim)}
+.fvc.k-hidden{color:var(--amber-deep);border-color:rgba(255,223,186,.7);background:var(--amber-dim)}
+
+.prose{font-size:13px;color:var(--tx);line-height:1.75}
+.prose p{margin-bottom:8px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--hi)}
+.prose em{color:var(--accent-deep);font-style:normal;font-weight:600}
+.prose code{font-family:var(--mono);font-size:11.5px;color:var(--red-deep);background:var(--red-dim);padding:2px 6px;border-radius:4px;border:1px solid rgba(255,179,186,.5)}
+.prose ul{list-style:none;padding-left:0;margin:6px 0 10px}
+.prose ul li{position:relative;padding-left:18px;margin-bottom:6px;font-size:12.5px;line-height:1.7}
+.prose ul li::before{content:"▸";position:absolute;left:0;color:var(--accent-deep);font-size:11px;top:4px}
+
+.path{font-family:var(--mono);font-size:11.5px;color:var(--amber-deep);background:var(--amber-dim);border:1px solid rgba(255,223,186,.6);padding:8px 12px;border-radius:5px;display:block;word-break:break-all;line-height:1.55;margin:6px 0}
+
+.al{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:7px;font-size:12.5px;line-height:1.6;margin-top:8px}
+.al.r{background:var(--red-dim);border:1px solid rgba(255,179,186,.55);color:var(--red-deep)}
+.al.a{background:var(--amber-dim);border:1px solid rgba(255,223,186,.55);color:var(--amber-deep)}
+.al.g{background:var(--green-dim);border:1px solid rgba(186,255,201,.55);color:var(--green-deep)}
+.al.b{background:var(--blue-dim);border:1px solid rgba(186,225,255,.55);color:var(--blue-deep)}
+.ali{font-size:16px;flex-shrink:0}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.et{width:100%;border-collapse:collapse;font-size:11.5px;min-width:300px}
+.et th{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dm);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdhi)}
+.et td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55}
+.et td:first-child{color:var(--red-deep);font-weight:600;white-space:nowrap}
+
+.sl{font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dm);margin:6px 0 8px}
+
+.xref{background:var(--sf);border:1px dashed var(--bdhi);border-radius:10px;padding:16px 20px;margin-top:22px}
+.xref .sl{color:var(--accent-deep);margin-bottom:8px}
+.xref .prose{font-size:12.5px}
+
+.ft{margin-top:32px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--dm)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="skull">📜</div>
+    <div>
+      <div class="crumb">CCDCOE IDFC V3 · §<span class="acc">19</span></div>
+      <div class="t1">Event Log Analysis</div>
+      <div class="t2">Windows EVTX — the auditor's spine of every host-side investigation</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="b b-r">Authoritative</span>
+    <span class="b b-a">Time-rich</span>
+    <span class="b b-b">XPath</span>
+    <span class="b b-p">Logon Pivot</span>
+  </div>
+</div>
+
+<div class="tor">
+  <div class="row"><span class="sl">TL;DR</span>
+    Windows writes nearly everything it cares about into <strong>EVTX</strong> files under <code>C:\Windows\System32\winevt\Logs\</code>. Each event is a structured XML record tagged with an <em>Event ID</em>, a <em>Provider</em>, a <em>TimeCreated</em> timestamp, and (when relevant) a <em>SID + LogonId</em>. The investigator's job: scope by channel, filter by Event ID with XPath, and stitch sessions together via <strong>Logon ID</strong>.
+  </div>
+  <div class="row" style="margin-top:8px">
+    <span class="tag">EvtxECmd</span>
+    <span class="tag">XPath</span>
+    <span class="tag">Event Log Explorer</span>
+    <span class="tag">Security.evtx</span>
+    <span class="tag">Logon Type</span>
+    <span class="tag">RDP</span>
+    <span class="tag">LogonId</span>
+  </div>
+</div>
+
+<div class="sl">▸ Tooling</div>
+<div class="g">
+
+  <div class="c c-r s2">
+    <div class="ch"><div class="ci">🧰</div><div class="ct">EvtxECmd</div></div>
+    <div class="fv"><span class="fvc k-execution">Parser</span><span class="fvc k-time">Bulk</span><span class="fvc k-pivot">CSV/JSON</span></div>
+    <div class="prose">
+      <p>Eric Zimmerman's <strong>EvtxECmd</strong> normalises raw <code>.evtx</code> into flat CSV/JSON suitable for <strong>Timeline Explorer</strong>, ELK, or grep. Map files convert noisy XML payloads into human-friendly columns.</p>
+      <ul>
+        <li><code>EvtxECmd.exe -d C:\Windows\System32\winevt\Logs --csv .\out --csvf evt.csv</code></li>
+        <li><code>--maps</code> for community-maintained schema decoders (PowerShell, RDP, Sysmon)</li>
+        <li>Per-file: <code>-f Security.evtx</code></li>
+      </ul>
+      <div class="al b"><div class="ali">✦</div><div>Always parse from a <strong>copy</strong> — never the live <code>winevt\Logs</code> dir, since the EventLog service holds handles and dirty-state recovery may rewrite headers.</div></div>
+    </div>
+  </div>
+
+  <div class="c c-b">
+    <div class="ch"><div class="ci">🔍</div><div class="ct">XPath</div></div>
+    <div class="fv"><span class="fvc k-execution">Query</span><span class="fvc k-time">Filter</span></div>
+    <div class="prose">
+      <p>The native filter language for <code>wevtutil</code>, <code>Get-WinEvent</code>, and the Event Viewer "Filter Current Log" dialog. Targets the EVTX XML schema.</p>
+      <span class="path">*[System[EventID=4624 and (TimeCreated[@SystemTime&gt;='2026-06-01T00:00:00.000Z'])]]</span>
+      <p><strong>PowerShell:</strong> <code>Get-WinEvent -LogName Security -FilterXPath '*[System[EventID=4624]]'</code></p>
+    </div>
+  </div>
+
+  <div class="c c-p">
+    <div class="ch"><div class="ci">🪟</div><div class="ct">Event Log Explorer</div></div>
+    <div class="fv"><span class="fvc k-execution">GUI</span><span class="fvc k-pivot">Multi-log</span></div>
+    <div class="prose">
+      <p>Commercial GUI by FSPro — opens multiple EVTX side-by-side, supports saved XPath profiles, regex column search, and consolidated timeline view across hosts.</p>
+      <p>Especially useful when the analyst needs <em>visual triage</em> of a captured logs folder before deciding what to bulk-parse.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="sl">▸ Artefact #1 — winevt\Logs\*.evtx (the EVTX file collection)</div>
+<div class="g">
+
+  <div class="c c-r s4">
+    <div class="ch"><div class="ci">📂</div><div class="ct">Path & Format</div></div>
+    <div class="fv"><span class="fvc k-time">Per-channel</span><span class="fvc k-user">SID-attributed</span><span class="fvc k-integrity">Binary XML</span></div>
+    <span class="path">C:\Windows\System32\winevt\Logs\*.evtx</span>
+    <div class="prose">
+      <p>Each channel is its own file. Internally a <strong>binary XML</strong> (EVTX) container with a header, chunks (~64 KB each), and records. The EventLog service appends in-memory and flushes chunks; this is why a hard pull of running disks may leave the "dirty" bit set, and why parsers like EvtxECmd handle truncated final chunks gracefully.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="sl">▸ Core channels (sub-artefacts)</div>
+<div class="g">
+
+  <div class="c c-r">
+    <div class="ch"><div class="ci">🛡️</div><div class="ct">Security.evtx</div></div>
+    <div class="fv"><span class="fvc k-user">Auth</span><span class="fvc k-pivot">Account</span></div>
+    <div class="prose">
+      <p>The auditor's bible — only written if the <strong>Audit Policy</strong> is enabled. Contains logon/logoff, account changes, privilege use, object access (file/registry SACL), policy edits.</p>
+      <p>If <code>Security.evtx</code> is small or unusually clean, suspect <em>log clearing</em> (Event ID <code>1102</code>) or audit policy tampering (<code>4719</code>).</p>
+    </div>
+  </div>
+
+  <div class="c c-a">
+    <div class="ch"><div class="ci">⚙️</div><div class="ct">System.evtx</div></div>
+    <div class="fv"><span class="fvc k-execution">Services</span><span class="fvc k-time">Boot</span></div>
+    <div class="prose">
+      <p>Service start/stop (<code>7036</code>, <code>7045</code>), driver loads, boot/shutdown (<code>6005</code>/<code>6006</code>), time-changes (<code>1</code>/<code>520</code>), <strong>USB plug events</strong> (Kernel-PnP), Windows Update activity.</p>
+      <p><strong>7045</strong> (new service installed) is one of the highest-signal IDs for persistence hunting.</p>
+    </div>
+  </div>
+
+  <div class="c c-b">
+    <div class="ch"><div class="ci">📦</div><div class="ct">Application.evtx</div></div>
+    <div class="fv"><span class="fvc k-execution">Crashes</span><span class="fvc k-pivot">Installs</span></div>
+    <div class="prose">
+      <p>App-level events: MSI installer (1033/1034), crash reports (Application Error <code>1000</code>, WER <code>1001</code>), .NET runtime errors, antivirus product events (Defender <code>1116</code>/<code>1117</code>).</p>
+    </div>
+  </div>
+
+  <div class="c c-p">
+    <div class="ch"><div class="ci">🖥️</div><div class="ct">TerminalServices-*</div></div>
+    <div class="fv"><span class="fvc k-pivot">RDP</span><span class="fvc k-user">Remote</span></div>
+    <div class="prose">
+      <p>The RDP forensics goldmine. Found under <code>Microsoft-Windows-TerminalServices-*</code>:</p>
+      <ul>
+        <li><strong>RemoteConnectionManager/Operational</strong> — <code>1149</code> (user authentication succeeded; includes source IP)</li>
+        <li><strong>LocalSessionManager/Operational</strong> — <code>21</code>/<code>22</code>/<code>25</code>/<code>24</code> (session logon, shell start, reconnect, disconnect)</li>
+        <li><strong>RDPClient/Operational</strong> — outbound RDP (<code>1024</code>/<code>1102</code>) on the <em>attacker's</em> jump host</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-g">
+    <div class="ch"><div class="ci">📶</div><div class="ct">WLAN-AutoConfig</div></div>
+    <div class="fv"><span class="fvc k-time">Wi-Fi</span><span class="fvc k-pivot">SSID</span></div>
+    <div class="prose">
+      <p><code>Microsoft-Windows-WLAN-AutoConfig/Operational</code>. <strong>SSID</strong>, BSSID, auth type and connection success/fail per attempt — places a laptop on a specific Wi-Fi network at a specific time.</p>
+      <p>Pivots cleanly with §08 <code>NetworkList\Signatures</code> (last-seen MAC of default gateway) and §15 NetworkList profile GUIDs.</p>
+    </div>
+  </div>
+
+  <div class="c c-t">
+    <div class="ch"><div class="ci">📧</div><div class="ct">Office Alerts</div></div>
+    <div class="fv"><span class="fvc k-execution">Office</span><span class="fvc k-integrity">Macro</span></div>
+    <div class="prose">
+      <p><code>OAlerts.evtx</code> (also under winevt\Logs). Captures the modal dialogs Office shows the user — <strong>macro enable prompts</strong>, "do you want to save", protected-view warnings.</p>
+      <p>An <code>OAlerts</code> entry for "Enable Macros?" minutes before a child <code>winword.exe → cmd.exe</code> chain is one of the cleanest phishing-execution narratives you can build.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="sl">▸ Record anatomy (every EVTX record exposes these)</div>
+<div class="g">
+
+  <div class="c c-b s2">
+    <div class="ch"><div class="ci">🔢</div><div class="ct">Event ID + Provider</div></div>
+    <div class="prose">
+      <p>An Event ID is only meaningful <em>scoped to its Provider</em>. <code>EventID=1</code> means utterly different things under <strong>Sysmon</strong> (process create) vs <strong>PowerShell/Operational</strong> (engine start). Always pair <code>System/Provider/@Name</code> with <code>System/EventID</code>.</p>
+    </div>
+  </div>
+
+  <div class="c c-r s2">
+    <div class="ch"><div class="ci">📊</div><div class="ct">Event Level</div></div>
+    <div class="prose">
+      <p>Numeric severity in <code>System/Level</code>:</p>
+      <div class="tw"><table class="et">
+        <tr><th>Level</th><th>Meaning</th></tr>
+        <tr><td>1</td><td>Critical</td></tr>
+        <tr><td>2</td><td>Error</td></tr>
+        <tr><td>3</td><td>Warning</td></tr>
+        <tr><td>4</td><td>Information</td></tr>
+        <tr><td>5</td><td>Verbose</td></tr>
+        <tr><td>0</td><td>LogAlways (Security audit-success / failure)</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="c c-b">
+    <div class="ch"><div class="ci">⏱️</div><div class="ct">TimeCreated</div></div>
+    <div class="prose">
+      <p><code>System/TimeCreated/@SystemTime</code> — UTC, sub-millisecond. Single source of truth for sequencing within a host. Cross-host correlation requires confirming each host's clock vs §08 <code>TimeZoneInformation</code> + NTP sync events (System log <code>35</code>/<code>36</code>/<code>37</code>).</p>
+    </div>
+  </div>
+
+  <div class="c c-g">
+    <div class="ch"><div class="ci">👤</div><div class="ct">TargetUser / Subject</div></div>
+    <div class="prose">
+      <p>In Security events, two principals coexist:</p>
+      <ul>
+        <li><strong>SubjectUserSid / SubjectUserName</strong> — who initiated the action</li>
+        <li><strong>TargetUserSid / TargetUserName</strong> — who the action affected</li>
+      </ul>
+      <p>For <code>4624</code> (logon) the <em>target</em> is the user who logged on.</p>
+    </div>
+  </div>
+
+  <div class="c c-p">
+    <div class="ch"><div class="ci">🔗</div><div class="ct">LogonId</div></div>
+    <div class="fv"><span class="fvc k-pivot">Session Key</span></div>
+    <div class="prose">
+      <p>Hex value uniquely identifying a logon <em>session</em> on a single host (until reboot). Use it to join <strong>4624</strong> (logon) → all activity within that session → <strong>4634</strong>/<strong>4647</strong> (logoff). See the tip block below.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="sl">▸ Artefact #2 — Security Log (audit categories)</div>
+<div class="g">
+
+  <div class="c c-r s2">
+    <div class="ch"><div class="ci">🔑</div><div class="ct">Logon / Logoff</div></div>
+    <div class="fv"><span class="fvc k-user">Auth</span><span class="fvc k-pivot">LogonId</span></div>
+    <div class="prose">
+      <div class="tw"><table class="et">
+        <tr><th>ID</th><th>Meaning</th></tr>
+        <tr><td>4624</td><td>Successful logon (+ LogonType, IpAddress)</td></tr>
+        <tr><td>4625</td><td>Failed logon (Status / SubStatus codes)</td></tr>
+        <tr><td>4634</td><td>Account logoff</td></tr>
+        <tr><td>4647</td><td>User-initiated logoff (interactive)</td></tr>
+        <tr><td>4648</td><td>Explicit-credential logon (runas)</td></tr>
+        <tr><td>4672</td><td>Special privileges assigned (admin logon)</td></tr>
+        <tr><td>4778 / 4779</td><td>Session reconnect / disconnect (RDP)</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="c c-a s2">
+    <div class="ch"><div class="ci">🏛️</div><div class="ct">Account Logon</div></div>
+    <div class="fv"><span class="fvc k-user">Kerberos</span><span class="fvc k-user">NTLM</span></div>
+    <div class="prose">
+      <p>Where <em>credentials are validated</em> — on the <strong>DC for domain accounts</strong>, on the local SAM authority for local accounts. Don't confuse with "Logon/Logoff" (which is where the <em>session</em> opens).</p>
+      <div class="tw"><table class="et">
+        <tr><th>ID</th><th>Meaning</th></tr>
+        <tr><td>4768</td><td>TGT requested (Kerberos AS-REQ)</td></tr>
+        <tr><td>4769</td><td>Service ticket requested (TGS-REQ)</td></tr>
+        <tr><td>4771</td><td>Pre-auth failed</td></tr>
+        <tr><td>4776</td><td>NTLM credential validation</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="c c-b">
+    <div class="ch"><div class="ci">📁</div><div class="ct">Object Access</div></div>
+    <div class="fv"><span class="fvc k-integrity">SACL</span></div>
+    <div class="prose">
+      <p>Requires SACLs configured on the target. Fires for files, registry keys, kernel objects, the SAM database itself.</p>
+      <ul>
+        <li><code>4656</code> — handle requested</li>
+        <li><code>4663</code> — handle access attempted</li>
+        <li><code>4660</code> — object deleted</li>
+        <li><code>5145</code> — file share access (very high value)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-p">
+    <div class="ch"><div class="ci">👥</div><div class="ct">Account Mgmt</div></div>
+    <div class="fv"><span class="fvc k-user">Persist</span></div>
+    <div class="prose">
+      <p>Backdoor account creation, group changes, password resets.</p>
+      <ul>
+        <li><code>4720</code> — user account created</li>
+        <li><code>4722</code> — account enabled</li>
+        <li><code>4732</code> — added to local group</li>
+        <li><code>4756</code> — added to universal group</li>
+        <li><code>4724</code> — password reset attempt</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="c c-t">
+    <div class="ch"><div class="ci">🪪</div><div class="ct">Privilege Use</div></div>
+    <div class="fv"><span class="fvc k-execution">SeXxxPrivilege</span></div>
+    <div class="prose">
+      <p><code>4672</code> — sensitive privileges assigned at logon (admin, debug, backup). <code>4673</code>/<code>4674</code> — privilege call. Noisy but anchors which logon sessions had elevated rights.</p>
+    </div>
+  </div>
+
+  <div class="c c-r">
+    <div class="ch"><div class="ci">⚖️</div><div class="ct">Policy Change</div></div>
+    <div class="fv"><span class="fvc k-integrity">Tamper</span></div>
+    <div class="prose">
+      <p>Highest-value defensive-bypass signal:</p>
+      <ul>
+        <li><code>1102</code> — <strong>Security log cleared</strong> (always investigate)</li>
+        <li><code>4719</code> — audit policy changed</li>
+        <li><code>4739</code> — domain policy changed</li>
+        <li><code>4904</code>/<code>4905</code> — security event source register/unregister</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="sl">▸ Concept — Logon Type codes (the LogonType field on 4624/4625)</div>
+<div class="g">
+  <div class="c c-b s4">
+    <div class="prose">
+      <div class="tw"><table class="et">
+        <tr><th>Type</th><th>Name</th><th>When</th></tr>
+        <tr><td>2</td><td>Interactive</td><td>Local console — keyboard at the machine</td></tr>
+        <tr><td>3</td><td>Network</td><td>SMB, file share, RPC — credentials over the wire</td></tr>
+        <tr><td>4</td><td>Batch</td><td>Scheduled Task running as a user</td></tr>
+        <tr><td>5</td><td>Service</td><td>Service account starting a service</td></tr>
+        <tr><td>7</td><td>Unlock</td><td>Workstation unlocked after lock</td></tr>
+        <tr><td>8</td><td>NetworkCleartext</td><td>Plaintext creds over net (Basic auth — bad)</td></tr>
+        <tr><td>9</td><td>NewCredentials</td><td><code>runas /netonly</code> — alt creds for outbound</td></tr>
+        <tr><td>10</td><td>RemoteInteractive</td><td><strong>RDP</strong> — full desktop session</td></tr>
+        <tr><td>11</td><td>CachedInteractive</td><td>Logon with cached domain creds (DC unreachable)</td></tr>
+      </table></div>
+      <div class="al r"><div class="ali">!</div><div>Lateral movement signature: <code>4624 LogonType=3</code> from one host to another, followed shortly by <code>4624 LogonType=10</code> from the same source IP. <strong>Type 9</strong> appearing on a workstation is often <code>runas /netonly</code> — common in pivot/admin-tooling abuse.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sl">▸ Concept — RDP (Remote Desktop) sessions, end-to-end</div>
+<div class="g">
+  <div class="c c-p s4">
+    <div class="prose">
+      <p>RDP doesn't live in one channel — it fans out across half a dozen. To narrate a single RDP session, stitch:</p>
+      <div class="tw"><table class="et">
+        <tr><th>Channel</th><th>ID</th><th>Meaning</th></tr>
+        <tr><td>Security</td><td>4624 (Type 10)</td><td>RDP logon at the OS authentication layer</td></tr>
+        <tr><td>Security</td><td>4778 / 4779</td><td>Session reconnect / disconnect</td></tr>
+        <tr><td>TerminalServices-RemoteConnectionManager/Operational</td><td>1149</td><td>User authentication succeeded — has Source Network Address</td></tr>
+        <tr><td>TerminalServices-LocalSessionManager/Operational</td><td>21</td><td>Session logon succeeded (Session ID + IP)</td></tr>
+        <tr><td>TerminalServices-LocalSessionManager/Operational</td><td>22</td><td>Shell start notification (desktop visible)</td></tr>
+        <tr><td>TerminalServices-LocalSessionManager/Operational</td><td>24</td><td>Session disconnected (user closed window)</td></tr>
+        <tr><td>TerminalServices-LocalSessionManager/Operational</td><td>25</td><td>Session reconnect</td></tr>
+        <tr><td>TerminalServices-RDPClient/Operational</td><td>1024 / 1102</td><td>OUTBOUND RDP — fired on the source/jump host</td></tr>
+      </table></div>
+      <p>Triage flow: pull <code>1149</code> for the candidate source IP → grab the matching <code>4624</code> by TimeCreated → harvest the <strong>LogonId</strong> → fan out into all other Security events with the same <code>TargetLogonId</code>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="sl">▸ Tip — Identify a logon session using the Logon ID</div>
+<div class="g">
+  <div class="c c-p s4">
+    <div class="ch"><div class="ci">💡</div><div class="ct">The LogonId pivot</div></div>
+    <div class="prose">
+      <p>Every <code>4624</code> mints a unique <strong>TargetLogonId</strong> (e.g. <code>0x4E7A11B</code>). That ID then appears in <em>every</em> subsequent event tied to that session: process creates (<code>4688</code>), object access (<code>4663</code>), privilege use (<code>4672</code>/<code>4673</code>), and finally <code>4634</code>/<code>4647</code> at logoff.</p>
+      <p><strong>The pivot, step-by-step:</strong></p>
+      <ul>
+        <li>Find the <strong>suspect 4624</strong> (e.g. unusual hour, foreign IP, sensitive account).</li>
+        <li>Note <code>TargetLogonId</code> from its EventData.</li>
+        <li>XPath: <code>*[EventData[Data[@Name='TargetLogonId']='0x4E7A11B' or Data[@Name='SubjectLogonId']='0x4E7A11B']]</code></li>
+        <li>Filter <em>across</em> Security, Sysmon, and PowerShell logs for that LogonId.</li>
+        <li>Bound the result by the matching <code>4634</code> / <code>4647</code> — anything outside is a different session.</li>
+      </ul>
+      <div class="al g"><div class="ali">✓</div><div><strong>Why it works:</strong> LogonId is the only field that distinguishes two simultaneous sessions for the <em>same user</em> on the <em>same host</em> — e.g. an admin who is RDP'd in (Type 10) while a scheduled task (Type 4) runs as the same account.</div></div>
+      <div class="al r"><div class="ali">!</div><div><strong>Caveats:</strong> LogonId is reused after reboot — always scope by TimeCreated within a single boot window (anchor with System log <code>6005</code>/<code>6006</code>). LogonId is also <em>host-local</em> — for the same user logging into another host you get a different LogonId there.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sl">▸ XPath quick-reference</div>
+<div class="g">
+  <div class="c c-b s4">
+    <div class="prose">
+      <p><strong>Single ID, single channel:</strong></p>
+      <span class="path">*[System[EventID=4624]]</span>
+      <p><strong>Range of IDs:</strong></p>
+      <span class="path">*[System[(EventID&gt;=4720 and EventID&lt;=4738)]]</span>
+      <p><strong>Filter on EventData field (e.g. specific user):</strong></p>
+      <span class="path">*[EventData[Data[@Name='TargetUserName']='svc_backup']]</span>
+      <p><strong>Combine time + ID + provider:</strong></p>
+      <span class="path">*[System[Provider[@Name='Microsoft-Windows-Sysmon'] and EventID=1 and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</span>
+      <p><strong>Negate (anything but 4624):</strong></p>
+      <span class="path">*[System[EventID!=4624]]</span>
+    </div>
+  </div>
+</div>
+
+<div class="xref">
+  <div class="sl">↪ Cross-references</div>
+  <div class="prose">
+    <ul>
+      <li><strong>§01 Evidence Collection</strong> — capture <code>winevt\Logs\</code> as a tree, not just <code>Security.evtx</code> — TerminalServices-* channels are easy to miss.</li>
+      <li><strong>§02 Memory Forensics</strong> — running EventLog service holds open handles; Volatility's <code>evtlogs</code>/<code>handles</code> can recover unflushed records from RAM.</li>
+      <li><strong>§08 SYSTEM hive</strong> — audit policy lives at <code>SYSTEM\CurrentControlSet\Control\Lsa\Audit</code> and <code>...\PolAdtEv</code>. Confirm whether Security logging was even ON for the time of interest.</li>
+      <li><strong>§10 Application Execution</strong> — <code>4688</code> (process create with cmdline) and Sysmon <code>1</code> are the spine here. Pair with Prefetch, Amcache, ShimCache for non-EVTX corroboration.</li>
+      <li><strong>§14 USB Devices</strong> — <code>Kernel-PnP</code> events in System.evtx (<code>20001</code>, <code>20003</code>) timestamp USB plug-ins to the second.</li>
+      <li><strong>§15 Network Forensics</strong> — RDP source IPs from <code>1149</code> / <code>4624 LogonType=10</code> are PCAP query keys. WLAN-AutoConfig SSIDs anchor the network the host was on.</li>
+      <li><strong>§16 Email Forensics</strong> — Office Alerts ("Enable Macros?") seconds before a child <code>cmd.exe</code> via <code>4688</code> is the canonical phish→exec sequence.</li>
+      <li><strong>§17 Windows Artefacts</strong> — <code>$Recycle.Bin</code> deletions cross-check against <code>4663</code>/<code>4660</code> (object deleted) on the same path.</li>
+      <li><strong>§18 SRUM</strong> — the <em>30-day</em> network/app usage table in SRUM is your fallback when <code>Security.evtx</code> rolled over or was cleared.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ft">
+  <span>CCDCOE IDFC V3 · §19 Event Log Analysis</span>
+  <span>End of cheat-sheet · ← §18 SRUM</span>
+</div>
+
+</div>
+</body>
+</html>
